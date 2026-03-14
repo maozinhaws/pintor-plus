@@ -136,7 +136,7 @@
                   <div class="field-error" id="clienteErro">Nome e sobrenome são obrigatórios!</div>
                 </div>
                 <div class="fld">
-                  <label class="flbl">Telefone</label>
+                  <label class="flbl">Telefone (WhatsApp)</label>
                   <input class="finput" id="telefone" enterkeyhint="done" inputmode="tel" placeholder="(11) 99999-9999" />
                   <div class="field-error" id="telefoneErro">Número de telefone inválido!</div>
                 </div>
@@ -213,10 +213,6 @@
       </div>
       <div class="measure-note" id="modalArea">Linear: 0,00 m</div>
       <div class="fld">
-        <label class="flbl">Observação</label>
-        <textarea class="fta" id="modalObs" placeholder="Ex.: precisa lixar, remover ferragem, corrigir trinca..."></textarea>
-      </div>
-      <div class="fld">
         <label class="flbl">Fotos do item</label>
         <div class="camera-wrap">
           <button class="camera-btn" id="btnAbrirCamera" type="button" title="Tirar foto">
@@ -224,15 +220,13 @@
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 7.5 9.2 6h5.6L16 7.5H18A2.5 2.5 0 0 1 20.5 10v6A2.5 2.5 0 0 1 18 18.5H6A2.5 2.5 0 0 1 3.5 16v-6A2.5 2.5 0 0 1 6 7.5h2Z" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" stroke="#6B7280" stroke-width="1.6"/></svg>
             </span>
           </button>
-          <label class="camera-btn" title="Abrir galeria">
-            <span class="camera-ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 7.5A2 2 0 0 1 6.5 5.5h11a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2v-9Z" stroke="#6B7280" stroke-width="1.6"/><path d="m8 14 2.2-2.2a1 1 0 0 1 1.4 0L14 14l1.2-1.2a1 1 0 0 1 1.4 0l1.4 1.4" stroke="#6B7280" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9.2" r="1.2" fill="#6B7280"/></svg>
-            </span>
-            <input class="hidden-file" id="modalFotosGaleria" type="file" accept="image/*" multiple />
-          </label>
         </div>
         <div class="camera-error" id="cameraErro">Não foi possível abrir a câmera neste ambiente. Abra a página em uma aba normal do Chrome e permita o acesso à câmera.</div>
         <div class="photo-cards" id="modalPhotoCards"></div>
+      </div>
+      <div class="fld">
+        <label class="flbl">Observação</label>
+        <textarea class="fta" id="modalObs" placeholder="Ex.: precisa lixar, remover ferragem, corrigir trinca..."></textarea>
       </div>
       <div class="nav-row">
         <button class="act-btn act-save" id="btnSalvarItem">Salvar Item</button>
@@ -244,7 +238,10 @@
     <div class="camera-topbar">
       <button class="camera-topbtn" id="btnFecharCamera" type="button">✕</button>
       <div style="color:#fff;font-size:14px;font-weight:800;letter-spacing:-.2px;">Captura rápida</div>
-      <button class="camera-topbtn" id="btnUsarGaleria" type="button" title="Usar galeria">🖼</button>
+      <label class="camera-topbtn" title="Usar galeria" style="cursor:pointer;">
+        🖼
+        <input class="hidden-file" id="modalFotosGaleria" type="file" accept="image/*" multiple />
+      </label>
     </div>
     <div class="camera-stage">
       <video id="cameraVideo" autoplay playsinline muted></video>
@@ -289,7 +286,20 @@
     function numFromInput(value){ return Number(String(value || '').replace(',', '.')) || 0; }
     function formatPhone(value){ const digits = digitsOnly(value).slice(0, 11); if (!digits) return ''; if (digits.length < 3) return `(${digits}`; if (digits.length <= 6) return `(${digits.slice(0,2)}) ${digits.slice(2)}`; if (digits.length <= 10) return `(${digits.slice(0,2)}) ${digits.slice(2,6)}-${digits.slice(6)}`; return `(${digits.slice(0,2)}) ${digits.slice(2,3)} ${digits.slice(3,7)}-${digits.slice(7)}`; }
     function validateFullName(value){ const v = String(value || '').trim().replace(/\s+/g, ' '); return /^[A-Za-zÀ-ÿ]+(?:['-]?[A-Za-zÀ-ÿ]+)*\s+[A-Za-zÀ-ÿ]+(?:['-]?[A-Za-zÀ-ÿ]+)*(?:\s+[A-Za-zÀ-ÿ]+(?:['-]?[A-Za-zÀ-ÿ]+)*)*$/.test(v); }
-    function validatePhone(value){ const digits = digitsOnly(value); return digits.length === 10 || digits.length === 11; }
+    function validatePhone(value){
+      const digits = digitsOnly(value);
+      if (digits.length === 11) {
+        const ddd = digits.slice(0, 2);
+        const firstMobileDigit = digits[2];
+        return /^[1-9][0-9]$/.test(ddd) && firstMobileDigit === '9';
+      }
+      if (digits.length === 10) {
+        const ddd = digits.slice(0, 2);
+        const firstLandlineDigit = digits[2];
+        return /^[1-9][0-9]$/.test(ddd) && /^[2-8]$/.test(firstLandlineDigit);
+      }
+      return false;
+    }
     function setFieldError(inputEl, errorEl, show){ inputEl.classList.toggle('invalid', !!show); errorEl.classList.toggle('show', !!show); }
     function validateStep1(showErrors = false){ const nameOk = validateFullName(els.cliente.value); const phoneOk = validatePhone(els.telefone.value); if (showErrors || els.cliente.value.trim()) setFieldError(els.cliente, els.clienteErro, !nameOk); if (showErrors || els.telefone.value.trim()) setFieldError(els.telefone, els.telefoneErro, !phoneOk); return nameOk && phoneOk; }
     function calcItemArea(largura, altura){ const l = numFromInput(largura); const a = numFromInput(altura); return l > 0 && a > 0 ? l * a : 0; }
@@ -323,7 +333,7 @@
     function saveDraft(){ const draft = { cliente: els.cliente.value.trim(), telefone: els.telefone.value.trim(), items: state.items, valueMode: state.valueMode, valorTexto: els.valorTexto.value, atualizadoEm: new Date().toISOString() }; localStorage.setItem('orcamento-pocket-draft', JSON.stringify(draft)); showToast('💾 Rascunho salvo'); }
     function setValueMode(mode){ state.valueMode = state.valueMode === mode ? null : mode; const totalActive = state.valueMode === 'total'; const m2Active = state.valueMode === 'm2'; els.optionValorTotal.classList.toggle('active', totalActive); els.optionValorTotal.setAttribute('aria-pressed', totalActive ? 'true' : 'false'); els.optionValorM2.classList.toggle('active', m2Active); els.optionValorM2.setAttribute('aria-pressed', m2Active ? 'true' : 'false'); updateSummary(); }
     function setupSwipe(){ let startX = 0, startY = 0, tracking = false; const threshold = 60, restraint = 45; els.screen.addEventListener('touchstart', (e) => { if (els.itemModal.classList.contains('open') || els.cameraModal.classList.contains('open')) return; const t = e.changedTouches[0]; startX = t.clientX; startY = t.clientY; tracking = true; }, { passive: true }); els.screen.addEventListener('touchend', (e) => { if (!tracking || els.itemModal.classList.contains('open') || els.cameraModal.classList.contains('open')) return; const t = e.changedTouches[0]; const dx = t.clientX - startX; const dy = Math.abs(t.clientY - startY); tracking = false; if (dy > restraint || Math.abs(dx) < threshold) return; if (dx < 0) { if (state.currentStep === 1 && validateStep1(true)) goStep(2); else if (state.currentStep === 2) goStep(3); } else { if (state.currentStep === 3) goStep(2); else if (state.currentStep === 2) goStep(1); } }, { passive: true }); }
-    function runSelfTests(){ console.assert(calcItemArea(2, 3) === 6, 'calcItemArea deve multiplicar largura por altura'); console.assert(getItemMeasureLabel(2, 3) === 'Área: 6,00 m²', 'deve mostrar área'); console.assert(getItemMeasureLabel(2, 0) === 'Linear: 2,00 m', 'deve mostrar linear'); console.assert(normalizeLeadingZero('023') === '23', 'zero à esquerda'); console.assert(normalizeMeasureInput('2.5') === '2,5', 'medidas aceitam ponto'); console.assert(numFromInput('2,5') === 2.5, 'aceita vírgula'); console.assert(numFromInput('2.5') === 2.5, 'aceita ponto'); console.assert(validateFullName('teste teste') === true, 'nome válido'); console.assert(validateFullName('teste') === false, 'nome inválido'); console.assert(validatePhone('(11) 3333-3333') === true, 'fixo válido'); console.assert(validatePhone('(11) 9 9999-9999') === true, 'celular válido'); console.assert(validatePhone('1') === false, 'telefone curto'); }
+    function runSelfTests(){ console.assert(calcItemArea(2, 3) === 6, 'calcItemArea deve multiplicar largura por altura'); console.assert(getItemMeasureLabel(2, 3) === 'Área: 6,00 m²', 'deve mostrar área'); console.assert(getItemMeasureLabel(2, 0) === 'Linear: 2,00 m', 'deve mostrar linear'); console.assert(normalizeLeadingZero('023') === '23', 'zero à esquerda'); console.assert(normalizeMeasureInput('2.5') === '2,5', 'medidas aceitam ponto'); console.assert(numFromInput('2,5') === 2.5, 'aceita vírgula'); console.assert(numFromInput('2.5') === 2.5, 'aceita ponto'); console.assert(validateFullName('teste teste') === true, 'nome válido'); console.assert(validateFullName('teste') === false, 'nome inválido'); console.assert(validatePhone('(11) 3333-3333') === true, 'fixo válido'); console.assert(validatePhone('(11) 9 9999-9999') === true, 'celular válido'); console.assert(validatePhone('(11) 8 9999-9999') === false, 'celular sem 9 inválido'); console.assert(validatePhone('(11) 1999-9999') === false, 'fixo com início inválido'); console.assert(validatePhone('1') === false, 'telefone curto'); }
     els.themeToggle.addEventListener('click', toggleTheme);
     els.btnIrItens.addEventListener('click', () => { if (!validateStep1(true)) { if (!validateFullName(els.cliente.value)) els.cliente.focus(); else els.telefone.focus(); return; } goStep(2); });
     els.btnLimparCliente.addEventListener('click', clearClient);
@@ -342,8 +352,7 @@
     els.btnFecharCamera.addEventListener('click', closeCameraModal);
     els.btnCapturarFoto.addEventListener('click', captureCameraPhoto);
     els.btnEnviarFotos.addEventListener('click', submitCameraPhotos);
-    els.btnUsarGaleria.addEventListener('click', () => els.modalFotosGaleria.click());
-    els.optionValorTotal.addEventListener('click', () => setValueMode('total'));
+        els.optionValorTotal.addEventListener('click', () => setValueMode('total'));
     els.optionValorM2.addEventListener('click', () => setValueMode('m2'));
     els.optionValorTotal.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setValueMode('total'); } });
     els.optionValorM2.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setValueMode('m2'); } });
