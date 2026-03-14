@@ -132,12 +132,12 @@
                 <div class="mini-head">Preencha o essencial para não perder a visita.</div>
                 <div class="fld">
                   <label class="flbl">Nome do cliente</label>
-                  <input class="finput" id="cliente" placeholder="Ex.: João da Silva" />
+                  <input class="finput" id="cliente" name="cliente_nome" autocomplete="name" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="Ex.: João da Silva" />
                   <div class="field-error" id="clienteErro">Nome e sobrenome são obrigatórios!</div>
                 </div>
                 <div class="fld">
                   <label class="flbl">Telefone (WhatsApp)</label>
-                  <input class="finput" id="telefone" enterkeyhint="done" inputmode="tel" placeholder="(11) 99999-9999" />
+                  <input class="finput" id="telefone" name="cliente_telefone" autocomplete="tel" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" inputmode="tel" placeholder="(11) 99999-9999" />
                   <div class="field-error" id="telefoneErro">Número de telefone inválido!</div>
                 </div>
               </div>
@@ -177,7 +177,7 @@
               </div>
               <div class="fld" style="margin-top:8px;">
                 <label class="flbl">Valor</label>
-                <input class="finput" id="valorTexto" type="text" inputmode="decimal" placeholder="Ex.: 2500 ou 35" />
+                <input class="finput" id="valorTexto" name="valor_base" type="text" inputmode="decimal" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ex.: 2500 ou 35" />
               </div>
               <div class="check-row" id="optionValorM2" role="button" tabindex="0" aria-pressed="false">
                 <div class="check-dot" aria-hidden="true"></div>
@@ -205,11 +205,11 @@
       </div>
       <div class="fld">
         <label class="flbl">Nome do item</label>
-        <input class="finput" id="modalNome" placeholder="Ex.: Janela da sala" />
+        <input class="finput" id="modalNome" name="item_nome" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" placeholder="Ex.: Janela da sala" />
       </div>
       <div class="grid-2">
-        <div class="fld"><label class="flbl">Largura (m)</label><input class="finput" id="modalLargura" type="text" inputmode="decimal" placeholder="Ex.: 2,00" /></div>
-        <div class="fld"><label class="flbl">Altura (m)</label><input class="finput" id="modalAltura" type="text" inputmode="decimal" placeholder="Ex.: 1,20" /></div>
+        <div class="fld"><label class="flbl">Largura (m)</label><input class="finput" id="modalLargura" name="item_largura" type="text" inputmode="decimal" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ex.: 2,00" /></div>
+        <div class="fld"><label class="flbl">Altura (m)</label><input class="finput" id="modalAltura" name="item_altura" type="text" inputmode="decimal" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ex.: 1,20" /></div>
       </div>
       <div class="measure-note" id="modalArea">Linear: 0,00 m</div>
       <div class="fld">
@@ -226,7 +226,7 @@
       </div>
       <div class="fld">
         <label class="flbl">Observação</label>
-        <textarea class="fta" id="modalObs" placeholder="Ex.: precisa lixar, remover ferragem, corrigir trinca..."></textarea>
+        <textarea class="fta" id="modalObs" name="item_observacao" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Ex.: precisa lixar, remover ferragem, corrigir trinca..."></textarea>
       </div>
       <div class="nav-row">
         <button class="act-btn act-save" id="btnSalvarItem">Salvar Item</button>
@@ -332,7 +332,7 @@
     function updateSummary(){ const cliente = els.cliente.value.trim() || 'Não informado'; const telefone = els.telefone.value.trim() || 'Não informado'; const totalArea = getTotalArea(); els.areaTotal.textContent = `${formatNum(totalArea)} m²`; let text = `Cliente: ${cliente}\nTelefone: ${telefone}`; text += `\nÁrea total: ${formatNum(totalArea)} m²`; if (!state.items.length) text += '\n\nItens: nenhum item salvo ainda.'; else { text += '\n\nItens:'; state.items.forEach((item, index) => { text += `\n${index + 1}. ${item.nome} | ${item.medidaLabel}`; }); } const valorBase = numFromInput(els.valorTexto.value); if (state.valueMode === 'total' && valorBase > 0) text += `\n\nValor total: ${money(valorBase)}`; if (state.valueMode === 'm2' && valorBase > 0) { const calculado = totalArea * valorBase; text += `\n\nValor por m²: ${money(valorBase)}\nEstimativa total: ${money(calculado)}`; } els.summaryText.textContent = text; return text; }
     function saveDraft(){ const draft = { cliente: els.cliente.value.trim(), telefone: els.telefone.value.trim(), items: state.items, valueMode: state.valueMode, valorTexto: els.valorTexto.value, atualizadoEm: new Date().toISOString() }; localStorage.setItem('orcamento-pocket-draft', JSON.stringify(draft)); showToast('💾 Rascunho salvo'); }
     function setValueMode(mode){ state.valueMode = state.valueMode === mode ? null : mode; const totalActive = state.valueMode === 'total'; const m2Active = state.valueMode === 'm2'; els.optionValorTotal.classList.toggle('active', totalActive); els.optionValorTotal.setAttribute('aria-pressed', totalActive ? 'true' : 'false'); els.optionValorM2.classList.toggle('active', m2Active); els.optionValorM2.setAttribute('aria-pressed', m2Active ? 'true' : 'false'); updateSummary(); }
-    function setupSwipe(){ let startX = 0, startY = 0, tracking = false; const threshold = 60, restraint = 45; els.screen.addEventListener('touchstart', (e) => { if (els.itemModal.classList.contains('open') || els.cameraModal.classList.contains('open')) return; const t = e.changedTouches[0]; startX = t.clientX; startY = t.clientY; tracking = true; }, { passive: true }); els.screen.addEventListener('touchend', (e) => { if (!tracking || els.itemModal.classList.contains('open') || els.cameraModal.classList.contains('open')) return; const t = e.changedTouches[0]; const dx = t.clientX - startX; const dy = Math.abs(t.clientY - startY); tracking = false; if (dy > restraint || Math.abs(dx) < threshold) return; if (dx < 0) { if (state.currentStep === 1 && validateStep1(true)) goStep(2); else if (state.currentStep === 2) goStep(3); } else { if (state.currentStep === 3) goStep(2); else if (state.currentStep === 2) goStep(1); } }, { passive: true }); }
+    function setupSwipe(){ let startX = 0, startY = 0, tracking = false; const threshold = 48, restraint = 55; els.screen.addEventListener('touchstart', (e) => { if (els.itemModal.classList.contains('open') || els.cameraModal.classList.contains('open')) return; const t = e.changedTouches[0]; startX = t.clientX; startY = t.clientY; tracking = true; }, { passive: true }); els.screen.addEventListener('touchend', (e) => { if (!tracking || els.itemModal.classList.contains('open') || els.cameraModal.classList.contains('open')) return; const t = e.changedTouches[0]; const dx = t.clientX - startX; const dy = Math.abs(t.clientY - startY); tracking = false; if (dy > restraint || Math.abs(dx) < threshold) return; if (dx < 0) { if (state.currentStep === 1 && validateStep1(true)) goStep(2); else if (state.currentStep === 2) goStep(3); } else { if (state.currentStep === 3) goStep(2); else if (state.currentStep === 2) goStep(1); } }, { passive: true }); }
     function runSelfTests(){ console.assert(calcItemArea(2, 3) === 6, 'calcItemArea deve multiplicar largura por altura'); console.assert(getItemMeasureLabel(2, 3) === 'Área: 6,00 m²', 'deve mostrar área'); console.assert(getItemMeasureLabel(2, 0) === 'Linear: 2,00 m', 'deve mostrar linear'); console.assert(normalizeLeadingZero('023') === '23', 'zero à esquerda'); console.assert(normalizeMeasureInput('2.5') === '2,5', 'medidas aceitam ponto'); console.assert(numFromInput('2,5') === 2.5, 'aceita vírgula'); console.assert(numFromInput('2.5') === 2.5, 'aceita ponto'); console.assert(validateFullName('teste teste') === true, 'nome válido'); console.assert(validateFullName('teste') === false, 'nome inválido'); console.assert(validatePhone('(11) 3333-3333') === true, 'fixo válido'); console.assert(validatePhone('(11) 9 9999-9999') === true, 'celular válido'); console.assert(validatePhone('(11) 8 9999-9999') === false, 'celular sem 9 inválido'); console.assert(validatePhone('(11) 1999-9999') === false, 'fixo com início inválido'); console.assert(validatePhone('1') === false, 'telefone curto'); }
     els.themeToggle.addEventListener('click', toggleTheme);
     els.btnIrItens.addEventListener('click', () => { if (!validateStep1(true)) { if (!validateFullName(els.cliente.value)) els.cliente.focus(); else els.telefone.focus(); return; } goStep(2); });
