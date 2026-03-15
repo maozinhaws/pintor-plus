@@ -346,6 +346,18 @@ body.kb-open .title-big { font-size: 14px; }
 @keyframes spin{to{transform:rotate(360deg);}}
 .gd-google-icon{width:18px;height:18px;}
 .gd-sep{height:1px;background:var(--bdr);margin:20px 0;}
+/* ── Google Contacts Picker ── */
+.gc-list{max-height:55vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px 0;}
+.gc-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border-radius:12px;cursor:pointer;transition:all .15s;border:2px solid transparent;}
+.gc-item.selected{border-color:var(--bl);background:var(--bll);}
+.gc-item:active{transform:scale(.98);}
+.gc-avatar-sm{width:36px;height:36px;border-radius:50%;background:var(--bl);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;}
+.gc-info{flex:1;min-width:0;}
+.gc-name{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gc-detail{font-size:11px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gc-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.gc-item.selected .gc-check{background:var(--bl);border-color:var(--bl);color:#fff;}
+.gc-search{width:100%;height:42px;border-radius:10px;border:1.5px solid var(--bdr);background:var(--bg-input);padding:0 12px;font-family:'Sora',sans-serif;font-size:13px;color:var(--ink);margin-bottom:12px;box-sizing:border-box;}
 
 </style>
 </head>
@@ -459,6 +471,10 @@ body.kb-open .title-big { font-size: 14px; }
           <button onclick="editClient(-1)" style="flex:1;height:46px;border-radius:12px;background:var(--bl);color:#fff;border:none;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">＋ Novo Contato</button>
           <button onclick="pickPhoneContactToSave()" style="flex:1;height:46px;border-radius:12px;background:#E0F2FE;color:#0284C7;border:1px solid #BAE6FD;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">📱 Importar Agenda</button>
         </div>
+        <button onclick="GContacts.importFromGoogle()" style="width:100%;height:44px;border-radius:12px;background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Importar do Google Contatos
+        </button>
         <div id="clientes-list-full"></div>
       </div>
     </div>
@@ -497,8 +513,12 @@ body.kb-open .title-big { font-size: 14px; }
           </div>
           <div class="cal-grid" id="cal-grid-body"></div>
         </div>
-        <button onclick="openEventModal()" style="width:100%; height:52px; border-radius:14px; background:var(--bg-input); border:2px dashed var(--bld); color:var(--bl); font-weight:800; font-family:'Sora',sans-serif; font-size:14px; cursor:pointer; margin-bottom:20px;">
+        <button onclick="openEventModal()" style="width:100%; height:52px; border-radius:14px; background:var(--bg-input); border:2px dashed var(--bld); color:var(--bl); font-weight:800; font-family:'Sora',sans-serif; font-size:14px; cursor:pointer; margin-bottom:12px;">
           + Criar Novo Lembrete / Evento
+        </button>
+        <button onclick="GCalendar.syncAllEvents()" style="width:100%;height:44px;border-radius:12px;background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Sincronizar com Google Agenda
         </button>
         <div class="sec-title" style="font-size:14px;" id="agenda-day-title">Eventos do Dia</div>
         <div id="agenda-eventos-list"></div>
@@ -525,6 +545,10 @@ body.kb-open .title-big { font-size: 14px; }
             <button onclick="pickPhoneContactToFill()" style="flex:1;height:42px;border-radius:10px;background:#E0F2FE;color:#0284C7;border:1px solid #BAE6FD;font-weight:700;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">📱 Agenda do Celular</button>
             <button onclick="openClientPicker()" style="flex:1;height:42px;border-radius:10px;background:var(--bg2);color:var(--ink2);border:1px solid var(--bdr);font-weight:700;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">📋 Contatos Salvos</button>
           </div>
+          <button onclick="GContacts.pickForWizard()" style="width:100%;height:40px;border-radius:10px;background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-weight:700;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:20px;">
+            <svg width="14" height="14" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Google Contatos
+          </button>
           <div class="sec-title">IDENTIFICAR CLIENTE</div>
           <div class="fld"><label class="flbl">NOME</label><div class="finput-wrap"><input class="finput nomi" id="cli-nome" placeholder="Nome do cliente"></div></div>
           <div class="fld"><label class="flbl">TELEFONE (COM DDD)</label><div class="finput-wrap"><input class="finput nomi" id="cli-tel" placeholder="(11) 99999-9999" type="tel"></div></div>
@@ -799,6 +823,12 @@ body.kb-open .title-big { font-size: 14px; }
             <div class="gd-actions">
               <button class="gd-btn gd-btn-outline" onclick="GDrive.restoreFromDrive()">⬇️ Restaurar do Drive</button>
               <button class="gd-btn gd-btn-danger" onclick="GDrive.signOut()">Sair</button>
+            </div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bdr);display:flex;flex-direction:column;gap:8px;">
+              <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:4px;">Ferramentas Google</div>
+              <button class="gd-btn gd-btn-outline" onclick="GPhotos.exportAll()">☁️📷 Enviar todas as fotos ao Drive</button>
+              <button class="gd-btn gd-btn-outline" onclick="GCalendar.syncAllEvents()">📅 Sincronizar agenda com Google Calendar</button>
+              <button class="gd-btn gd-btn-outline" onclick="GContacts.importFromGoogle()">👥 Importar contatos do Google</button>
             </div>
           </div>
         </div>
@@ -1283,6 +1313,28 @@ body.kb-open .title-big { font-size: 14px; }
           📄 Não, só texto
         </button>
         <button onclick="document.getElementById('pdf-photos-modal').style.display='none'" style="width:100%;height:40px;border:none;background:transparent;color:var(--ink3);font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;font-size:13px;">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Google Contacts Picker -->
+  <div id="gc-picker-modal" class="glass-overlay" onclick="if(event.target===this) GContacts.closePicker()">
+    <div class="modal-box" style="max-width:400px;padding:0;overflow:hidden;">
+      <div style="padding:16px 16px 0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:16px;font-weight:800;color:var(--ink);">Google Contatos</div>
+          <button onclick="GContacts.closePicker()" style="background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;">✕</button>
+        </div>
+        <input class="gc-search" id="gc-search" placeholder="Buscar contato..." oninput="GContacts.filterList(this.value)">
+      </div>
+      <div id="gc-picker-loading" style="text-align:center;padding:30px;font-size:13px;color:var(--ink3);display:none;">
+        <div class="gd-spinner" style="border-color:var(--bdr);border-top-color:var(--bl);width:24px;height:24px;margin:0 auto 12px;"></div>
+        Carregando contatos...
+      </div>
+      <div class="gc-list" id="gc-list"></div>
+      <div style="padding:12px 16px;border-top:1px solid var(--bdr);display:flex;gap:8px;">
+        <button onclick="GContacts.closePicker()" style="flex:1;height:44px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr);color:var(--ink2);font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">Cancelar</button>
+        <button onclick="GContacts.confirmPick()" id="gc-confirm-btn" style="flex:1;height:44px;border-radius:12px;background:var(--bl);border:none;color:#fff;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">Importar (0)</button>
       </div>
     </div>
   </div>
@@ -2180,7 +2232,7 @@ function renderAgenda() {
       listWrap.innerHTML = dayData.map(item => {
           if(item.type === 'ev') {
               const e = item.data;
-              return `<div class="hoc" style="border-left: 4px solid var(--bl);"><div class="hon">🔔 ${e.tit}</div><div class="hos">${e.hora||'O dia todo'} ${e.alarmado ? '<span style="color:var(--rd)">(Tocou)</span>':''}</div><div style="display:flex;gap:8px;margin-top:12px;"><button onclick="exportICS(${e.id})" style="flex:1;height:38px;border-radius:10px;background:var(--bll);color:var(--bl);border:none;font-family:'Sora',sans-serif;font-weight:700;font-size:11px;cursor:pointer;">🔔 Add Lembrete OS</button><button onclick="S.eventos=S.eventos.filter(x=>x.id!=${e.id});localStorage.setItem('pp-eventos',JSON.stringify(S.eventos));renderAgenda();" style="width:40px;border-radius:10px;background:var(--rdl);color:var(--rd);border:none;cursor:pointer;">✕</button></div></div>`;
+              return `<div class="hoc" style="border-left: 4px solid var(--bl);"><div class="hon">🔔 ${e.tit}</div><div class="hos">${e.hora||'O dia todo'} ${e.alarmado ? '<span style="color:var(--rd)">(Tocou)</span>':''}</div><div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;"><button onclick="exportICS(${e.id})" style="flex:1;height:38px;border-radius:10px;background:var(--bll);color:var(--bl);border:none;font-family:'Sora',sans-serif;font-weight:700;font-size:11px;cursor:pointer;">🔔 Add Lembrete OS</button><button onclick="GCalendar.exportEvent(${e.id})" style="flex:1;height:38px;border-radius:10px;background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-family:'Sora',sans-serif;font-weight:700;font-size:11px;cursor:pointer;">📅 Google Agenda</button><button onclick="S.eventos=S.eventos.filter(x=>x.id!=${e.id});localStorage.setItem('pp-eventos',JSON.stringify(S.eventos));renderAgenda();" style="width:40px;border-radius:10px;background:var(--rdl);color:var(--rd);border:none;cursor:pointer;">✕</button></div></div>`;
           } else {
               const o = item.data;
               return `<div class="hoc" style="border-left: 4px solid var(--gn); cursor:pointer;" onclick="editOrcByObjId('${o.id}')">
@@ -2628,7 +2680,9 @@ function renderOrcamentosList() {
   if(!S.orcs.length){ wrap.innerHTML='<div style="text-align:center;padding:24px 16px;background:#fff;border-radius:14px;border:1px solid var(--bdr);"><div style="font-size:32px;margin-bottom:8px;opacity:.3;">📋</div><div style="font-size:13px;color:var(--ink3);font-style:italic;">Nenhum orçamento ainda</div><button onclick="newOrc()" style="margin-top:12px;padding:9px 20px;border-radius:10px;background:linear-gradient(135deg,var(--bl),var(--bld));border:none;font-family:\'Sora\',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">＋ Criar primeiro</button></div>'; return; }
   wrap.innerHTML=S.orcs.map((o,i)=>{
     let tot = calcOrcTotal(o); const qtdLocais = (o.rooms||[]).length; const infoTxt = qtdLocais === 1 ? `${o.rooms[0].items?.length || 0} item(ns)` : `${qtdLocais} local(is)`;
-    return `<div class="hoc" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div><span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span></div><div class="hob"><div class="hood">📍 ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button><button class="hoa ok" onclick="editOrc(${i})">✏️ Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))">🗑</button></div></div>`;
+    let hasPhotos = false; (o.rooms||[]).forEach(r => (r.items||[]).forEach(it => { if(it.photos?.length) hasPhotos=true; }));
+    const photoBtnHtml = hasPhotos ? `<button class="hoa" style="background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;" onclick="event.stopPropagation();GPhotos.exportOrcPhotos(${i})" title="Enviar fotos ao Google Drive">☁️📷</button>` : '';
+    return `<div class="hoc" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div><span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span></div><div class="hob"><div class="hood">📍 ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})">✏️ Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))">🗑</button></div></div>`;
   }).join('');
 }
 
@@ -2790,8 +2844,12 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
 const GDrive = {
   // ── CONFIGURAÇÃO ──────────────────────────────────────────
   CLIENT_ID: '789734865703-hp9drtdvcc5jokgl1qehefvd1fle3ocs.apps.googleusercontent.com',
-  SCOPES: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-  DISCOVERY_DOC: 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+  SCOPES: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/contacts.readonly',
+  DISCOVERY_DOCS: [
+    'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+    'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+    'https://www.googleapis.com/discovery/v1/apis/people/v1/rest'
+  ],
   FILE_NAME: 'pintor-pro-backup.json',
   SYNC_DEBOUNCE: 3000, // 3s após última alteração
 
@@ -2819,11 +2877,12 @@ const GDrive = {
       if (typeof gapi !== 'undefined') {
         clearInterval(checkGapi);
         gapi.load('client', () => {
-          gapi.client.init({}).then(() => {
-            gapi.client.load(self.DISCOVERY_DOC).then(() => {
-              self.gapiInited = true;
-              self._tryAutoSignIn();
-            });
+          gapi.client.init({}).then(async () => {
+            for (const doc of self.DISCOVERY_DOCS) {
+              await gapi.client.load(doc);
+            }
+            self.gapiInited = true;
+            self._tryAutoSignIn();
           });
         });
       }
@@ -3110,6 +3169,402 @@ if (document.readyState === 'loading') {
 } else {
   GDrive.init();
 }
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║  GOOGLE CALENDAR – Enviar eventos para Google Agenda     ║
+// ╚══════════════════════════════════════════════════════════╝
+
+const GCalendar = {
+  async _ensureAuth() {
+    if (GDrive.accessToken) return true;
+    toast('⚠️ Conecte sua conta Google primeiro (Backup → Entrar com Google).');
+    return false;
+  },
+
+  async exportEvent(evId) {
+    if (!(await this._ensureAuth())) return;
+    const ev = S.eventos.find(x => x.id == evId);
+    if (!ev) return toast('❌ Evento não encontrado.');
+
+    toast('📅 Enviando para Google Agenda...');
+    try {
+      const startDate = ev.dat;
+      const startTime = ev.hora || '09:00';
+      const dtStart = startDate + 'T' + startTime + ':00';
+      // Duração padrão: 1 hora
+      const [h, m] = startTime.split(':').map(Number);
+      const endH = String(h + 1).padStart(2, '0');
+      const dtEnd = startDate + 'T' + endH + ':' + String(m).padStart(2, '0') + ':00';
+
+      const reminder = [];
+      if (ev.avisoVal && parseInt(ev.avisoVal) > 0) {
+        let mins = parseInt(ev.avisoVal);
+        if (ev.avisoUnid === 'h') mins *= 60;
+        if (ev.avisoUnid === 'd') mins *= 1440;
+        reminder.push({ method: 'popup', minutes: mins });
+      }
+
+      const event = {
+        summary: ev.tit,
+        start: { dateTime: dtStart, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+        end: { dateTime: dtEnd, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+        reminders: reminder.length ? { useDefault: false, overrides: reminder } : { useDefault: true },
+      };
+
+      // Recorrência
+      if (ev.repete && ev.repete !== 'nao') {
+        const freqMap = { diario: 'DAILY', semanal: 'WEEKLY', mensal: 'MONTHLY' };
+        if (freqMap[ev.repete]) event.recurrence = ['RRULE:FREQ=' + freqMap[ev.repete]];
+      }
+
+      const resp = await gapi.client.calendar.events.insert({
+        calendarId: 'primary',
+        resource: event,
+      });
+
+      toast('✅ Adicionado ao Google Agenda!');
+      return resp.result;
+    } catch (e) {
+      console.error('GCalendar: erro', e);
+      if (e.status === 401) {
+        GDrive.accessToken = null;
+        toast('⚠️ Sessão expirada. Reconecte no Backup.');
+      } else {
+        toast('❌ Erro ao enviar: ' + (e.result?.error?.message || e.message || 'desconhecido'));
+      }
+    }
+  },
+
+  async syncAllEvents() {
+    if (!(await this._ensureAuth())) return;
+    const evs = S.eventos.filter(e => e.tit && e.dat);
+    if (!evs.length) return toast('⚠️ Nenhum evento para sincronizar.');
+
+    toast('📅 Enviando ' + evs.length + ' evento(s)...');
+    let ok = 0, err = 0;
+    for (const ev of evs) {
+      try {
+        await this.exportEvent(ev.id);
+        ok++;
+      } catch (e) { err++; }
+    }
+    toast('✅ ' + ok + ' enviado(s)' + (err ? ', ' + err + ' erro(s)' : '') + ' ao Google Agenda');
+  },
+};
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║  GOOGLE CONTACTS – Importar contatos da conta Google     ║
+// ╚══════════════════════════════════════════════════════════╝
+
+const GContacts = {
+  _contacts: [],
+  _filtered: [],
+  _selected: new Set(),
+  _mode: 'import', // 'import' ou 'wizard'
+
+  async _ensureAuth() {
+    if (GDrive.accessToken) return true;
+    toast('⚠️ Conecte sua conta Google primeiro (Backup → Entrar com Google).');
+    return false;
+  },
+
+  async _fetchContacts() {
+    const resp = await gapi.client.people.people.connections.list({
+      resourceName: 'people/me',
+      pageSize: 500,
+      personFields: 'names,phoneNumbers,emailAddresses,addresses',
+      sortOrder: 'FIRST_NAME_ASCENDING',
+    });
+    const conns = resp.result.connections || [];
+    return conns.map(c => ({
+      nome: c.names?.[0]?.displayName || '',
+      tel: c.phoneNumbers?.[0]?.value || '',
+      email: c.emailAddresses?.[0]?.value || '',
+      end: c.addresses?.[0]?.formattedValue || '',
+    })).filter(c => c.nome);
+  },
+
+  async importFromGoogle() {
+    if (!(await this._ensureAuth())) return;
+    this._mode = 'import';
+    await this._openPicker();
+  },
+
+  async pickForWizard() {
+    if (!(await this._ensureAuth())) return;
+    this._mode = 'wizard';
+    await this._openPicker();
+  },
+
+  async _openPicker() {
+    this._selected.clear();
+    const modal = document.getElementById('gc-picker-modal');
+    const loading = document.getElementById('gc-picker-loading');
+    const list = document.getElementById('gc-list');
+    const search = document.getElementById('gc-search');
+
+    modal.style.display = 'flex';
+    loading.style.display = 'block';
+    list.innerHTML = '';
+    search.value = '';
+
+    try {
+      this._contacts = await this._fetchContacts();
+      this._filtered = [...this._contacts];
+      loading.style.display = 'none';
+      if (!this._contacts.length) {
+        list.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:var(--ink3);">Nenhum contato encontrado na conta Google.</div>';
+        return;
+      }
+      this._renderList();
+    } catch (e) {
+      console.error('GContacts: erro', e);
+      loading.style.display = 'none';
+      if (e.status === 401) {
+        GDrive.accessToken = null;
+        toast('⚠️ Sessão expirada. Reconecte no Backup.');
+        modal.style.display = 'none';
+      } else {
+        list.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:var(--rd);">Erro ao carregar contatos.</div>';
+      }
+    }
+  },
+
+  _renderList() {
+    const list = document.getElementById('gc-list');
+    list.innerHTML = this._filtered.map((c, i) => {
+      const initials = (c.nome || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      const origIdx = this._contacts.indexOf(c);
+      const sel = this._selected.has(origIdx) ? ' selected' : '';
+      return `<div class="gc-item${sel}" onclick="GContacts.toggleSelect(${origIdx})" role="button" tabindex="0" aria-label="Selecionar ${c.nome}">
+        <div class="gc-avatar-sm">${initials}</div>
+        <div class="gc-info">
+          <div class="gc-name">${c.nome}</div>
+          <div class="gc-detail">${c.tel || c.email || 'Sem contato'}</div>
+        </div>
+        <div class="gc-check">${sel ? '✓' : ''}</div>
+      </div>`;
+    }).join('');
+    this._updateBtn();
+  },
+
+  toggleSelect(idx) {
+    if (this._mode === 'wizard') {
+      // Wizard: seleciona apenas 1
+      this._selected.clear();
+      this._selected.add(idx);
+    } else {
+      if (this._selected.has(idx)) this._selected.delete(idx);
+      else this._selected.add(idx);
+    }
+    this._renderList();
+  },
+
+  _updateBtn() {
+    const btn = document.getElementById('gc-confirm-btn');
+    const n = this._selected.size;
+    if (this._mode === 'wizard') {
+      btn.textContent = n ? 'Usar este contato' : 'Selecione 1';
+    } else {
+      btn.textContent = 'Importar (' + n + ')';
+    }
+  },
+
+  filterList(q) {
+    const term = q.toLowerCase().trim();
+    this._filtered = term
+      ? this._contacts.filter(c => (c.nome + ' ' + c.tel + ' ' + c.email).toLowerCase().includes(term))
+      : [...this._contacts];
+    this._renderList();
+  },
+
+  confirmPick() {
+    if (!this._selected.size) return toast('⚠️ Selecione ao menos um contato.');
+
+    if (this._mode === 'wizard') {
+      const idx = [...this._selected][0];
+      const c = this._contacts[idx];
+      // Preenche campos do wizard S1
+      const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+      setVal('cli-nome', c.nome);
+      setVal('cli-tel', c.tel);
+      setVal('cli-email', c.email);
+      setVal('cli-end', c.end);
+      toast('✅ Contato preenchido!');
+    } else {
+      // Import: adiciona a S.clientes
+      let added = 0, skipped = 0;
+      for (const idx of this._selected) {
+        const c = this._contacts[idx];
+        const exists = S.clientes.some(x =>
+          x.nome === c.nome && (x.tel === c.tel || x.email === c.email)
+        );
+        if (!exists) {
+          S.clientes.push({ nome: c.nome, tel: c.tel, email: c.email, end: c.end, cpf: '' });
+          added++;
+        } else { skipped++; }
+      }
+      if (added) {
+        localStorage.setItem('pp-clientes', JSON.stringify(S.clientes));
+        renderClientes();
+      }
+      toast('✅ ' + added + ' importado(s)' + (skipped ? ', ' + skipped + ' já existia(m)' : ''));
+    }
+    this.closePicker();
+  },
+
+  closePicker() {
+    document.getElementById('gc-picker-modal').style.display = 'none';
+    this._contacts = [];
+    this._filtered = [];
+    this._selected.clear();
+  },
+};
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║  GOOGLE PHOTOS – Salvar fotos dos orçamentos no Drive   ║
+// ╚══════════════════════════════════════════════════════════╝
+
+const GPhotos = {
+  FOLDER_NAME: 'PintorPro_Fotos',
+  _folderId: null,
+
+  async _ensureAuth() {
+    if (GDrive.accessToken) return true;
+    toast('⚠️ Conecte sua conta Google primeiro (Backup → Entrar com Google).');
+    return false;
+  },
+
+  // Cria/encontra pasta no Drive RAIZ (visível ao usuário, para ver as fotos)
+  async _ensureFolder() {
+    if (this._folderId) return this._folderId;
+    await GDrive._ensureToken();
+
+    // Busca pasta existente
+    const resp = await gapi.client.drive.files.list({
+      q: "name='" + this.FOLDER_NAME + "' and mimeType='application/vnd.google-apps.folder' and trashed=false",
+      fields: 'files(id,name)',
+      spaces: 'drive',
+    });
+    const files = resp.result.files || [];
+    if (files.length) {
+      this._folderId = files[0].id;
+      return this._folderId;
+    }
+
+    // Cria pasta
+    const created = await gapi.client.drive.files.create({
+      resource: { name: this.FOLDER_NAME, mimeType: 'application/vnd.google-apps.folder' },
+      fields: 'id',
+    });
+    this._folderId = created.result.id;
+    return this._folderId;
+  },
+
+  // Converte base64 data URL para Blob
+  _dataUrlToBlob(dataUrl) {
+    const parts = dataUrl.split(',');
+    const mime = parts[0].match(/:(.*?);/)[1];
+    const raw = atob(parts[1]);
+    const arr = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+    return new Blob([arr], { type: mime });
+  },
+
+  // Upload de uma foto para o Drive
+  async _uploadPhoto(dataUrl, fileName, folderId) {
+    const blob = this._dataUrlToBlob(dataUrl);
+    const metadata = JSON.stringify({ name: fileName, parents: [folderId] });
+    const boundary = '----PPFotoBoundary';
+
+    const body =
+      '--' + boundary + '\r\n' +
+      'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+      metadata + '\r\n' +
+      '--' + boundary + '\r\n' +
+      'Content-Type: ' + blob.type + '\r\n\r\n';
+
+    const end = '\r\n--' + boundary + '--';
+
+    const bodyBlob = new Blob([body, blob, end], { type: 'multipart/related; boundary=' + boundary });
+
+    const resp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + GDrive.accessToken },
+      body: bodyBlob,
+    });
+    return await resp.json();
+  },
+
+  // Exporta todas as fotos de um orçamento
+  async exportOrcPhotos(orcIdx) {
+    if (!(await this._ensureAuth())) return;
+    const orc = S.orcs[orcIdx];
+    if (!orc) return toast('❌ Orçamento não encontrado.');
+
+    let photos = [];
+    (orc.rooms || []).forEach((r, ri) => {
+      (r.items || []).forEach((it, ii) => {
+        (it.photos || []).forEach((p, pi) => {
+          photos.push({
+            url: p.url,
+            name: 'Orc_' + (orc.nome || 'sem-nome').replace(/\s+/g, '_') + '_' + r.name + '_' + it.name + '_' + (pi + 1) + '.jpg',
+          });
+        });
+      });
+    });
+
+    if (!photos.length) return toast('📷 Este orçamento não tem fotos.');
+
+    toast('☁️ Enviando ' + photos.length + ' foto(s) para o Drive...');
+    try {
+      const folderId = await this._ensureFolder();
+      // Cria subpasta para o orçamento
+      const orcFolder = await gapi.client.drive.files.create({
+        resource: {
+          name: (orc.nome || 'Orçamento') + ' - ' + (orc.date || 'sem-data'),
+          mimeType: 'application/vnd.google-apps.folder',
+          parents: [folderId],
+        },
+        fields: 'id',
+      });
+
+      let ok = 0;
+      for (const p of photos) {
+        try {
+          await this._uploadPhoto(p.url, p.name, orcFolder.result.id);
+          ok++;
+        } catch (e) { console.error('GPhotos: erro upload', e); }
+      }
+      toast('✅ ' + ok + '/' + photos.length + ' foto(s) salvas no Google Drive!');
+    } catch (e) {
+      console.error('GPhotos: erro', e);
+      toast('❌ Erro ao enviar fotos.');
+    }
+  },
+
+  // Exporta TODAS as fotos de TODOS os orçamentos
+  async exportAll() {
+    if (!(await this._ensureAuth())) return;
+    let totalPhotos = 0;
+    S.orcs.forEach(orc => {
+      (orc.rooms || []).forEach(r => {
+        (r.items || []).forEach(it => { totalPhotos += (it.photos || []).length; });
+      });
+    });
+    if (!totalPhotos) return toast('📷 Nenhuma foto encontrada nos orçamentos.');
+
+    toast('☁️ Enviando ' + totalPhotos + ' foto(s) de todos os orçamentos...');
+    for (let i = 0; i < S.orcs.length; i++) {
+      let hasPhotos = false;
+      (S.orcs[i].rooms || []).forEach(r => {
+        (r.items || []).forEach(it => { if (it.photos?.length) hasPhotos = true; });
+      });
+      if (hasPhotos) await this.exportOrcPhotos(i);
+    }
+    toast('✅ Todas as fotos foram enviadas ao Google Drive!');
+  },
+};
 
 </script>
 </body>
