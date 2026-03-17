@@ -2897,10 +2897,22 @@ const GDrive = {
 
   _waitLibs() {
     const self = this;
+    let gapiDone = false, gisDone = false;
+
+    // Timeout de segurança: se as APIs não carregarem em 8s, mostra o botão de login
+    const fallbackTimer = setTimeout(() => {
+      if (!gapiDone || !gisDone) {
+        clearInterval(checkGapi);
+        clearInterval(checkGis);
+        self._showLoginScreen();
+      }
+    }, 8000);
+
     // Espera GAPI carregar
     const checkGapi = setInterval(() => {
       if (typeof gapi !== 'undefined') {
         clearInterval(checkGapi);
+        gapiDone = true;
         gapi.load('client', () => {
           gapi.client.init({}).then(async () => {
             for (const doc of self.DISCOVERY_DOCS) {
@@ -2908,14 +2920,16 @@ const GDrive = {
             }
             self.gapiInited = true;
             self._tryAutoSignIn();
-          });
+          }).catch(() => { clearTimeout(fallbackTimer); self._showLoginScreen(); });
         });
       }
     }, 200);
+
     // Espera GIS carregar
     const checkGis = setInterval(() => {
       if (typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
         clearInterval(checkGis);
+        gisDone = true;
         self.tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: self.CLIENT_ID,
           scope: self.SCOPES,
