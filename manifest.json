@@ -1,0 +1,37 @@
+{
+  "name": "Pintor Plus",
+  "short_name": "Pintor+",
+  "description": "Gerencie orçamentos de pintura com praticidade e eficiência",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#7c3aed",
+  "background_color": "#ffffff",
+  "lang": "pt-BR",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Novo Orçamento",
+      "short_name": "Orçamento",
+      "description": "Criar um novo orçamento",
+      "url": "/#pg-home",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    }
+  ]
+}
