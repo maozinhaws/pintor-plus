@@ -118,13 +118,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#F3F4F6;display:flex
 #toast { position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%) translateY(8px); background: #1E293B !important; color: #FFFFFF !important; padding: 10px 20px; border-radius: 100px; font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; z-index: 999999999; white-space: nowrap; transition: all .26s cubic-bezier(.34,1.4,.64,1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 #toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.hm-hdr{padding:max(32px,env(safe-area-inset-top,32px)) 20px 24px;background:#fff;border-bottom:1px solid var(--bdr);flex-shrink:0;}
-.hm-name{font-size:24px;font-weight:800;letter-spacing:-.8px;color:var(--ink);}
-.hoc{background:#fff;border-radius:16px;border:1px solid var(--bdr);padding:16px;margin-bottom:12px;box-shadow:var(--sh);transition:transform .2s;}
+.hm-hdr{padding:max(16px,env(safe-area-inset-top,16px)) 20px 14px;background:#fff;border-bottom:1px solid var(--bdr);flex-shrink:0;}
+.hm-name{font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--ink);}
+.hoc{background:#fff;border-radius:12px;border:1px solid var(--bdr);padding:11px 12px;margin-bottom:8px;box-shadow:var(--sh);transition:transform .2s;}
 .hoc:active{transform:scale(.98);}
-.hot{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-.hon{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px;}
-.hos{font-size:12px;color:var(--ink3);}
+.hot{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+.hon{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.hos{font-size:11px;color:var(--ink3);}
 .hbadge{display:inline-flex;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
 .hbadge.hby{background:var(--aml);color:#92400E;}.hbadge.hbg{background:var(--gnl);color:#065F46;}.hbadge.hbb{background:var(--bll);color:var(--bld);}.hbadge.hbr{background:var(--rdl);color:var(--rd);}
 .hob{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
@@ -203,14 +203,14 @@ input[type="number"] { font-family: 'Calibri', sans-serif !important; }
 #del-confirm-modal { z-index: 99999999 !important; } 
 .fab-add { position: absolute; bottom: 24px; right: 20px; width: 58px; height: 58px; border-radius: 50%; background: var(--am); color: #92400E; border: 3px solid #FDE68A; box-shadow: 0 10px 30px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 50; transition: transform 0.2s; }
 .fab-add:active { transform: scale(0.92); }
-.hm-hdr { background: var(--bg-modal) !important; padding: max(32px, env(safe-area-inset-top, 32px)) 20px 24px !important; }
-.hm-name  { font-size: 22px !important; }
-.hoc { background: var(--bg-modal) !important; border-radius: 18px !important; padding: 18px !important; }
-.hon { font-size: 17px !important; }
-.hos { font-size: 14px !important; }
-.hoov { font-size: 18px !important; }
-.hoas { gap: 8px !important; margin-top: 14px !important; }
-.hoa  { height: 46px !important; font-size: 13px !important; border-radius: 12px !important; font-weight: 800 !important; }
+.hm-hdr { background: var(--bg-modal) !important; padding: max(16px, env(safe-area-inset-top, 16px)) 20px 14px !important; }
+.hm-name  { font-size: 18px !important; }
+.hoc { background: var(--bg-modal) !important; border-radius: 12px !important; padding: 11px 12px !important; }
+.hon { font-size: 13px !important; }
+.hos { font-size: 11px !important; }
+.hoov { font-size: 14px !important; }
+.hoas { gap: 6px !important; margin-top: 8px !important; }
+.hoa  { height: 34px !important; font-size: 12px !important; border-radius: 9px !important; font-weight: 700 !important; }
 .wizard-nav { display: flex; margin-top: 12px; justify-content: space-between; }
 .wbtn-back, .wbtn-next { height: 44px; border-radius: 14px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .15s; }
 .wbtn-back { min-width: 100px; padding: 0 16px; background: var(--bg2); border: 1.5px solid var(--bdr); color: var(--ink2); }
@@ -414,6 +414,7 @@ body.kb-open .title-big { font-size: 14px; }
             Entrar com Google
           </button>
           <div style="font-size:11px;color:var(--ink3);text-align:center;line-height:1.5;">Seus dados ficam sincronizados com segurança<br>na sua conta Google.</div>
+          <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:16px;"><span onclick="showTerms('terms')" style="color:var(--bl);cursor:pointer;font-weight:600;text-decoration:underline;">Termos de Uso</span><span style="margin:0 6px;">&middot;</span><span onclick="showTerms('privacy')" style="color:var(--bl);cursor:pointer;font-weight:600;text-decoration:underline;">Política de Privacidade</span></div>
         </div>
       </div>
     </div>
@@ -425,8 +426,8 @@ body.kb-open .title-big { font-size: 14px; }
             <div style="display:flex; align-items:center; gap:12px;">
               <img id="home-logo-img" style="width:40px; height:40px; border-radius:50%; object-fit:cover; display:none; border:2px solid var(--bdr-input); background-color: #ffffff;">
               <div>
-                <div class="hm-greet" style="font-size:14px; color:var(--ink2); margin-bottom:4px;">Olá! 👋</div>
-                <div class="hm-name" id="home-saudacao" style="font-size:20px; font-weight:800; color:var(--ink);"></div>
+                <div class="hm-greet" style="font-size:12px; color:var(--ink2); margin-bottom:2px;">Olá! 👋</div>
+                <div class="hm-name" id="home-saudacao" style="font-size:16px; font-weight:800; color:var(--ink);"></div>
               </div>
             </div>
           </div>
@@ -438,10 +439,10 @@ body.kb-open .title-big { font-size: 14px; }
         </div>
       </div>
       <div class="scr">
-        <div style="display:flex;gap:10px;margin-bottom:24px;align-items:center;">
-          <button onclick="homeTab('flash')" title="Orçamento Rápido Flash" style="width:88px;height:88px;border-radius:27px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff;border:4px solid #fed7aa;font-size:38px;cursor:pointer;box-shadow:0 12px 28px rgba(249,115,22,.52),0 4px 8px rgba(249,115,22,.28);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='scale(1.07)';this.style.boxShadow='0 16px 36px rgba(249,115,22,.6),0 6px 12px rgba(249,115,22,.3)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 12px 28px rgba(249,115,22,.52),0 4px 8px rgba(249,115,22,.28)'">⚡</button>
-          <button onclick="newOrc()" style="flex:1;height:64px;border-radius:16px;background:var(--bl);color:#fff;border:none;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 8px 16px rgba(79,70,229,0.2);display:flex;align-items:center;justify-content:center;gap:8px;">
-            <span style="font-size:22px;">+</span> Criar Novo Orçamento
+        <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;">
+          <button onclick="homeTab('flash')" title="Orçamento Rápido Flash" style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff;border:3px solid #fed7aa;font-size:28px;cursor:pointer;box-shadow:0 8px 20px rgba(249,115,22,.45);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='scale(1.07)'" onmouseout="this.style.transform='scale(1)'">⚡</button>
+          <button onclick="newOrc()" style="flex:1;height:52px;border-radius:14px;background:var(--bl);color:#fff;border:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 6px 14px rgba(79,70,229,0.2);display:flex;align-items:center;justify-content:center;gap:8px;">
+            <span style="font-size:18px;">+</span> Criar Novo Orçamento
           </button>
         </div>
         
@@ -863,8 +864,8 @@ body.kb-open .title-big { font-size: 14px; }
       <!-- Botão home sobreposto ao iframe -->
       <button class="btn-home-global" id="flash-home-btn"
         onclick="exitFlash()"
-        aria-label="Voltar ao PintorPro"
-        title="Voltar ao PintorPro"
+        aria-label="Voltar ao Pintor Plus"
+        title="Voltar ao Pintor Plus"
         style="position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:14px;z-index:9999;background:rgba(255,255,255,0.18);color:#fff;border-color:rgba(255,255,255,0.3);backdrop-filter:blur(8px);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
       </button>
@@ -992,7 +993,7 @@ body.kb-open .title-big { font-size: 14px; }
         <div class=&quot;splash-streak s3&quot;></div>
         <div class=&quot;splash-streak s4&quot;></div>
         <div class=&quot;splash-track&quot;>
-          <div class=&quot;splash-word pp&quot;>PintorPro</div>
+          <div class=&quot;splash-word pp&quot;>Pintor Plus</div>
           <div class=&quot;splash-bolt-wrap&quot;><div class=&quot;splash-bolt&quot;>⚡</div></div>
           <div class=&quot;splash-word flash&quot;>FLASH</div>
         </div>
@@ -1340,21 +1341,27 @@ body.kb-open .title-big { font-size: 14px; }
   </div>
 
   <!-- Modal: Google Contacts Picker -->
-  <div id="gc-picker-modal" class="glass-overlay" onclick="if(event.target===this) GContacts.closePicker()">
-    <div class="modal-box" style="max-width:400px;padding:0;overflow:hidden;">
-      <div style="padding:16px 16px 0;">
+  <div id="gc-picker-modal" class="glass-overlay" style="align-items:flex-start;padding-top:max(20px,env(safe-area-inset-top,20px));" onclick="if(event.target===this) GContacts.closePicker()">
+    <div class="modal-box" style="max-width:400px;padding:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;">
+      <div style="padding:16px 16px 0;flex-shrink:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <div style="font-size:16px;font-weight:800;color:var(--ink);">Google Contatos</div>
           <button onclick="GContacts.closePicker()" style="background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;">✕</button>
         </div>
-        <input class="gc-search" id="gc-search" placeholder="Buscar contato..." oninput="GContacts.filterList(this.value)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <input class="gc-search" id="gc-search" placeholder="Buscar contato..." oninput="GContacts.filterList(this.value)" style="margin-bottom:0;flex:1;">
+          <label id="gc-select-all-label" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap;flex-shrink:0;">
+            <input type="checkbox" id="gc-select-all-chk" onchange="GContacts.toggleSelectAll(this.checked)" style="width:16px;height:16px;accent-color:var(--bl);cursor:pointer;">
+            Todos
+          </label>
+        </div>
+        <div id="gc-picker-loading" style="text-align:center;padding:20px;font-size:13px;color:var(--ink3);display:none;">
+          <div class="gd-spinner" style="border-color:var(--bdr);border-top-color:var(--bl);width:24px;height:24px;margin:0 auto 10px;"></div>
+          Carregando contatos...
+        </div>
       </div>
-      <div id="gc-picker-loading" style="text-align:center;padding:30px;font-size:13px;color:var(--ink3);display:none;">
-        <div class="gd-spinner" style="border-color:var(--bdr);border-top-color:var(--bl);width:24px;height:24px;margin:0 auto 12px;"></div>
-        Carregando contatos...
-      </div>
-      <div class="gc-list" id="gc-list"></div>
-      <div style="padding:12px 16px;border-top:1px solid var(--bdr);display:flex;gap:8px;">
+      <div class="gc-list" id="gc-list" style="flex:1;overflow-y:auto;"></div>
+      <div style="padding:12px 16px;border-top:1px solid var(--bdr);display:flex;gap:8px;flex-shrink:0;">
         <button onclick="GContacts.closePicker()" style="flex:1;height:44px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr);color:var(--ink2);font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">Cancelar</button>
         <button onclick="GContacts.confirmPick()" id="gc-confirm-btn" style="flex:1;height:44px;border-radius:12px;background:var(--bl);border:none;color:#fff;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">Importar (0)</button>
       </div>
@@ -1413,15 +1420,16 @@ body.kb-open .title-big { font-size: 14px; }
 
   <div id="confirm-modal" onclick="if(event.target===this) closeConfirm(false)" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;">
     <div style="background:var(--bg-modal);padding:24px;border-radius:20px;width:100%;max-width:320px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-      <div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:12px;">Sair sem salvar?</div>
-      <div style="font-size:14px;line-height:1.4;color:var(--ink3);margin-bottom:20px;">Você tem um orçamento em andamento. As alterações serão perdidas.</div>
-      <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:24px;cursor:pointer;">
-        <input type="checkbox" id="dirty-confirm-skip" style="width:18px;height:18px;accent-color:var(--bl);cursor:pointer;"> Não perguntar novamente
+      <div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px;">Sair sem salvar?</div>
+      <div style="font-size:13px;line-height:1.4;color:var(--ink3);margin-bottom:16px;">Você tem um orçamento em andamento. Salve como rascunho ou perca as alterações.</div>
+      <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:20px;cursor:pointer;">
+        <input type="checkbox" id="dirty-confirm-skip" style="width:16px;height:16px;accent-color:var(--bl);cursor:pointer;"> Não perguntar novamente
       </label>
-      <div style="display:flex;gap:12px;">
-        <button onclick="closeConfirm(false)" style="flex:1;height:48px;border-radius:12px;border:1.5px solid var(--bdr-input);background:var(--bg-input);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;">Cancelar</button>
-        <button id="btn-force-exit" onclick="closeConfirm(true)" class="btn-disabled" style="flex:1;height:48px;border-radius:12px;border:none;background:var(--rdl);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--rd);">Aguarde 5s</button>
+      <div style="display:flex;gap:10px;margin-bottom:10px;">
+        <button onclick="saveAsDraft()" style="flex:1;height:48px;border-radius:12px;border:none;background:#cc8d29;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;">📝 Rascunho</button>
+        <button id="btn-force-exit" onclick="closeConfirm(true)" class="btn-disabled" style="flex:1;height:48px;border-radius:12px;border:none;background:#EF4444;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:not-allowed;">Aguarde 3s</button>
       </div>
+      <button onclick="closeConfirm(false)" style="width:100%;height:40px;border-radius:12px;border:1.5px solid var(--bdr-input);background:transparent;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--ink3);cursor:pointer;">Cancelar</button>
     </div>
   </div>
 
@@ -1490,6 +1498,24 @@ body.kb-open .title-big { font-size: 14px; }
         <button onclick="executeBackupImport('merge')" style="width:100%;height:48px;border-radius:12px;border:1.5px solid var(--bl);background:var(--bll);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--bl);cursor:pointer;">Mesclar (Recomendado)</button>
         <button id="btn-force-replace" onclick="executeBackupImport('replace')" class="btn-disabled" style="width:100%;height:48px;border-radius:12px;border:none;background:var(--rdl);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--rd);cursor:pointer;transition:all .2s;">Substituir Tudo (Aguarde 5s)</button>
         <button onclick="closeBackupModal(false)" style="width:100%;height:48px;border-radius:12px;border:none;background:transparent;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;margin-top:8px;">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Termos de Serviço e Privacidade -->
+  <div id="terms-modal" class="glass-overlay" onclick="if(event.target===this) document.getElementById('terms-modal').style.display='none'" style="align-items:flex-start;padding-top:max(20px,env(safe-area-inset-top,20px));">
+    <div class="modal-box" style="max-width:440px;padding:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+        <div style="font-size:16px;font-weight:800;color:var(--ink);">📋 Documentos Legais</div>
+        <button onclick="document.getElementById('terms-modal').style.display='none'" style="background:none;border:none;font-size:20px;color:var(--ink3);cursor:pointer;">✕</button>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid var(--bdr);flex-shrink:0;">
+        <button id="terms-tab-terms" onclick="showTermsTab('terms')" style="flex:1;height:40px;border:none;background:var(--bl);color:#fff;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Termos de Uso</button>
+        <button id="terms-tab-privacy" onclick="showTermsTab('privacy')" style="flex:1;height:40px;border:none;background:var(--bg2);color:var(--ink2);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Privacidade</button>
+      </div>
+      <div id="terms-content" style="flex:1;overflow-y:auto;padding:20px;font-size:13px;line-height:1.7;color:var(--ink2);"></div>
+      <div style="padding:12px 16px;border-top:1px solid var(--bdr);flex-shrink:0;">
+        <button onclick="document.getElementById('terms-modal').style.display='none'" style="width:100%;height:44px;border-radius:12px;background:var(--bl);border:none;color:#fff;font-weight:700;font-family:'Sora',sans-serif;font-size:14px;cursor:pointer;">Entendi</button>
       </div>
     </div>
   </div>
@@ -1663,8 +1689,11 @@ function showPage(id, skipHistory = false) {
   } 
 }
 window.addEventListener('popstate', (e) => {
-  if (e.state && e.state.page) showPage(e.state.page, true);
-  else showPage('pg-home', true);
+  const page = (e.state && e.state.page) ? e.state.page : 'pg-home';
+  // Ao navegar pelo histórico do browser, limpa isDirty para não ativar o modal
+  // nas páginas que não são etapas do wizard (pg-s1..pg-s4)
+  if (!page.match(/^pg-s[1-4]$/)) S.isDirty = false;
+  showPage(page, true);
 });
 
 function toggleThemeAnim() { setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'); }
@@ -1679,11 +1708,31 @@ function canNavigateAsync(callback) {
   if (S.isDirty) {
     if(S.config.skipDirtyConfirm) { S.isDirty = false; return callback(); }
     document.getElementById('confirm-modal').style.display = 'flex'; document.getElementById('dirty-confirm-skip').checked = false; pendingNav = callback;
-    const btn = document.getElementById('btn-force-exit'); btn.classList.add('btn-disabled'); btn.style.cursor = 'not-allowed'; let secs = 5; btn.textContent = `Aguarde ${secs}s`;
-    clearInterval(exitTimer); exitTimer = setInterval(() => { secs--; if(secs <= 0) { clearInterval(exitTimer); btn.classList.remove('btn-disabled'); btn.style.cursor = 'pointer'; btn.textContent = 'Sim, sair'; } else { btn.textContent = `Aguarde ${secs}s`; } }, 1000);
+    const btn = document.getElementById('btn-force-exit'); btn.classList.add('btn-disabled'); btn.style.cursor = 'not-allowed'; let secs = 3; btn.textContent = `Aguarde ${secs}s`;
+    clearInterval(exitTimer); exitTimer = setInterval(() => { secs--; if(secs <= 0) { clearInterval(exitTimer); btn.classList.remove('btn-disabled'); btn.style.cursor = 'pointer'; btn.textContent = 'Sair'; } else { btn.textContent = `Aguarde ${secs}s`; } }, 1000);
   } else { callback(); }
 }
 function closeConfirm(proceed) { clearInterval(exitTimer); const skip = document.getElementById('dirty-confirm-skip').checked; document.getElementById('confirm-modal').style.display = 'none'; if (proceed && pendingNav) { if(skip) { S.config.skipDirtyConfirm = true; localStorage.setItem('pp-config', JSON.stringify(S.config)); } S.isDirty = false; pendingNav(); } pendingNav = null; }
+function saveAsDraft() {
+  clearInterval(exitTimer);
+  document.getElementById('confirm-modal').style.display = 'none';
+  // Coleta o orçamento atual e salva como rascunho
+  const orc = collectOrc();
+  orc.status = 'Rascunho';
+  if (!orc.nome) orc.nome = '(Rascunho)';
+  if (S.editId) {
+    const idx = S.orcs.findIndex(o => o.id === S.editId);
+    if (idx >= 0) { S.orcs[idx] = orc; }
+    else { S.orcs.unshift(orc); }
+  } else {
+    S.orcs.unshift(orc);
+  }
+  S.isDirty = false;
+  localStorage.setItem('pp-orcs', JSON.stringify(S.orcs));
+  toast('📝 Rascunho salvo!');
+  if (pendingNav) { pendingNav(); }
+  pendingNav = null;
+}
 
 let pendingDelAction = null;
 function askDelete(msg, action) { if (S.config.skipDelConfirm) { action(); } else { document.getElementById('del-confirm-msg').textContent = msg; document.getElementById('del-confirm-skip').checked = false; document.getElementById('del-confirm-modal').style.display = 'flex'; pendingDelAction = action; } }
@@ -2349,12 +2398,12 @@ async function shareOrc(){
       const blob = new Blob([htmlContent], { type: 'text/html' });
       const file = new File([blob], `Orcamento_${nomeCli}.html`, { type: 'text/html' });
       if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ title: 'Orçamento PintorPro', text: msg, files: [file] });
+        await navigator.share({ title: 'Orçamento Pintor Plus', text: msg, files: [file] });
         return;
       }
     }
     // Fallback: só texto
-    await navigator.share({ title: 'Orçamento PintorPro', text: msg });
+    await navigator.share({ title: 'Orçamento Pintor Plus', text: msg });
   } catch(e) {
     if (e && e.name !== 'AbortError') toast('Erro ao compartilhar.');
   }
@@ -2428,7 +2477,7 @@ function genPDFHtml(orc, withPhotos) {
       <div style="display:flex; gap:20px;">
         ${logoHtml}
         <div>
-          <div style="font-size:24px; font-weight:900; color:#0f172a; margin-bottom:6px; letter-spacing:-0.5px;">${S.config.empresa || 'Empresa PintorPro'}</div>
+          <div style="font-size:24px; font-weight:900; color:#0f172a; margin-bottom:6px; letter-spacing:-0.5px;">${S.config.empresa || 'Empresa Pintor Plus'}</div>
           ${S.config.tel ? `<div style="font-size:14px; color:#334155; margin-bottom:2px;">Tel: <b>${S.config.tel}</b></div>` : ''}
           ${S.config.emailEmpresa ? `<div style="font-size:14px; color:#334155; margin-bottom:2px;">Email: ${S.config.emailEmpresa}</div>` : ''}
           ${S.config.endEmpresa ? `<div style="font-size:14px; color:#334155; margin-bottom:2px;">${S.config.endEmpresa}</div>` : ''}
@@ -2597,7 +2646,7 @@ function saveConfig() {
 
 // BACKUP E TABS
 let backupTimerHandle; let pendingBackupData = null;
-function exportBackup() { const data = { versao: 1, dataGeracao: new Date().toISOString(), config: S.config, orcs: S.orcs, clientes: S.clientes, fornecedores: S.fornecedores, eventos: S.eventos }; const json = JSON.stringify(data); const blob = new Blob([json], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `PintorPro_Backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`; a.click(); URL.revokeObjectURL(url); toast('✅ Backup Exportado!'); }
+function exportBackup() { const data = { versao: 1, dataGeracao: new Date().toISOString(), config: S.config, orcs: S.orcs, clientes: S.clientes, fornecedores: S.fornecedores, eventos: S.eventos }; const json = JSON.stringify(data); const blob = new Blob([json], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `PintorPlus_Backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`; a.click(); URL.revokeObjectURL(url); toast('✅ Backup Exportado!'); }
 function handleBackupFile(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = e => { try { const data = JSON.parse(e.target.result); if(!data.orcs || !data.config) throw new Error("Formato inválido"); pendingBackupData = data; openBackupModal(); } catch(err) { toast('❌ Erro no backup'); } }; reader.readAsText(file); input.value = ''; }
 function openBackupModal() { document.getElementById('backup-confirm-modal').style.display = 'flex'; const btn = document.getElementById('btn-force-replace'); btn.classList.add('btn-disabled'); let secs = 5; btn.textContent = `Substituir Tudo (${secs}s)`; clearInterval(backupTimerHandle); backupTimerHandle = setInterval(() => { secs--; if(secs <= 0) { clearInterval(backupTimerHandle); btn.classList.remove('btn-disabled'); btn.textContent = 'Substituir Tudo'; } else { btn.textContent = `Substituir Tudo (${secs}s)`; } }, 1000); }
 function closeBackupModal(proceed) { clearInterval(backupTimerHandle); document.getElementById('backup-confirm-modal').style.display = 'none'; if(!proceed) pendingBackupData = null; }
@@ -2707,16 +2756,41 @@ function renderOrcamentosList() {
     let tot = calcOrcTotal(o); const qtdLocais = (o.rooms||[]).length; const infoTxt = qtdLocais === 1 ? `${o.rooms[0].items?.length || 0} item(ns)` : `${qtdLocais} local(is)`;
     let hasPhotos = false; (o.rooms||[]).forEach(r => (r.items||[]).forEach(it => { if(it.photos?.length) hasPhotos=true; }));
     const photoBtnHtml = hasPhotos ? `<button class="hoa" style="background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;" onclick="event.stopPropagation();GPhotos.exportOrcPhotos(${i})" title="Enviar fotos ao Google Drive">☁️📷</button>` : '';
-    return `<div class="hoc" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div><span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span></div><div class="hob"><div class="hood">📍 ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})">✏️ Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))">🗑</button></div></div>`;
+    return `<div class="hoc" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div><span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span></div><div class="hob"><div class="hood">📍 ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button><button class="hoa" style="background:#F0FDF4;color:#166534;border:1px solid #BBF7D0;" onclick="event.stopPropagation();shareSavedOrc(${i})" title="Compartilhar PDF">📄</button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})">✏️ Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))">🗑</button></div></div>`;
   }).join('');
 }
 
 function delOrc(i){ S.orcs.splice(i,1); localStorage.setItem('pp-orcs',JSON.stringify(S.orcs)); renderOrcamentosList(); toast('🗑 Removido'); }
 function sendWAIdx(i){ const o=S.orcs[i];if(!o)return; const msg=buildWAMsg(o); const tel=(o.tel||'').replace(/\D/g,''); const url = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`; window.open(url,'_blank'); }
+async function shareSavedOrc(i) {
+  const o = S.orcs[i]; if (!o) return;
+  const msg = buildWAMsg(o);
+  if (!navigator.share) {
+    // Fallback: gerar PDF em nova aba
+    const pWin = window.open('', '_blank');
+    if (!pWin) { toast('⚠️ Popup bloqueado. Permita abertura de novas abas.'); return; }
+    pWin.document.open(); pWin.document.write(genPDFHtml(o, false)); pWin.document.close();
+    return;
+  }
+  try {
+    if (navigator.canShare) {
+      const blob = new Blob([genPDFHtml(o, false)], { type: 'text/html' });
+      const nomeCli = (o.nome || 'Orcamento').replace(/\s+/g,'_');
+      const file = new File([blob], `Orcamento_${nomeCli}.html`, { type: 'text/html' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ title: 'Orçamento Pintor Plus', text: msg, files: [file] });
+        return;
+      }
+    }
+    await navigator.share({ title: 'Orçamento Pintor Plus', text: msg });
+  } catch(e) {
+    if (e && e.name !== 'AbortError') toast('Erro ao compartilhar.');
+  }
+}
 function editOrc(i){
   canNavigateAsync(() => {
     const o=S.orcs[i];if(!o)return; toast('✏️ Carregando orçamento…');
-    S.isDirty=true; S.editId=o.id; S.rooms=JSON.parse(JSON.stringify(o.rooms||[])); S.pgto=new Set(o.pgto||[]); S.fmt=o.fmt||'completo'; S.pagador=o.pagador||false;
+    S.isDirty=false; S.editId=o.id; S.rooms=JSON.parse(JSON.stringify(o.rooms||[])); S.pgto=new Set(o.pgto||[]); S.fmt=o.fmt||'completo'; S.pagador=o.pagador||false;
     renderPgtoList(); go(1);
     setTimeout(()=>{
       const v=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
@@ -2749,6 +2823,51 @@ window.addEventListener('load', () => {
   }, 1200); // 1.2 segundos visualizando o logo antes de exibir o app
 });
 
+const TERMS_TEXT = {
+  terms: `<h3 style="margin:0 0 12px;font-size:15px;color:var(--ink);">Termos de Uso — Pintor Plus</h3>
+<p><b>Última atualização:</b> Março de 2026</p>
+<p>Ao utilizar o <b>Pintor Plus</b>, você concorda com os termos abaixo.</p>
+<h4 style="margin:14px 0 6px;">1. Sobre o Serviço</h4>
+<p>O Pintor Plus é um aplicativo web para profissionais de pintura gerenciarem orçamentos, clientes, agenda e documentos. O serviço é disponibilizado gratuitamente, sem garantias de disponibilidade contínua.</p>
+<h4 style="margin:14px 0 6px;">2. Responsabilidades do Usuário</h4>
+<p>Você é responsável pelos dados inseridos, incluindo informações de clientes e valores de orçamentos. O Pintor Plus não se responsabiliza por erros em orçamentos ou perdas financeiras.</p>
+<h4 style="margin:14px 0 6px;">3. Armazenamento de Dados</h4>
+<p>Os dados ficam no seu dispositivo (localStorage) e, opcionalmente, no seu Google Drive pessoal. Não armazenamos seus dados em servidores próprios.</p>
+<h4 style="margin:14px 0 6px;">4. Conta Google</h4>
+<p>A sincronização usa OAuth 2.0 via Google Identity Services, com acesso limitado à pasta exclusiva do app no seu Drive. Revogue o acesso a qualquer momento nas configurações da sua conta Google.</p>
+<h4 style="margin:14px 0 6px;">5. Limitação de Responsabilidade</h4>
+<p>O serviço é fornecido "como está". Não nos responsabilizamos por perda de dados ou interrupção do serviço.</p>
+<h4 style="margin:14px 0 6px;">6. Alterações</h4>
+<p>Podemos atualizar estes termos a qualquer momento. O uso continuado constitui aceitação dos novos termos.</p>`,
+
+  privacy: `<h3 style="margin:0 0 12px;font-size:15px;color:var(--ink);">Política de Privacidade — Pintor Plus</h3>
+<p><b>Última atualização:</b> Março de 2026</p>
+<h4 style="margin:14px 0 6px;">1. Dados Coletados</h4>
+<p>Coletamos apenas os dados inseridos por você: nome e contato de clientes, endereços, valores de orçamentos e fotos. <b>Não coletamos dados automaticamente.</b></p>
+<h4 style="margin:14px 0 6px;">2. Uso dos Dados</h4>
+<p>Os dados são usados exclusivamente para gerar orçamentos, mensagens e PDFs para seu uso profissional. Não vendemos nem compartilhamos seus dados.</p>
+<h4 style="margin:14px 0 6px;">3. Armazenamento Local</h4>
+<p>Todos os dados ficam no <b>localStorage do seu navegador</b>. Você tem controle total e pode apagá-los quando quiser.</p>
+<h4 style="margin:14px 0 6px;">4. Google Drive</h4>
+<p>Com sincronização ativa, os dados são salvos em pasta privada do seu Drive. Usamos apenas as permissões necessárias (drive.appdata, drive.file). Não acessamos outros arquivos.</p>
+<h4 style="margin:14px 0 6px;">5. Google Contatos</h4>
+<p>Ao importar contatos, solicitamos acesso somente leitura (contacts.readonly). Os contatos ficam salvos localmente e nunca são enviados a terceiros.</p>
+<h4 style="margin:14px 0 6px;">6. Fotos</h4>
+<p>As fotos ficam no localStorage ou no seu Google Drive. Não temos acesso a essas imagens.</p>
+<h4 style="margin:14px 0 6px;">7. Contato</h4>
+<p>Dúvidas? Acesse <b>pintorplus.netlify.app</b>.</p>`
+};
+
+function showTermsTab(tab) {
+  const content = document.getElementById('terms-content');
+  if (content) content.innerHTML = TERMS_TEXT[tab] || '';
+  const bt = document.getElementById('terms-tab-terms');
+  const bp = document.getElementById('terms-tab-privacy');
+  if(bt){ bt.style.background = tab==='terms' ? 'var(--bl)' : 'var(--bg2)'; bt.style.color = tab==='terms' ? '#fff' : 'var(--ink2)'; }
+  if(bp){ bp.style.background = tab==='privacy' ? 'var(--bl)' : 'var(--bg2)'; bp.style.color = tab==='privacy' ? '#fff' : 'var(--ink2)'; }
+}
+function showTerms(tab) { showTermsTab(tab||'terms'); document.getElementById('terms-modal').style.display='flex'; }
+
 function showTutorial() { document.getElementById('info-modal-title').textContent = '📖 Tutorial'; document.getElementById('info-modal-body').innerHTML = `<div style="margin-bottom: 16px;"><b>Bem-vindo ao Pintor Plus!</b></div><ul style="margin-left: 18px; display: flex; flex-direction: column; gap: 12px;"><li><b>1. Criação de Orçamento:</b> Na página inicial, toque em "Criar Novo Orçamento". Preencha os dados e avance.</li><li><b>2. Inserindo Medidas:</b> Clique no grande botão laranja "+ Adicionar Novo Item" para abrir o formulário.</li><li><b>3. CRM e Lembretes:</b> Seus clientes são salvos automaticamente. Utilize a aba "Agenda" para gerenciar retornos.</li></ul>`; document.getElementById('info-modal').style.display = 'flex'; }
 function showFaq() { document.getElementById('info-modal-title').textContent = '❓ FAQ'; document.getElementById('info-modal-body').innerHTML = `<div style="margin-bottom: 16px;"><b>1. Preciso de internet?</b><br>Apenas para buscar o CEP. O resto funciona offline no seu navegador.</div><div style="margin-bottom: 16px;"><b>2. Como calculo por metro quadrado?</b><br>Ao definir o "Preço base do local", selecione a opção "Por m²".</div>`; document.getElementById('info-modal').style.display = 'flex'; }
 
@@ -2756,7 +2875,7 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
 
 
 // ══════════════════════════════════════════════
-// APP FLASH — Integração com PintorPro
+// APP FLASH — Integração com Pintor Plus
 // ══════════════════════════════════════════════
 (function() {
 
@@ -2780,7 +2899,7 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
     }
   };
 
-  // Sai do Flash e volta ao PintorPro
+  // Sai do Flash e volta ao Pintor Plus
   window.exitFlash = function() {
     const pg = document.getElementById('pg-flash');
     if (pg) { pg.classList.remove('active'); pg.style.display = 'none'; }
@@ -2789,7 +2908,7 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
     renderHomeMini(); renderHomeEvents(); renderHomeNews();
   };
 
-  // Converte rascunho do Flash em orçamento PintorPro
+  // Converte rascunho do Flash em orçamento Pintor Plus
   function convertFlashDraft() {
     const raw = localStorage.getItem('orcamento-pocket-draft');
     if (!raw) return;
@@ -2875,7 +2994,7 @@ const GDrive = {
     'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
     'https://www.googleapis.com/discovery/v1/apis/people/v1/rest'
   ],
-  FILE_NAME: 'pintor-pro-backup.json',
+  FILE_NAME: 'pintor-plus-backup.json',
   SYNC_DEBOUNCE: 3000, // 3s após última alteração
 
   // ── ESTADO ────────────────────────────────────────────────
@@ -2899,14 +3018,14 @@ const GDrive = {
     const self = this;
     let gapiDone = false, gisDone = false;
 
-    // Timeout de segurança: se as APIs não carregarem em 8s, mostra o botão de login
+    // Timeout de segurança: se as APIs não carregarem em 6s, mostra o botão de login
     const fallbackTimer = setTimeout(() => {
       if (!gapiDone || !gisDone) {
         clearInterval(checkGapi);
         clearInterval(checkGis);
         self._showLoginScreen();
       }
-    }, 8000);
+    }, 6000);
 
     // Espera GAPI carregar
     const checkGapi = setInterval(() => {
@@ -2945,8 +3064,13 @@ const GDrive = {
     if (!this.gapiInited || !this.gisInited) return;
     const savedEmail = localStorage.getItem('pp-gdrive-email');
     if (savedEmail) {
-      // Tenta login silencioso com a conta salva
-      this.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
+      // Tenta renovar token silenciosamente (sem popup — prompt:'none')
+      // Se falhar (ex: consentimento necessário), _tokenCallback mostra o botão de login
+      try {
+        this.tokenClient.requestAccessToken({ prompt: 'none', login_hint: savedEmail });
+      } catch(e) {
+        this._showLoginScreen();
+      }
     } else {
       // Sem conta salva → mostra tela de login
       this._showLoginScreen();
@@ -2956,8 +3080,9 @@ const GDrive = {
   // ── CALLBACK DO TOKEN ─────────────────────────────────────
   _tokenCallback(resp) {
     if (resp.error) {
-      // Falha silenciosa → mostra tela de login com botão
       this.accessToken = null;
+      // popup_blocked_by_browser, interaction_required, consent_required, etc.
+      // Em todos os casos: mostrar botão para o usuário clicar manualmente
       this._showLoginScreen();
       return;
     }
@@ -3071,7 +3196,7 @@ const GDrive = {
     try {
       await this._ensureToken();
       const data = JSON.stringify(this._buildBackupData());
-      const boundary = '----PintorProBoundary';
+      const boundary = '----PintorPlusBoundary';
       const metadata = JSON.stringify({
         name: this.FILE_NAME,
         ...(this.fileId ? {} : { parents: ['appDataFolder'] }),
@@ -3328,14 +3453,24 @@ const GContacts = {
   },
 
   async _fetchContacts() {
-    const resp = await gapi.client.people.people.connections.list({
-      resourceName: 'people/me',
-      pageSize: 500,
-      personFields: 'names,phoneNumbers,emailAddresses,addresses',
-      sortOrder: 'FIRST_NAME_ASCENDING',
-    });
-    const conns = resp.result.connections || [];
-    return conns.map(c => ({
+    // Pagina por todas as páginas para buscar todos os contatos (ex: 2000+)
+    let allConns = [];
+    let pageToken = null;
+    do {
+      const params = {
+        resourceName: 'people/me',
+        pageSize: 1000,
+        personFields: 'names,phoneNumbers,emailAddresses,addresses',
+        sortOrder: 'FIRST_NAME_ASCENDING',
+      };
+      if (pageToken) params.pageToken = pageToken;
+      const resp = await gapi.client.people.people.connections.list(params);
+      const conns = resp.result.connections || [];
+      allConns = allConns.concat(conns);
+      pageToken = resp.result.nextPageToken || null;
+    } while (pageToken);
+
+    return allConns.map(c => ({
       nome: c.names?.[0]?.displayName || '',
       tel: c.phoneNumbers?.[0]?.value || '',
       email: c.emailAddresses?.[0]?.value || '',
@@ -3362,10 +3497,15 @@ const GContacts = {
     const list = document.getElementById('gc-list');
     const search = document.getElementById('gc-search');
 
+    const selAllLabel = document.getElementById('gc-select-all-label');
+    const selAllChk = document.getElementById('gc-select-all-chk');
+
     modal.style.display = 'flex';
     loading.style.display = 'block';
     list.innerHTML = '';
     search.value = '';
+    if (selAllLabel) selAllLabel.style.display = 'none';
+    if (selAllChk) selAllChk.checked = false;
 
     try {
       this._contacts = await this._fetchContacts();
@@ -3375,6 +3515,8 @@ const GContacts = {
         list.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:var(--ink3);">Nenhum contato encontrado na conta Google.</div>';
         return;
       }
+      // Mostrar checkbox "selecionar todos" só no modo import
+      if (this._mode === 'import' && selAllLabel) selAllLabel.style.display = 'flex';
       this._renderList();
     } catch (e) {
       console.error('GContacts: erro', e);
@@ -3415,6 +3557,20 @@ const GContacts = {
     } else {
       if (this._selected.has(idx)) this._selected.delete(idx);
       else this._selected.add(idx);
+    }
+    // Sincroniza estado do checkbox "Todos"
+    const allChk = document.getElementById('gc-select-all-chk');
+    if (allChk) allChk.checked = this._filtered.length > 0 && this._filtered.every(c => this._selected.has(this._contacts.indexOf(c)));
+    this._renderList();
+  },
+
+  toggleSelectAll(checked) {
+    if (checked) {
+      // Seleciona todos os contatos da lista filtrada atual
+      this._filtered.forEach(c => this._selected.add(this._contacts.indexOf(c)));
+    } else {
+      // Desmarca todos
+      this._filtered.forEach(c => this._selected.delete(this._contacts.indexOf(c)));
     }
     this._renderList();
   },
@@ -3485,7 +3641,7 @@ const GContacts = {
 // ╚══════════════════════════════════════════════════════════╝
 
 const GPhotos = {
-  FOLDER_NAME: 'PintorPro_Fotos',
+  FOLDER_NAME: 'PintorPlus_Fotos',
   _folderId: null,
 
   async _ensureAuth() {
