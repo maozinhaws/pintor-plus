@@ -1,0 +1,18 @@
+{
+  "short_name": "PintorPlus",
+  "name": "PintorPlus Voz - Orçamentos Inteligentes",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3534/3534033.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#7C3AED",
+  "background_color": "#F8FAFC",
+  "orientation": "portrait",
+  "description": "Gestão de orçamentos para pintores profissionais com suporte a voz e nuvem."
+}
