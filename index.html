@@ -3227,8 +3227,9 @@ const GDrive = {
         gapi.load('client', () => {
           gapi.client.init({}).then(async () => {
             for (const doc of self.DISCOVERY_DOCS) {
-              await gapi.client.load(doc);
+              try { await gapi.client.load(doc); } catch(e) { console.warn('GDrive: discovery doc falhou:', doc); }
             }
+            clearTimeout(libsTimeout);
             self.gapiInited = true;
             self._tryAutoSignIn();
           }).catch(() => {
