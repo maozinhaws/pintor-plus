@@ -4,85 +4,327 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Termos de Uso — Pintor Plus</title>
-  <link rel="icon" href="https://lh3.googleusercontent.com/d/1WJXU6NvZ12GeL3GA4NzzGeGeaZvHpkfn" type="image/png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; }
-    .wrap { max-width: 680px; margin: 0 auto; padding: 32px 20px 80px; }
-    header { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
-    header img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; }
-    header .brand { font-size: 20px; font-weight: 800; color: #4f46e5; letter-spacing: -.3px; }
-    header .subtitle { font-size: 13px; color: #64748b; }
-    nav-links { display: flex; gap: 16px; margin-bottom: 32px; }
-    .nav-links { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
-    .nav-links a { padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all .2s; }
-    .nav-links a.active { background: #4f46e5; color: #fff; }
-    .nav-links a:not(.active) { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-    .nav-links a:not(.active):hover { background: #e2e8f0; }
-    h1 { font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 6px; letter-spacing: -.5px; }
-    .meta { font-size: 13px; color: #94a3b8; margin-bottom: 32px; }
-    h2 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 28px 0 8px; padding-left: 12px; border-left: 3px solid #4f46e5; }
-    p { font-size: 14px; color: #475569; margin-bottom: 12px; }
-    strong { color: #1e293b; }
-    .back-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 48px; padding: 12px 24px; background: #4f46e5; color: #fff; border-radius: 12px; text-decoration: none; font-size: 14px; font-weight: 700; }
-    .back-btn:hover { background: #4338ca; }
-    footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
-    footer a { color: #4f46e5; text-decoration: none; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f7ff;
+      color: #1e1b4b;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .site-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(109,40,217,.35);
+    }
+    .site-header img {
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+    }
+    .site-header-text .brand {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+    .site-header-text .tagline {
+      font-size: 11px;
+      color: rgba(255,255,255,.75);
+    }
+    .back-link {
+      margin-left: auto;
+      color: rgba(255,255,255,.9);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,.15);
+      padding: 7px 14px;
+      border-radius: 20px;
+      transition: background .2s;
+    }
+    .back-link:hover { background: rgba(255,255,255,.25); }
+
+    /* Nav tabs */
+    .nav-wrap {
+      background: #fff;
+      border-bottom: 1px solid #e8e3ff;
+      padding: 0 24px;
+      display: flex;
+      gap: 0;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .nav-tab {
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #6b7280;
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab.active {
+      color: #7c3aed;
+      border-bottom-color: #7c3aed;
+    }
+    .nav-tab:hover { color: #7c3aed; }
+
+    /* Main content */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .doc-header {
+      margin-bottom: 36px;
+    }
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ede9fe;
+      color: #6d28d9;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .doc-title {
+      font-size: 30px;
+      font-weight: 900;
+      color: #1e1b4b;
+      letter-spacing: -.6px;
+      margin-bottom: 8px;
+    }
+    .doc-meta {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    /* Sections */
+    .section {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #ede9fe;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      transition: box-shadow .2s;
+    }
+    .section:hover { box-shadow: 0 4px 20px rgba(124,58,237,.08); }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #6d28d9;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-num {
+      width: 26px;
+      height: 26px;
+      background: #ede9fe;
+      color: #6d28d9;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section p {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.75;
+    }
+    .section p + p { margin-top: 10px; }
+
+    /* Highlight box */
+    .highlight {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: #166534;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .highlight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Footer */
+    .doc-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #ede9fe;
+      text-align: center;
+    }
+    .doc-footer a.btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      color: #fff;
+      padding: 13px 28px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(109,40,217,.3);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .doc-footer a.btn-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(109,40,217,.4);
+    }
+    .doc-footer .legal-links {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .doc-footer .legal-links a {
+      color: #7c3aed;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .doc-footer .legal-links a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px 60px; }
+      .doc-title { font-size: 24px; }
+      .section { padding: 18px 20px; }
+      .site-header { padding: 14px 16px; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <img src="https://lh3.googleusercontent.com/d/1WJXU6NvZ12GeL3GA4NzzGeGeaZvHpkfn" alt="Pintor Plus">
-      <div>
-        <div class="brand">Pintor Plus</div>
-        <div class="subtitle">Gestão de orçamentos para pintores</div>
-      </div>
-    </header>
 
-    <div class="nav-links">
-      <a href="/termos" class="active">📋 Termos de Uso</a>
-      <a href="/privacidade">🔒 Política de Privacidade</a>
+  <header class="site-header">
+    <img src="/icon.svg" alt="Pintor Plus">
+    <div class="site-header-text">
+      <div class="brand">Pintor Plus</div>
+      <div class="tagline">Orçamentos para pintores</div>
+    </div>
+    <a href="https://pintorplus.netlify.app" class="back-link">← App</a>
+  </header>
+
+  <div style="background:#fff; border-bottom:1px solid #ede9fe;">
+    <div class="nav-wrap">
+      <a href="/termos" class="nav-tab active">📋 Termos de Uso</a>
+      <a href="/privacidade" class="nav-tab">🔒 Privacidade</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="doc-header">
+      <div class="doc-badge">📋 Documento Legal</div>
+      <h1 class="doc-title">Termos de Uso</h1>
+      <div class="doc-meta">Última atualização: Março de 2026 &nbsp;·&nbsp; Versão 1.0</div>
     </div>
 
-    <h1>Termos de Uso</h1>
-    <div class="meta">Última atualização: Março de 2026</div>
+    <div class="highlight">
+      <span class="highlight-icon">✅</span>
+      <div>Ao utilizar o <strong>Pintor Plus</strong>, você concorda com estes Termos de Uso. Leia com atenção antes de continuar.</div>
+    </div>
 
-    <p>Ao utilizar o aplicativo <strong>Pintor Plus</strong> ("o serviço"), disponível em <strong>pintorplus.netlify.app</strong>, você declara que leu, compreendeu e concorda com estes Termos de Uso. Caso não concorde, não utilize o serviço.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">1</span> Sobre o Serviço</div>
+      <p>O <strong>Pintor Plus</strong> é um aplicativo web para profissionais de pintura, disponível em <strong>pintorplus.netlify.app</strong>. Ele oferece ferramentas para criação e gestão de orçamentos, controle de clientes, agenda e geração de documentos em PDF.</p>
+      <p>O serviço é oferecido gratuitamente, sem garantias expressas de disponibilidade contínua ou ininterrupta.</p>
+    </div>
 
-    <h2>1. Sobre o Serviço</h2>
-    <p>O Pintor Plus é um aplicativo web voltado a profissionais de pintura, oferecendo ferramentas para criação e gestão de orçamentos, controle de clientes, agenda e geração de documentos em PDF. O serviço é disponibilizado gratuitamente, sem garantias de disponibilidade contínua ou ininterrupta.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">2</span> Uso Permitido</div>
+      <p>Você pode usar o Pintor Plus para fins profissionais ou pessoais lícitos, relacionados à gestão de serviços de pintura. É vedado:</p>
+      <p>• Utilizar o serviço para fins ilegais ou fraudulentos;<br>
+         • Inserir dados falsos ou de terceiros sem autorização;<br>
+         • Tentar comprometer a segurança ou integridade da aplicação;<br>
+         • Revender, sublicenciar ou reproduzir o serviço sem autorização.</p>
+    </div>
 
-    <h2>2. Responsabilidades do Usuário</h2>
-    <p>Você é o único responsável pelas informações inseridas no aplicativo, incluindo dados de clientes, valores de orçamentos e documentos gerados. O Pintor Plus não verifica a precisão das informações e não se responsabiliza por erros em orçamentos ou eventuais perdas financeiras decorrentes do uso.</p>
-    <p>É vedado utilizar o serviço para fins ilegais, enviar dados de terceiros sem consentimento ou tentar comprometer a segurança da aplicação.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">3</span> Responsabilidades do Usuário</div>
+      <p>Você é o único responsável pelas informações inseridas no aplicativo — incluindo dados de clientes, valores de orçamentos e documentos gerados.</p>
+      <p>O Pintor Plus não verifica a precisão das informações e <strong>não se responsabiliza</strong> por erros em orçamentos, perdas financeiras, ou consequências decorrentes de informações incorretas.</p>
+    </div>
 
-    <h2>3. Armazenamento de Dados</h2>
-    <p>Os dados são armazenados <strong>localmente no seu dispositivo</strong> (localStorage do navegador) e, quando você optar pela funcionalidade de backup, sincronizados com a sua própria conta Google Drive pessoal. Não mantemos servidores próprios com cópia dos seus dados.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">4</span> Armazenamento de Dados</div>
+      <p>Os dados inseridos ficam armazenados <strong>localmente no seu dispositivo</strong> (localStorage do navegador). Quando você utiliza a função de backup, os dados são sincronizados com sua própria conta Google Drive pessoal.</p>
+      <p><strong>Não mantemos servidores próprios com cópia dos seus dados.</strong></p>
+    </div>
 
-    <h2>4. Integração com Google</h2>
-    <p>A sincronização utiliza OAuth 2.0 via Google Identity Services. As permissões solicitadas são limitadas ao necessário para o funcionamento do backup e da importação de contatos. Você pode revogar o acesso a qualquer momento em <strong>myaccount.google.com/permissions</strong>.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">5</span> Integração com Google</div>
+      <p>A sincronização utiliza OAuth 2.0 via Google Identity Services. As permissões solicitadas são estritamente limitadas ao necessário para o backup e importação de contatos.</p>
+      <p>Você pode revogar o acesso a qualquer momento em <strong>myaccount.google.com/permissions</strong>.</p>
+    </div>
 
-    <h2>5. Propriedade Intelectual</h2>
-    <p>O código-fonte, design e marca do Pintor Plus são protegidos. Os dados que você insere no aplicativo pertencem a você.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">6</span> Propriedade Intelectual</div>
+      <p>O código-fonte, design e marca Pintor Plus são protegidos por direitos autorais. Os dados que você insere no aplicativo pertencem exclusivamente a você.</p>
+    </div>
 
-    <h2>6. Limitação de Responsabilidade</h2>
-    <p>O serviço é fornecido <strong>"no estado em que se encontra"</strong>, sem garantias expressas ou implícitas. Não nos responsabilizamos por perda de dados, interrupção do serviço, danos diretos ou indiretos decorrentes do uso ou impossibilidade de uso do aplicativo.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">7</span> Limitação de Responsabilidade</div>
+      <p>O serviço é fornecido <strong>"no estado em que se encontra"</strong>, sem garantias expressas ou implícitas. Não nos responsabilizamos por:</p>
+      <p>• Perda ou corrupção de dados;<br>
+         • Interrupção do serviço;<br>
+         • Danos diretos ou indiretos decorrentes do uso ou impossibilidade de uso do aplicativo.</p>
+    </div>
 
-    <h2>7. Alterações nos Termos</h2>
-    <p>Podemos atualizar estes termos a qualquer momento. As alterações entram em vigor assim que publicadas. O uso continuado do aplicativo após as alterações constitui aceitação dos novos termos.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">8</span> Alterações nos Termos</div>
+      <p>Podemos atualizar estes termos a qualquer momento. As alterações entram em vigor assim que publicadas nesta página. O uso continuado do aplicativo após as alterações constitui aceitação dos novos termos.</p>
+    </div>
 
-    <h2>8. Lei Aplicável</h2>
-    <p>Estes termos são regidos pela legislação brasileira, em especial a Lei nº 13.709/2018 (LGPD) e o Código de Defesa do Consumidor.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">9</span> Lei Aplicável</div>
+      <p>Estes termos são regidos pela legislação brasileira, em especial a <strong>Lei nº 13.709/2018 (LGPD)</strong> e o Código de Defesa do Consumidor. Fica eleito o foro da comarca de domicílio do usuário para dirimir quaisquer controvérsias.</p>
+    </div>
 
-    <h2>9. Contato</h2>
-    <p>Para dúvidas ou solicitações relacionadas a estes termos, acesse o aplicativo em <strong>pintorplus.netlify.app</strong>.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">10</span> Contato</div>
+      <p>Dúvidas ou solicitações relacionadas a estes termos podem ser encaminhadas pelo próprio aplicativo em <strong>pintorplus.netlify.app</strong>.</p>
+    </div>
 
-    <a href="https://pintorplus.netlify.app" class="back-btn">← Voltar ao App</a>
+    <div class="doc-footer">
+      <a href="https://pintorplus.netlify.app" class="btn-back">← Voltar ao Pintor Plus</a>
+      <div class="legal-links">
+        &copy; 2026 Pintor Plus &nbsp;·&nbsp;
+        <a href="/termos">Termos de Uso</a> &nbsp;·&nbsp;
+        <a href="/privacidade">Política de Privacidade</a>
+      </div>
+    </div>
 
-    <footer>
-      &copy; 2026 Pintor Plus · <a href="/termos">Termos de Uso</a> · <a href="/privacidade">Privacidade</a>
-    </footer>
   </div>
 </body>
 </html>

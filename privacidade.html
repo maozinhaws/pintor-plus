@@ -4,133 +4,409 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Política de Privacidade — Pintor Plus</title>
-  <link rel="icon" href="https://lh3.googleusercontent.com/d/1WJXU6NvZ12GeL3GA4NzzGeGeaZvHpkfn" type="image/png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; }
-    .wrap { max-width: 680px; margin: 0 auto; padding: 32px 20px 80px; }
-    header { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
-    header img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; }
-    header .brand { font-size: 20px; font-weight: 800; color: #4f46e5; letter-spacing: -.3px; }
-    header .subtitle { font-size: 13px; color: #64748b; }
-    .nav-links { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
-    .nav-links a { padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all .2s; }
-    .nav-links a.active { background: #4f46e5; color: #fff; }
-    .nav-links a:not(.active) { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-    .nav-links a:not(.active):hover { background: #e2e8f0; }
-    h1 { font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 6px; letter-spacing: -.5px; }
-    .meta { font-size: 13px; color: #94a3b8; margin-bottom: 32px; }
-    h2 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 28px 0 8px; padding-left: 12px; border-left: 3px solid #4f46e5; }
-    p { font-size: 14px; color: #475569; margin-bottom: 12px; }
-    strong { color: #1e293b; }
-    ul { margin: 8px 0 12px 20px; }
-    ul li { font-size: 14px; color: #475569; margin-bottom: 6px; }
-    .highlight-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px 16px; margin: 16px 0; }
-    .highlight-box p { margin-bottom: 0; color: #166534; }
-    .back-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 48px; padding: 12px 24px; background: #4f46e5; color: #fff; border-radius: 12px; text-decoration: none; font-size: 14px; font-weight: 700; }
-    .back-btn:hover { background: #4338ca; }
-    footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
-    footer a { color: #4f46e5; text-decoration: none; }
-    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
-    th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0; }
-    td { padding: 9px 12px; color: #475569; border-bottom: 1px solid #f1f5f9; }
-    tr:last-child td { border-bottom: none; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f7ff;
+      color: #1e1b4b;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    .site-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(109,40,217,.35);
+    }
+    .site-header img { width: 40px; height: 40px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
+    .site-header-text .brand { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+    .site-header-text .tagline { font-size: 11px; color: rgba(255,255,255,.75); }
+    .back-link {
+      margin-left: auto;
+      color: rgba(255,255,255,.9);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,.15);
+      padding: 7px 14px;
+      border-radius: 20px;
+      transition: background .2s;
+    }
+    .back-link:hover { background: rgba(255,255,255,.25); }
+
+    .nav-wrap {
+      background: #fff;
+      border-bottom: 1px solid #e8e3ff;
+      padding: 0 24px;
+      display: flex;
+      gap: 0;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .nav-tab {
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #6b7280;
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab.active { color: #7c3aed; border-bottom-color: #7c3aed; }
+    .nav-tab:hover { color: #7c3aed; }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .doc-header { margin-bottom: 36px; }
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ede9fe;
+      color: #6d28d9;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .doc-title { font-size: 30px; font-weight: 900; color: #1e1b4b; letter-spacing: -.6px; margin-bottom: 8px; }
+    .doc-meta { font-size: 13px; color: #9ca3af; }
+
+    .section {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #ede9fe;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      transition: box-shadow .2s;
+    }
+    .section:hover { box-shadow: 0 4px 20px rgba(124,58,237,.08); }
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #6d28d9;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-num {
+      width: 26px; height: 26px;
+      background: #ede9fe; color: #6d28d9;
+      border-radius: 50%; font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .section p { font-size: 14px; color: #4b5563; line-height: 1.75; }
+    .section p + p { margin-top: 10px; }
+
+    /* Summary box */
+    .summary-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .summary-box .icon { font-size: 24px; flex-shrink: 0; }
+    .summary-box .title { font-size: 14px; font-weight: 800; color: #166534; margin-bottom: 6px; }
+    .summary-box .text { font-size: 13px; color: #15803d; line-height: 1.6; }
+
+    /* Data table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 6px;
+      font-size: 13px;
+    }
+    .data-table th {
+      background: #f5f3ff;
+      color: #5b21b6;
+      font-weight: 800;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid #ede9fe;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .data-table td {
+      padding: 10px 14px;
+      color: #4b5563;
+      border-bottom: 1px solid #f5f3ff;
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #faf8ff; }
+
+    /* Rights grid */
+    .rights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .right-item {
+      background: #f5f3ff;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+    .right-item .r-title { font-weight: 800; color: #5b21b6; margin-bottom: 3px; font-size: 12px; }
+    .right-item .r-desc { color: #6b7280; font-size: 12px; line-height: 1.5; }
+
+    /* Services list */
+    .service-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f3ff;
+      align-items: flex-start;
+    }
+    .service-item:last-child { border-bottom: none; }
+    .service-dot { width: 8px; height: 8px; background: #7c3aed; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+    .service-name { font-weight: 700; color: #1e1b4b; font-size: 13px; margin-bottom: 2px; }
+    .service-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+
+    .doc-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #ede9fe; text-align: center; }
+    .doc-footer a.btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      color: #fff;
+      padding: 13px 28px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(109,40,217,.3);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .doc-footer a.btn-back:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(109,40,217,.4); }
+    .doc-footer .legal-links { margin-top: 20px; font-size: 12px; color: #9ca3af; }
+    .doc-footer .legal-links a { color: #7c3aed; text-decoration: none; font-weight: 600; }
+    .doc-footer .legal-links a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px 60px; }
+      .doc-title { font-size: 24px; }
+      .section { padding: 18px 20px; }
+      .site-header { padding: 14px 16px; }
+      .rights-grid { grid-template-columns: 1fr; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <img src="https://lh3.googleusercontent.com/d/1WJXU6NvZ12GeL3GA4NzzGeGeaZvHpkfn" alt="Pintor Plus">
+
+  <header class="site-header">
+    <img src="/icon.svg" alt="Pintor Plus">
+    <div class="site-header-text">
+      <div class="brand">Pintor Plus</div>
+      <div class="tagline">Orçamentos para pintores</div>
+    </div>
+    <a href="https://pintorplus.netlify.app" class="back-link">← App</a>
+  </header>
+
+  <div style="background:#fff; border-bottom:1px solid #ede9fe;">
+    <div class="nav-wrap">
+      <a href="/termos" class="nav-tab">📋 Termos de Uso</a>
+      <a href="/privacidade" class="nav-tab active">🔒 Privacidade</a>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="doc-header">
+      <div class="doc-badge">🔒 LGPD — Lei nº 13.709/2018</div>
+      <h1 class="doc-title">Política de Privacidade</h1>
+      <div class="doc-meta">Última atualização: Março de 2026 &nbsp;·&nbsp; Versão 1.0</div>
+    </div>
+
+    <div class="summary-box">
+      <span class="icon">🛡️</span>
       <div>
-        <div class="brand">Pintor Plus</div>
-        <div class="subtitle">Gestão de orçamentos para pintores</div>
+        <div class="title">Resumo em uma linha</div>
+        <div class="text">Seus dados ficam <strong>no seu dispositivo</strong> ou na <strong>sua própria conta Google</strong>. Não armazenamos, vendemos nem compartilhamos suas informações com terceiros.</div>
       </div>
-    </header>
-
-    <div class="nav-links">
-      <a href="/termos">📋 Termos de Uso</a>
-      <a href="/privacidade" class="active">🔒 Política de Privacidade</a>
     </div>
 
-    <h1>Política de Privacidade</h1>
-    <div class="meta">Última atualização: Março de 2026 · Em conformidade com a LGPD (Lei nº 13.709/2018)</div>
-
-    <div class="highlight-box">
-      <p>✅ <strong>Resumo simples:</strong> Seus dados ficam no seu dispositivo ou na sua própria conta Google. Não armazenamos, vendemos nem compartilhamos seus dados com terceiros.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">1</span> Quem Somos</div>
+      <p>O <strong>Pintor Plus</strong> é um aplicativo web disponível em <strong>pintorplus.netlify.app</strong>, desenvolvido para profissionais de pintura. O responsável pelo tratamento de dados é o desenvolvedor do aplicativo.</p>
     </div>
 
-    <h2>1. Quem Somos</h2>
-    <p>O <strong>Pintor Plus</strong> é um aplicativo web disponível em <strong>pintorplus.netlify.app</strong>, desenvolvido para profissionais de pintura. Para questões de privacidade, considere o responsável o desenvolvedor do aplicativo.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">2</span> Dados que Coletamos</div>
+      <p>Coletamos <strong>apenas os dados que você inserir diretamente</strong> no app. Nenhum dado é capturado automaticamente sem sua ação.</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Dado</th>
+            <th>Finalidade</th>
+            <th>Onde fica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Nome, telefone, e-mail de clientes</strong></td>
+            <td>Geração de orçamentos e CRM</td>
+            <td>Seu dispositivo</td>
+          </tr>
+          <tr>
+            <td><strong>Endereços e dados de obras</strong></td>
+            <td>Orçamentos e PDFs</td>
+            <td>Seu dispositivo</td>
+          </tr>
+          <tr>
+            <td><strong>Fotos de obras</strong></td>
+            <td>Documentação fotográfica</td>
+            <td>Dispositivo ou Google Drive</td>
+          </tr>
+          <tr>
+            <td><strong>Dados da empresa (nome, CNPJ, logo)</strong></td>
+            <td>Personalização dos documentos</td>
+            <td>Seu dispositivo</td>
+          </tr>
+          <tr>
+            <td><strong>E-mail da conta Google</strong></td>
+            <td>Identificação para sincronização</td>
+            <td>Seu dispositivo (localStorage)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Não coletamos:</strong> cookies de rastreamento, dados de localização em tempo real, informações de pagamento ou histórico de navegação.</p>
+    </div>
 
-    <h2>2. Quais Dados Coletamos</h2>
-    <p>Coletamos <strong>apenas os dados que você inserir diretamente</strong>:</p>
-    <table>
-      <tr><th>Dado</th><th>Finalidade</th><th>Onde fica</th></tr>
-      <tr><td>Nome, telefone, e-mail de clientes</td><td>Geração de orçamentos e CRM</td><td>Seu dispositivo (localStorage)</td></tr>
-      <tr><td>Endereços e dados de obras</td><td>Orçamentos e PDFs</td><td>Seu dispositivo (localStorage)</td></tr>
-      <tr><td>Fotos de obras</td><td>Documentação fotográfica nos orçamentos</td><td>Seu dispositivo ou Google Drive</td></tr>
-      <tr><td>Dados da empresa (nome, CNPJ, logo)</td><td>Personalização dos documentos</td><td>Seu dispositivo (localStorage)</td></tr>
-      <tr><td>E-mail da conta Google</td><td>Identificação para sync automático</td><td>Seu dispositivo (localStorage)</td></tr>
-    </table>
-    <p><strong>Não coletamos:</strong> cookies de rastreamento, dados de navegação, informações de pagamento ou dados de localização em tempo real.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">3</span> Armazenamento Local</div>
+      <p>Por padrão, <strong>todos os seus dados ficam no seu próprio dispositivo</strong>, armazenados no localStorage do navegador. Esses dados:</p>
+      <p>• Não são transmitidos a nenhum servidor nosso;<br>
+         • Ficam acessíveis apenas no navegador/dispositivo que você usa;<br>
+         • Podem ser apagados a qualquer momento nas configurações do seu navegador.</p>
+    </div>
 
-    <h2>3. Armazenamento Local (localStorage)</h2>
-    <p>Por padrão, <strong>todos os dados ficam no seu próprio dispositivo</strong>, armazenados no localStorage do navegador. Esses dados:</p>
-    <ul>
-      <li>Não são transmitidos a nenhum servidor nosso</li>
-      <li>Ficam acessíveis apenas no navegador/dispositivo que você usa</li>
-      <li>Podem ser apagados por você a qualquer momento (Configurações do navegador → Dados do site)</li>
-    </ul>
+    <div class="section">
+      <div class="section-title"><span class="section-num">4</span> Google Drive (Backup Opcional)</div>
+      <p>Se você optar pela sincronização, os dados são salvos em uma pasta exclusiva do <strong>seu próprio Google Drive pessoal</strong>. Utilizamos OAuth 2.0 e solicitamos apenas as permissões mínimas:</p>
+      <p>• <strong>drive.file</strong> — acesso apenas aos arquivos criados pelo próprio app;<br>
+         • <strong>userinfo.email / profile</strong> — nome e e-mail para identificação.</p>
+      <p>Não armazenamos suas credenciais e não acessamos outros arquivos do seu Drive.</p>
+    </div>
 
-    <h2>4. Sincronização com Google Drive</h2>
-    <p>A função de backup sincroniza seus dados com uma pasta exclusiva do seu <strong>próprio Google Drive pessoal</strong>. Utilizamos o protocolo OAuth 2.0 e solicitamos apenas as permissões mínimas necessárias:</p>
-    <ul>
-      <li><strong>drive.file</strong> — acesso apenas aos arquivos criados pelo app</li>
-      <li><strong>userinfo.email / userinfo.profile</strong> — nome e e-mail para identificação</li>
-    </ul>
-    <p>Não armazenamos suas credenciais Google e não acessamos outros arquivos do seu Drive.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">5</span> Google Contatos (Importação)</div>
+      <p>Ao importar contatos, solicitamos permissão de <strong>somente leitura</strong> (<code>contacts.readonly</code>). Os contatos selecionados são salvos localmente no seu dispositivo e nunca são transmitidos a terceiros.</p>
+    </div>
 
-    <h2>5. Importação de Contatos Google</h2>
-    <p>Ao usar a função de importar contatos, solicitamos permissão <strong>somente leitura</strong> (contacts.readonly) à sua agenda Google. Os contatos selecionados são salvos localmente no seu dispositivo. Não transmitimos esses dados a terceiros.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">6</span> Fotos</div>
+      <p>As fotos registradas nas obras ficam armazenadas como base64 no localStorage ou no seu Google Drive. <strong>Não temos acesso a essas imagens</strong> — elas estão integralmente sob seu controle.</p>
+    </div>
 
-    <h2>6. Fotos</h2>
-    <p>As fotos tiradas ou importadas são armazenadas como base64 no localStorage ou no seu Google Drive. <strong>Não temos acesso a essas imagens</strong> — elas ficam integralmente sob seu controle.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">7</span> Serviços Externos Utilizados</div>
+      <p>O app utiliza os seguintes serviços de terceiros <strong>sem envio de dados pessoais</strong>:</p>
+      <div class="service-item">
+        <div class="service-dot"></div>
+        <div><div class="service-name">Google Identity Services / APIs</div><div class="service-desc">Autenticação OAuth e sincronização com Google Drive. Gerenciado pela Google LLC.</div></div>
+      </div>
+      <div class="service-item">
+        <div class="service-dot"></div>
+        <div><div class="service-name">ViaCEP / OpenCEP</div><div class="service-desc">Busca de endereço por CEP. Apenas o número do CEP é enviado, sem dados pessoais.</div></div>
+      </div>
+      <div class="service-item">
+        <div class="service-dot"></div>
+        <div><div class="service-name">RSS2JSON</div><div class="service-desc">Feed de notícias do setor. Sem envio de dados pessoais.</div></div>
+      </div>
+      <div class="service-item">
+        <div class="service-dot"></div>
+        <div><div class="service-name">Google Fonts</div><div class="service-desc">Carregamento de fontes tipográficas. Pode registrar o IP na requisição (Google LLC).</div></div>
+      </div>
+    </div>
 
-    <h2>7. Compartilhamento de Dados</h2>
-    <p><strong>Não vendemos, alugamos nem compartilhamos</strong> seus dados pessoais com terceiros. Os únicos serviços externos que o app utiliza são:</p>
-    <ul>
-      <li><strong>Google Identity Services / Google APIs</strong> — para autenticação e sync (Google LLC)</li>
-      <li><strong>ViaCEP / OpenCEP</strong> — apenas para busca de endereço por CEP (sem envio de dados pessoais)</li>
-      <li><strong>RSS2JSON</strong> — para feed de notícias (sem envio de dados pessoais)</li>
-    </ul>
+    <div class="section">
+      <div class="section-title"><span class="section-num">8</span> Seus Direitos (LGPD)</div>
+      <p>Conforme a <strong>Lei nº 13.709/2018</strong>, você tem direito a:</p>
+      <div class="rights-grid">
+        <div class="right-item">
+          <div class="r-title">👁️ Acesso</div>
+          <div class="r-desc">Ver todos os seus dados diretamente no app.</div>
+        </div>
+        <div class="right-item">
+          <div class="r-title">✏️ Correção</div>
+          <div class="r-desc">Editar dados incorretos a qualquer momento.</div>
+        </div>
+        <div class="right-item">
+          <div class="r-title">🗑️ Exclusão</div>
+          <div class="r-desc">Remover dados pelo app ou pelo localStorage do navegador.</div>
+        </div>
+        <div class="right-item">
+          <div class="r-title">📤 Portabilidade</div>
+          <div class="r-desc">Exportar seus dados via função de backup do app.</div>
+        </div>
+        <div class="right-item">
+          <div class="r-title">🚫 Revogação</div>
+          <div class="r-desc">Revogar acesso Google em myaccount.google.com/permissions.</div>
+        </div>
+        <div class="right-item">
+          <div class="r-title">ℹ️ Informação</div>
+          <div class="r-desc">Solicitar esclarecimentos sobre o uso dos seus dados.</div>
+        </div>
+      </div>
+    </div>
 
-    <h2>8. Seus Direitos (LGPD)</h2>
-    <p>Nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você tem direito a:</p>
-    <ul>
-      <li>Acessar seus dados — todos visíveis no próprio app</li>
-      <li>Corrigir dados incorretos — editáveis diretamente no app</li>
-      <li>Excluir seus dados — removíveis pelo app ou pelo localStorage do navegador</li>
-      <li>Revogar consentimento — revogar acesso Google em myaccount.google.com/permissions</li>
-      <li>Exportar seus dados — função de backup disponível no app</li>
-    </ul>
+    <div class="section">
+      <div class="section-title"><span class="section-num">9</span> Segurança</div>
+      <p>O app é servido exclusivamente via <strong>HTTPS</strong>. Não armazenamos senhas. Os tokens OAuth do Google são mantidos apenas em memória durante a sessão e não são persistidos em disco.</p>
+    </div>
 
-    <h2>9. Segurança</h2>
-    <p>O app é servido via HTTPS. Não armazenamos senhas. As chaves de acesso Google (tokens OAuth) são mantidas apenas em memória durante a sessão e não são persistidas em disco.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">10</span> Menores de Idade</div>
+      <p>O Pintor Plus é destinado a profissionais adultos. Não coletamos intencionalmente dados de menores de 18 anos. Se você identificar esse tipo de dado, entre em contato para remoção imediata.</p>
+    </div>
 
-    <h2>10. Menores de Idade</h2>
-    <p>O Pintor Plus é destinado a profissionais adultos. Não coletamos intencionalmente dados de menores de 18 anos.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">11</span> Alterações nesta Política</div>
+      <p>Esta política pode ser atualizada periodicamente. A data de "última atualização" no topo indica a versão em vigor. O uso continuado do app após alterações constitui aceitação da nova política.</p>
+    </div>
 
-    <h2>11. Alterações nesta Política</h2>
-    <p>Esta política pode ser atualizada periodicamente. A data de "última atualização" no topo indica a versão vigente. O uso continuado do app após alterações constitui aceitação da nova política.</p>
+    <div class="section">
+      <div class="section-title"><span class="section-num">12</span> Contato</div>
+      <p>Para exercer seus direitos, esclarecer dúvidas sobre privacidade ou solicitar a exclusão de dados, acesse o aplicativo em <strong>pintorplus.netlify.app</strong>.</p>
+    </div>
 
-    <h2>12. Contato</h2>
-    <p>Para exercer seus direitos ou esclarecer dúvidas sobre privacidade, acesse o aplicativo em <strong>pintorplus.netlify.app</strong>.</p>
+    <div class="doc-footer">
+      <a href="https://pintorplus.netlify.app" class="btn-back">← Voltar ao Pintor Plus</a>
+      <div class="legal-links">
+        &copy; 2026 Pintor Plus &nbsp;·&nbsp;
+        <a href="/termos">Termos de Uso</a> &nbsp;·&nbsp;
+        <a href="/privacidade">Política de Privacidade</a>
+      </div>
+    </div>
 
-    <a href="https://pintorplus.netlify.app" class="back-btn">← Voltar ao App</a>
-
-    <footer>
-      &copy; 2026 Pintor Plus · <a href="/termos">Termos de Uso</a> · <a href="/privacidade">Privacidade</a>
-    </footer>
   </div>
 </body>
 </html>
