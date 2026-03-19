@@ -3316,11 +3316,13 @@ const GDrive = {
   async _findFile() {
     if (!this.accessToken) return;
     try {
+      // Busca pelo nome novo e pelo nome legado (pintor-pro-backup.json)
       const resp = await gapi.client.drive.files.list({
         spaces: 'appDataFolder',
-        q: "name = '" + this.FILE_NAME + "'",
+        q: "name = '" + this.FILE_NAME + "' or name = 'pintor-pro-backup.json'",
         fields: 'files(id,name,modifiedTime)',
-        pageSize: 1,
+        pageSize: 2,
+        orderBy: 'modifiedTime desc',
       });
       const files = resp.result.files || [];
       this.fileId = files.length > 0 ? files[0].id : null;
