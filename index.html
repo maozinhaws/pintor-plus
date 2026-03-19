@@ -3203,6 +3203,7 @@ const GDrive = {
   user: null,
   accessToken: null,
   pendingResolve: null,
+  pendingReject: null,
 
   // ── INICIALIZAÇÃO ─────────────────────────────────────────
   init() {
@@ -3270,17 +3271,30 @@ const GDrive = {
   // ── CALLBACK DO TOKEN ─────────────────────────────────────
   _tokenCallback(resp) {
     if (resp.error) {
-      // Falha silenciosa → mostra tela de login com botão
-      this.accessToken = null;
-      this._showLoginScreen();
+      if (this.pendingResolve) {
+        // Falha durante renovação de token (sync em background) → não deslogar
+        const rej = this.pendingReject;
+        this.pendingResolve = null;
+        this.pendingReject = null;
+        if (rej) rej(new Error(resp.error));
+      } else {
+        // Falha no login inicial → mostrar tela de login
+        this.accessToken = null;
+        this._showLoginScreen();
+      }
       return;
     }
     this.accessToken = resp.access_token;
     gapi.client.setToken({ access_token: resp.access_token });
-    this._fetchUserInfo();
     if (this.pendingResolve) {
-      this.pendingResolve();
+      // Renovação de token durante sync → apenas resolver a promessa
+      const res = this.pendingResolve;
       this.pendingResolve = null;
+      this.pendingReject = null;
+      res();
+    } else {
+      // Login inicial → buscar info do usuário e navegar
+      this._fetchUserInfo();
     }
   },
 
@@ -3340,8 +3354,9 @@ const GDrive = {
   // ── OPERAÇÕES NO DRIVE (appDataFolder) ────────────────────
   async _ensureToken() {
     if (this.accessToken && gapi.client.getToken()) return;
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.pendingResolve = resolve;
+      this.pendingReject = reject;
       this.tokenClient.requestAccessToken({ prompt: '', login_hint: this.user?.email });
     });
   },
