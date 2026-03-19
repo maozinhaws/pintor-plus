@@ -325,6 +325,8 @@ body.kb-open .title-big { font-size: 14px; }
 #offline-banner.show{display:block;}
 #offline-banner.mode-offline{background:#FEF3C7;color:#92400E;border-bottom:1.5px solid #FDE68A;}
 #offline-banner.mode-drive-err{background:#FEF2F2;color:#991B1B;border-bottom:1.5px solid #FCA5A5;}
+#offline-banner.mode-reconnect{background:#EDE9FE;color:#5B21B6;border-bottom:1.5px solid #C4B5FD;cursor:pointer;}
+#offline-banner.mode-reconnect:hover{background:#DDD6FE;}
 @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
 .gd-btn{width:100%;height:48px;border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;transition:all .15s;}
 .gd-btn-primary{background:var(--bl);color:#fff;}
@@ -3209,10 +3211,34 @@ const GDrive = {
     this._initGis();
     this._initConnectivity();
     this._hookLocalStorage();
-    // Fallback: se libs do Google não carregarem em 8s, mostra botão de login
+    // Carrega sessão local imediatamente — não espera Google
+    this._loadLocalSession();
+    // Fallback: se libs do Google não carregarem em 8s
     setTimeout(() => {
-      if (!this._gapiReady || !this._gisReady) this._showLoginBtn();
+      if (!this._gapiReady || !this._gisReady) {
+        if (!this._sessionLoaded) this._showLoginBtn();
+        else this._showReconnectBanner();
+      }
     }, 8000);
+  },
+
+  // ── SESSÃO LOCAL ──────────────────────────────────────────
+  _loadLocalSession() {
+    try {
+      const raw = localStorage.getItem('pp-session');
+      if (!raw) return;
+      const s = JSON.parse(raw);
+      if (!s || !s.email) return;
+      this.user = s;
+      this._sessionLoaded = true;
+      this._showLoggedIn();
+      if (_hasAcceptedTerms(s.email)) {
+        showPage('pg-home');
+        renderHomeMini(); renderHomeEvents(); renderHomeNews();
+      } else {
+        showTermsModal();
+      }
+    } catch(e) { /* sessão inválida — aguarda login */ }
   },
 
   _initGapi() {
@@ -3254,20 +3280,36 @@ const GDrive = {
 
   _tryStart() {
     if (!this._gapiReady || !this._gisReady) return;
-    // GIS Token Flow não suporta login silencioso — popup bloqueado pelo browser
-    // durante carregamento. Sempre exibe o botão; signIn() é chamado pelo usuário.
-    this._showLoginBtn();
+    if (this._sessionLoaded) {
+      // Sessão local existe: tenta reconectar Drive em background
+      const savedEmail = localStorage.getItem('pp-gdrive-email');
+      if (savedEmail) {
+        this.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
+      } else {
+        this._showReconnectBanner();
+      }
+    } else {
+      // Primeira vez: mostra botão de login
+      this._showLoginBtn();
+    }
   },
 
   // ── CALLBACK DO TOKEN ─────────────────────────────────────
   _onToken(resp) {
     if (resp.error) {
-      this._showLoginBtn();
+      if (this._sessionLoaded) this._showReconnectBanner();
+      else this._showLoginBtn();
       return;
     }
     this.accessToken = resp.access_token;
     gapi.client.setToken({ access_token: resp.access_token });
-    this._fetchUserInfo();
+    if (this._sessionLoaded) {
+      // Já está em pg-home: apenas reconecta Drive
+      this._hideOfflineBanner();
+      this._findFile().then(() => { if (this.pendingSync) this.scheduleSync(); });
+    } else {
+      this._fetchUserInfo();
+    }
   },
 
   // ── LOGIN / LOGOUT ────────────────────────────────────────
@@ -3288,6 +3330,8 @@ const GDrive = {
     if (typeof gapi !== 'undefined') gapi.client.setToken(null);
     localStorage.removeItem('pp-gdrive-email');
     localStorage.removeItem('pp-gdrive-lastSync');
+    localStorage.removeItem('pp-session');
+    this._sessionLoaded = false;
     this._showLoggedOut();
     this._showLoginBtn();
     toast('👋 Desconectado do Google');
@@ -3303,6 +3347,8 @@ const GDrive = {
       const data = await r.json();
       this.user = { name: data.name, email: data.email, picture: data.picture };
       localStorage.setItem('pp-gdrive-email', data.email);
+      localStorage.setItem('pp-session', JSON.stringify({ name: data.name, email: data.email, picture: data.picture }));
+      this._sessionLoaded = true;
       this._showLoggedIn();
       if (_hasAcceptedTerms(data.email)) {
         showPage('pg-home');
@@ -3536,6 +3582,23 @@ const GDrive = {
     if (loading) loading.style.display = 'none';
     if (btnWrap) btnWrap.style.display = 'flex';
     showPage('pg-login', true);
+  },
+
+  _showReconnectBanner() {
+    const el = document.getElementById('offline-banner');
+    if (!el) return;
+    el.className = 'offline-banner show mode-reconnect';
+    el.innerHTML = '🔗 Drive desconectado &nbsp;·&nbsp; <u>Toque aqui para reconectar</u>';
+    el.onclick = () => GDrive.reconnectDrive();
+    el.style.display = 'block';
+  },
+
+  reconnectDrive() {
+    const savedEmail = localStorage.getItem('pp-gdrive-email');
+    if (!this._gisReady) { toast('⏳ Aguarde...'); return; }
+    const opts = { prompt: '' };
+    if (savedEmail) opts.login_hint = savedEmail;
+    this.tokenClient.requestAccessToken(opts);
   },
 
   _setStatus(state, msg) {
