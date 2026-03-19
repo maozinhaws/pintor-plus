@@ -386,6 +386,9 @@ body.kb-open .title-big { font-size: 14px; }
             Entrar com Google
           </button>
           <div style="font-size:11px;color:var(--ink3);text-align:center;line-height:1.5;">Seus dados ficam sincronizados com segurança<br>na sua conta Google.</div>
+          <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:4px;">
+            <a onclick="showPage('pg-termos')" style="color:var(--bl);text-decoration:underline;cursor:pointer;">Política de Privacidade e Termos de Uso</a>
+          </div>
         </div>
       </div>
     </div>
@@ -463,12 +466,11 @@ body.kb-open .title-big { font-size: 14px; }
       <div class="scr">
         <div style="display:flex;gap:10px;margin-bottom:16px;">
           <button onclick="editClient(-1)" style="flex:1;height:46px;border-radius:12px;background:var(--bl);color:#fff;border:none;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">＋ Novo Contato</button>
-          <button onclick="pickPhoneContactToSave()" style="flex:1;height:46px;border-radius:12px;background:#E0F2FE;color:#0284C7;border:1px solid #BAE6FD;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;">📱 Importar Agenda</button>
+          <button onclick="pickPhoneContactToSave()" title="Importar da agenda do celular" style="height:46px;width:46px;border-radius:12px;background:#E0F2FE;color:#0284C7;border:1px solid #BAE6FD;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">📱</button>
+          <button onclick="GContacts.importFromGoogle()" title="Importar do Google Contatos" style="height:46px;width:46px;border-radius:12px;background:#FEF3C7;border:1px solid #FDE68A;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </button>
         </div>
-        <button onclick="GContacts.importFromGoogle()" style="width:100%;height:44px;border-radius:12px;background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-weight:700;font-family:'Sora',sans-serif;font-size:13px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;">
-          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-          Importar do Google Contatos
-        </button>
         <div id="clientes-list-full"></div>
       </div>
     </div>
@@ -822,7 +824,7 @@ body.kb-open .title-big { font-size: 14px; }
               <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:4px;">Ferramentas Google</div>
               <button class="gd-btn gd-btn-outline" onclick="GPhotos.exportAll()">☁️📷 Enviar todas as fotos ao Drive</button>
               <button class="gd-btn gd-btn-outline" onclick="GCalendar.syncAllEvents()">📅 Sincronizar agenda com Google Calendar</button>
-              <button class="gd-btn gd-btn-outline" onclick="GContacts.importFromGoogle()">👥 Importar contatos do Google</button>
+              <button class="gd-btn gd-btn-outline" onclick="GContacts.importFromGoogle()" title="Importar contatos do Google" style="display:flex;align-items:center;justify-content:center;gap:10px;"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Importar Contatos</button>
             </div>
           </div>
         </div>
@@ -1085,7 +1087,7 @@ body.kb-open .title-big { font-size: 14px; }
         </div>
       </div>
       <section class=&quot;hero&quot; id=&quot;hero&quot;>
-        <h1><strong>Capture agora. Complete depois.</strong><br><span style=&quot;font-weight:400;opacity:.92;&quot;>Versão rápida para rua, visita ou obra. Primeiro cliente e telefone.</span></h1>
+        <h1 style=&quot;font-size:1.1em;line-height:1.3;&quot;><strong>Capture agora. Complete depois.</strong><br><span style=&quot;font-weight:400;font-size:.9em;opacity:.85;&quot;>Versão rápida para visita técnica.</span></h1>
         <div class=&quot;steps&quot;>
           <div class=&quot;step-pill&quot;><span id=&quot;pill1&quot;></span></div>
           <div class=&quot;step-pill&quot;><span id=&quot;pill2&quot;></span></div>
@@ -1098,6 +1100,10 @@ body.kb-open .title-big { font-size: 14px; }
           <div class=&quot;page-scroll&quot;>
             <div class=&quot;step1-shell&quot;>
               <div class=&quot;step1-form-card&quot;>
+                <div style=&quot;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;&quot;>
+                  <button onclick=&quot;notifyParentExit()&quot; aria-label=&quot;Página inicial&quot; style=&quot;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted);display:flex;align-items:center;&quot;><svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><path d=&quot;M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z&quot;/><path d=&quot;M9 21V12h6v9&quot;/></svg></button>
+                  <button onclick=&quot;openExitModal()&quot; aria-label=&quot;Fechar&quot; style=&quot;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted);font-size:22px;line-height:1;display:flex;align-items:center;&quot;>✕</button>
+                </div>
                 <div class=&quot;sec-title&quot;>1. Cliente</div>
                 <div class=&quot;mini-head&quot;>Preencha o essencial para não perder a visita.</div>
                 <div class=&quot;fld&quot;>
@@ -1112,7 +1118,6 @@ body.kb-open .title-big { font-size: 14px; }
                 </div>
               </div>
               <div class=&quot;step1-actions&quot;>
-                <button class=&quot;act-btn act-cancel&quot; id=&quot;btnCancelarCliente&quot;>Cancelar</button>
                 <button class=&quot;act-btn act-danger&quot; id=&quot;btnLimparCliente&quot; aria-label=&quot;Limpar dados&quot;>↻</button>
                 <button class=&quot;act-btn act-save&quot; id=&quot;btnIrItens&quot;>Avançar →</button>
               </div>
@@ -1249,7 +1254,7 @@ body.kb-open .title-big { font-size: 14px; }
       step1: document.getElementById('step1'), step2: document.getElementById('step2'), step3: document.getElementById('step3'),
       pill1: document.getElementById('pill1'), pill2: document.getElementById('pill2'), pill3: document.getElementById('pill3'),
       cliente: document.getElementById('cliente'), telefone: document.getElementById('telefone'), clienteErro: document.getElementById('clienteErro'), telefoneErro: document.getElementById('telefoneErro'),
-      btnIrItens: document.getElementById('btnIrItens'), btnLimparCliente: document.getElementById('btnLimparCliente'), btnCancelarCliente: document.getElementById('btnCancelarCliente'), btnVoltarCliente: document.getElementById('btnVoltarCliente'), btnVoltarItens: document.getElementById('btnVoltarItens'),
+      btnIrItens: document.getElementById('btnIrItens'), btnLimparCliente: document.getElementById('btnLimparCliente'), btnVoltarCliente: document.getElementById('btnVoltarCliente'), btnVoltarItens: document.getElementById('btnVoltarItens'),
       btnAddItem: document.getElementById('btnAddItem'), btnIrResumo: document.getElementById('btnIrResumo'), btnSalvarRascunho: document.getElementById('btnSalvarRascunho'),
       itemsWrap: document.getElementById('itemsWrap'), summaryText: document.getElementById('summaryText'), areaTotal: document.getElementById('areaTotal'),
       optionValorTotal: document.getElementById('optionValorTotal'), optionValorM2: document.getElementById('optionValorM2'), valorTexto: document.getElementById('valorTexto'),
@@ -1305,11 +1310,10 @@ body.kb-open .title-big { font-size: 14px; }
     function setupSwipe(){ let sx=0,sy=0,cx=0,tk=false; els.screen.addEventListener('touchstart',e=>{ if(els.itemModal.classList.contains('open')||els.cameraModal.classList.contains('open'))return; const t=e.changedTouches[0]; sx=t.clientX; sy=t.clientY; cx=t.clientX; tk=true; },{passive:true}); els.screen.addEventListener('touchmove',e=>{ if(!tk)return; cx=e.changedTouches[0].clientX; },{passive:true}); els.screen.addEventListener('touchend',e=>{ if(!tk||els.itemModal.classList.contains('open')||els.cameraModal.classList.contains('open'))return; const t=e.changedTouches[0]; const dx=(t.clientX||cx)-sx; const dy=Math.abs(t.clientY-sy); tk=false; if(dy>60||Math.abs(dx)<42)return; if(dx<0){if(state.currentStep===1){if(validateStep1(true))goStep(2);}else if(state.currentStep===2)goStep(3);}else{if(state.currentStep===3)goStep(2);else if(state.currentStep===2)goStep(1);} },{passive:true}); }
     // Modal sair com timer
     let _exitTimer=null, _skipExit=false;
-    function openExitModal(){ if(_skipExit){notifyParentExit();return;} document.getElementById('exitModal').style.display='flex'; document.getElementById('exitSkipCheck').checked=false; const btn=document.getElementById('btnConfirmExit'); btn.style.opacity='0.5'; btn.style.cursor='not-allowed'; let secs=5; clearInterval(_exitTimer); _exitTimer=setInterval(()=>{ secs--; if(secs<=0){clearInterval(_exitTimer);btn.style.opacity='1';btn.style.cursor='pointer';btn.textContent='Sim, sair';}else{btn.textContent=`Aguarde ${secs}s`;} },1000); }
+    function openExitModal(){ if(_skipExit){notifyParentExit();return;} document.getElementById('exitModal').style.display='flex'; document.getElementById('exitSkipCheck').checked=false; const btn=document.getElementById('btnConfirmExit'); btn.style.opacity='0.5'; btn.style.cursor='not-allowed'; let secs=3; clearInterval(_exitTimer); _exitTimer=setInterval(()=>{ secs--; if(secs<=0){clearInterval(_exitTimer);btn.style.opacity='1';btn.style.cursor='pointer';btn.textContent='Sim, sair';}else{btn.textContent=`Aguarde ${secs}s`;} },1000); }
     function closeExitModal(proceed){ clearInterval(_exitTimer); if(document.getElementById('exitSkipCheck').checked)_skipExit=true; document.getElementById('exitModal').style.display='none'; if(proceed)notifyParentExit(); }
     function notifyParentExit(){ try{ window.parent.postMessage({type:'flash-exit'},'*'); }catch(e){} }
     els.btnIrItens.addEventListener('click', () => { if (!validateStep1(true)) { if (!validateFullName(els.cliente.value)) els.cliente.focus(); else els.telefone.focus(); return; } goStep(2); });
-    els.btnCancelarCliente.addEventListener('click', openExitModal);
     els.btnLimparCliente.addEventListener('click', clearClient);
     els.btnVoltarCliente.addEventListener('click', () => goStep(1));
     els.btnVoltarItens.addEventListener('click', () => goStep(2));
@@ -1499,19 +1503,7 @@ body.kb-open .title-big { font-size: 14px; }
     </div>
   </div>
 
-  <div id="confirm-modal" onclick="if(event.target===this) closeConfirm(false)" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;">
-    <div style="background:var(--bg-modal);padding:24px;border-radius:20px;width:100%;max-width:320px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-      <div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:12px;">Sair sem salvar?</div>
-      <div style="font-size:14px;line-height:1.4;color:var(--ink3);margin-bottom:20px;">Você tem um orçamento em andamento. As alterações serão perdidas.</div>
-      <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:24px;cursor:pointer;">
-        <input type="checkbox" id="dirty-confirm-skip" style="width:18px;height:18px;accent-color:var(--bl);cursor:pointer;"> Não perguntar novamente
-      </label>
-      <div style="display:flex;gap:12px;">
-        <button onclick="closeConfirm(false)" style="flex:1;height:48px;border-radius:12px;border:1.5px solid var(--bdr-input);background:var(--bg-input);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;">Cancelar</button>
-        <button id="btn-force-exit" onclick="closeConfirm(true)" class="btn-disabled" style="flex:1;height:48px;border-radius:12px;border:none;background:var(--rdl);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--rd);">Aguarde 5s</button>
-      </div>
-    </div>
-  </div>
+  <div id="confirm-modal" style="display:none;"></div>
 
   <div id="del-confirm-modal" onclick="if(event.target===this) closeDelConfirm(false)" class="glass-overlay">
     <div class="modal-box" style="padding:24px; max-width:320px;">
@@ -1956,16 +1948,17 @@ function setTheme(theme) {
 }
 if(localStorage.getItem('pp-theme') === 'dark') document.documentElement.classList.add('dark');
 
-let pendingNav = null; let exitTimer = null;
-function canNavigateAsync(callback) {
-  if (S.isDirty) {
-    if(S.config.skipDirtyConfirm) { S.isDirty = false; return callback(); }
-    document.getElementById('confirm-modal').style.display = 'flex'; document.getElementById('dirty-confirm-skip').checked = false; pendingNav = callback;
-    const btn = document.getElementById('btn-force-exit'); btn.classList.add('btn-disabled'); btn.style.cursor = 'not-allowed'; let secs = 5; btn.textContent = `Aguarde ${secs}s`;
-    clearInterval(exitTimer); exitTimer = setInterval(() => { secs--; if(secs <= 0) { clearInterval(exitTimer); btn.classList.remove('btn-disabled'); btn.style.cursor = 'pointer'; btn.textContent = 'Sim, sair'; } else { btn.textContent = `Aguarde ${secs}s`; } }, 1000);
-  } else { callback(); }
+function _autoSaveRascunho() {
+  const orc = collectOrc();
+  const temConteudo = orc.nome.trim() || (orc.rooms||[]).some(r => (r.items||[]).length > 0);
+  if (!temConteudo) { S.isDirty = false; return; }
+  orc.status = 'Rascunho';
+  if (S.editId) { const i = S.orcs.findIndex(o => o.id === S.editId); if (i >= 0) S.orcs[i] = orc; else S.orcs.unshift(orc); } else { S.orcs.unshift(orc); S.editId = orc.id; }
+  S.isDirty = false; localStorage.setItem('pp-orcs', JSON.stringify(S.orcs)); GDrive.scheduleSync();
+  toast('💾 Rascunho salvo automaticamente');
 }
-function closeConfirm(proceed) { clearInterval(exitTimer); const skip = document.getElementById('dirty-confirm-skip').checked; document.getElementById('confirm-modal').style.display = 'none'; if (proceed && pendingNav) { if(skip) { S.config.skipDirtyConfirm = true; localStorage.setItem('pp-config', JSON.stringify(S.config)); } S.isDirty = false; pendingNav(); } pendingNav = null; }
+function canNavigateAsync(callback) { if (S.isDirty) { _autoSaveRascunho(); } callback(); }
+function closeConfirm(proceed) { if (proceed) canNavigateAsync(() => {}); }
 
 let pendingDelAction = null;
 function askDelete(msg, action) { if (S.config.skipDelConfirm) { action(); } else { document.getElementById('del-confirm-msg').textContent = msg; document.getElementById('del-confirm-skip').checked = false; document.getElementById('del-confirm-modal').style.display = 'flex'; pendingDelAction = action; } }
@@ -2874,7 +2867,7 @@ function saveConfig() {
 let backupTimerHandle; let pendingBackupData = null;
 function exportBackup() { const data = { versao: 1, dataGeracao: new Date().toISOString(), config: S.config, orcs: S.orcs, clientes: S.clientes, fornecedores: S.fornecedores, eventos: S.eventos }; const json = JSON.stringify(data); const blob = new Blob([json], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `PintorPlus_Backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`; a.click(); URL.revokeObjectURL(url); toast('✅ Backup Exportado!'); }
 function handleBackupFile(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = e => { try { const data = JSON.parse(e.target.result); if(!data.orcs || !data.config) throw new Error("Formato inválido"); pendingBackupData = data; openBackupModal(); } catch(err) { toast('❌ Erro no backup'); } }; reader.readAsText(file); input.value = ''; }
-function openBackupModal() { document.getElementById('backup-confirm-modal').style.display = 'flex'; const btn = document.getElementById('btn-force-replace'); btn.classList.add('btn-disabled'); let secs = 5; btn.textContent = `Substituir Tudo (${secs}s)`; clearInterval(backupTimerHandle); backupTimerHandle = setInterval(() => { secs--; if(secs <= 0) { clearInterval(backupTimerHandle); btn.classList.remove('btn-disabled'); btn.textContent = 'Substituir Tudo'; } else { btn.textContent = `Substituir Tudo (${secs}s)`; } }, 1000); }
+function openBackupModal() { document.getElementById('backup-confirm-modal').style.display = 'flex'; const btn = document.getElementById('btn-force-replace'); btn.classList.add('btn-disabled'); let secs = 3; btn.textContent = `Substituir Tudo (${secs}s)`; clearInterval(backupTimerHandle); backupTimerHandle = setInterval(() => { secs--; if(secs <= 0) { clearInterval(backupTimerHandle); btn.classList.remove('btn-disabled'); btn.textContent = 'Substituir Tudo'; } else { btn.textContent = `Substituir Tudo (${secs}s)`; } }, 1000); }
 function closeBackupModal(proceed) { clearInterval(backupTimerHandle); document.getElementById('backup-confirm-modal').style.display = 'none'; if(!proceed) pendingBackupData = null; }
 function executeBackupImport(mode) { if(!pendingBackupData) return; if(mode === 'replace') { S.config = pendingBackupData.config; S.orcs = pendingBackupData.orcs; S.clientes = pendingBackupData.clientes || []; S.fornecedores = pendingBackupData.fornecedores || []; S.eventos = pendingBackupData.eventos || []; localStorage.setItem('pp-config', JSON.stringify(S.config)); localStorage.setItem('pp-orcs', JSON.stringify(S.orcs)); localStorage.setItem('pp-clientes', JSON.stringify(S.clientes)); localStorage.setItem('pp-fornecedores', JSON.stringify(S.fornecedores)); localStorage.setItem('pp-eventos', JSON.stringify(S.eventos)); toast('✅ Backup Restaurado!'); } else if(mode === 'merge') { const importedOrcs = pendingBackupData.orcs || []; let updatedCount = 0; let addedCount = 0; importedOrcs.forEach(impOrc => { const idx = S.orcs.findIndex(o => o.id === impOrc.id); if(idx >= 0) { if((impOrc.tsEdit || 0) > (S.orcs[idx].tsEdit || 0)) { S.orcs[idx] = impOrc; updatedCount++; } } else { S.orcs.push(impOrc); addedCount++; } }); S.orcs.sort((a,b) => (b.ts || 0) - (a.ts || 0)); localStorage.setItem('pp-orcs', JSON.stringify(S.orcs)); toast(`✅ Mesclado: ${addedCount} novos, ${updatedCount} atu.`); } closeBackupModal(true); S.DEFAULT_SERVICES = (S.config.servicos || defCfg.servicos).split(',').map(s=>s.trim()).filter(Boolean); S.statusArr = (S.config.statusList || defCfg.statusList).split(',').map(s=>s.trim()).filter(Boolean); populateStatusSelect(); loadGoogleMaps(); homeTab('home'); }
 function homeTab(tab){ if(tab === 'config') { openConfig(); return; } if(tab === 'flash') { canNavigateAsync(() => { S.isDirty = false; openFlash(); }); return; } canNavigateAsync(() => { S.isDirty = false; if(tab === 'home') { showPage('pg-home'); renderHomeMini(); renderHomeEvents(); renderHomeNews(); } else if(tab === 'orcamentos') { showPage('pg-orcamentos'); renderOrcamentosList(); } else if(tab === 'clientes') { showPage('pg-clientes'); renderClientes(); } else if(tab === 'fornecedores') { showPage('pg-fornecedores'); renderFornecedores(); } else if(tab === 'agenda') { showPage('pg-agenda'); renderAgenda(); } else if(tab === 'backup') { showPage('pg-backup'); } else if(tab === 'termos') { showPage('pg-termos'); } }); }
@@ -3036,7 +3029,10 @@ function renderOrcamentosList() {
     let tot = calcOrcTotal(o); const qtdLocais = (o.rooms||[]).length; const infoTxt = qtdLocais === 1 ? `${o.rooms[0].items?.length || 0} item(ns)` : `${qtdLocais} local(is)`;
     let hasPhotos = false; (o.rooms||[]).forEach(r => (r.items||[]).forEach(it => { if(it.photos?.length) hasPhotos=true; }));
     const photoBtnHtml = hasPhotos ? `<button class="hoa" style="background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;" onclick="event.stopPropagation();GPhotos.exportOrcPhotos(${i})" title="Enviar fotos ao Google Drive">☁️📷</button>` : '';
-    return `<div class="hoc" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div><span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span></div><div class="hob"><div class="hood">📍 ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})">✏️ Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))">🗑</button></div></div>`;
+    const isRascunho = (o.status||'') === 'Rascunho';
+    const rascunhoTag = isRascunho ? `<span style="font-size:10px;font-weight:800;background:#ffe0bf;color:#a04000;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:middle;">Rascunho</span>` : '';
+    const cardBg = isRascunho ? 'background:#ffe0bf;' : '';
+    return `<div class="hoc" style="margin-bottom:12px;${cardBg}"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div><span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span></div><div class="hob"><div class="hood">📍 ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})">✏️ Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))">🗑</button></div></div>`;
   }).join('');
 }
 
@@ -3525,7 +3521,7 @@ const GDrive = {
 
   _hideOfflineBanner() {
     const el = document.getElementById('offline-banner');
-    if (el) el.className = '';
+    if (el) { el.className = ''; el.style.display = ''; el.onclick = null; }
   },
 
   // ── AUTO-SYNC (debounce) ──────────────────────────────────
@@ -3587,10 +3583,10 @@ const GDrive = {
   _showReconnectBanner() {
     const el = document.getElementById('offline-banner');
     if (!el) return;
-    el.className = 'offline-banner show mode-reconnect';
+    el.className = 'show mode-reconnect';
+    el.style.display = '';
     el.innerHTML = '🔗 Drive desconectado &nbsp;·&nbsp; <u>Toque aqui para reconectar</u>';
     el.onclick = () => GDrive.reconnectDrive();
-    el.style.display = 'block';
   },
 
   reconnectDrive() {
