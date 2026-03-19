@@ -3239,7 +3239,8 @@ const GDrive = {
         callback: (resp) => self._onToken(resp),
         error_callback: (err) => {
           console.warn('GDrive: GIS error', err);
-          self._showLoginBtn();
+          // Só volta para login se o usuário não estiver autenticado
+          if (!self.accessToken) self._showLoginBtn();
         },
       });
       self._gisReady = true;
