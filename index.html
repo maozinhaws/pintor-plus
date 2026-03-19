@@ -832,9 +832,12 @@ body.kb-open .title-big { font-size: 14px; }
                 <div class="gd-uemail" id="gd-uemail"></div>
               </div>
             </div>
-            <div class="gd-status" id="gd-status-bar">
-              <span class="gd-dot off" id="gd-dot"></span>
-              <span id="gd-status-text">Pronto</span>
+            <div class="gd-status" id="gd-status-bar" style="justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="gd-dot off" id="gd-dot"></span>
+                <span id="gd-status-text">Pronto</span>
+              </div>
+              <button id="gd-reconnect-btn" onclick="GDrive.reconnectDrive()" style="display:none;font-size:11px;padding:3px 10px;border-radius:6px;border:1.5px solid var(--am);background:none;color:var(--am);cursor:pointer;font-weight:700;font-family:inherit;">Reconectar</button>
             </div>
             <button class="gd-btn gd-btn-primary" onclick="GDrive.syncNow()" id="gd-btn-sync">
               🔄 Sincronizar Agora
@@ -3349,7 +3352,7 @@ const GDrive = {
     setTimeout(() => {
       if (!this._gapiReady || !this._gisReady) {
         if (!this._sessionLoaded) this._showLoginBtn();
-        else this._showReconnectBanner();
+        else this._setStatus('off', 'Drive desconectado');
       }
     }, 8000);
   },
@@ -3364,6 +3367,7 @@ const GDrive = {
       this.user = s;
       this._sessionLoaded = true;
       this._showLoggedIn();
+      this._setStatus('off', 'Reconectando ao Drive...');
       if (_hasAcceptedTerms(s.email)) {
         showPage('pg-home');
         renderHomeMini(); renderHomeEvents(); renderHomeNews();
@@ -3401,10 +3405,13 @@ const GDrive = {
         callback: (resp) => self._onToken(resp),
         error_callback: (err) => {
           console.warn('GDrive: GIS error', err);
-          // Se tem sessão local, mostra banner de reconexão; senão, exibe login
           if (!self.accessToken) {
-            if (self._sessionLoaded) self._showReconnectBanner();
-            else self._showLoginBtn();
+            if (self._sessionLoaded) {
+              // Sessão existe mas token falhou — atualiza status no backup silenciosamente
+              self._setStatus('off', 'Drive desconectado');
+            } else {
+              self._showLoginBtn();
+            }
           }
         },
       });
@@ -3421,7 +3428,8 @@ const GDrive = {
       if (savedEmail) {
         this.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
       } else {
-        this._showReconnectBanner();
+        // Sem email salvo — status silencioso, usuário reconecta pelo backup
+        this._setStatus('off', 'Drive desconectado');
       }
     } else {
       // Primeira vez: mostra botão de login
@@ -3613,13 +3621,26 @@ const GDrive = {
 
   // ── AÇÕES DO USUÁRIO ──────────────────────────────────────
   async syncNow() {
-    if (!this.accessToken) { toast('⚠️ Faça login primeiro'); return; }
+    if (!this.accessToken) {
+      if (this._sessionLoaded) {
+        this.pendingSync = true;
+        toast('🔗 Reconectando ao Drive...');
+        this.reconnectDrive();
+      } else {
+        toast('⚠️ Faça login primeiro');
+      }
+      return;
+    }
     await this.saveToDrive();
     toast('☁️ Sincronizado!');
   },
 
   async restoreFromDrive() {
-    if (!this.accessToken) { toast('⚠️ Faça login primeiro'); return; }
+    if (!this.accessToken) {
+      if (this._sessionLoaded) { this.pendingSync = false; toast('🔗 Reconectando ao Drive...'); this.reconnectDrive(); }
+      else { toast('⚠️ Faça login primeiro'); }
+      return;
+    }
     this._setStatus('sync', 'Baixando do Drive...');
     const data = await this.readFromDrive();
     if (!data || !data.orcs) {
@@ -3752,8 +3773,10 @@ const GDrive = {
   _setStatus(state, msg) {
     const dot = document.getElementById('gd-dot');
     const txt = document.getElementById('gd-status-text');
+    const btn = document.getElementById('gd-reconnect-btn');
     if (dot) dot.className = 'gd-dot ' + state;
     if (txt) txt.textContent = msg || '';
+    if (btn) btn.style.display = (state === 'off' || state === 'err') && this._sessionLoaded ? 'inline-block' : 'none';
   },
 };
 
@@ -3771,7 +3794,8 @@ if (document.readyState === 'loading') {
 const GCalendar = {
   async _ensureAuth() {
     if (GDrive.accessToken) return true;
-    toast('⚠️ Conecte sua conta Google primeiro (Backup → Entrar com Google).');
+    if (GDrive._sessionLoaded) { toast('🔗 Reconectando ao Drive...'); GDrive.reconnectDrive(); }
+    else { toast('⚠️ Faça login com Google na tela de Backup.'); }
     return false;
   },
 
@@ -3858,7 +3882,8 @@ const GContacts = {
 
   async _ensureAuth() {
     if (GDrive.accessToken) return true;
-    toast('⚠️ Conecte sua conta Google primeiro (Backup → Entrar com Google).');
+    if (GDrive._sessionLoaded) { toast('🔗 Reconectando ao Drive...'); GDrive.reconnectDrive(); }
+    else { toast('⚠️ Faça login com Google na tela de Backup.'); }
     return false;
   },
 
@@ -4025,7 +4050,8 @@ const GPhotos = {
 
   async _ensureAuth() {
     if (GDrive.accessToken) return true;
-    toast('⚠️ Conecte sua conta Google primeiro (Backup → Entrar com Google).');
+    if (GDrive._sessionLoaded) { toast('🔗 Reconectando ao Drive...'); GDrive.reconnectDrive(); }
+    else { toast('⚠️ Faça login com Google na tela de Backup.'); }
     return false;
   },
 
