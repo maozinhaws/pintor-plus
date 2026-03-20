@@ -4095,21 +4095,27 @@ const GContacts = {
   },
 
   async _fetchContacts() {
-    // Usa fetch() direto com Authorization header — sem dependência de gapi discovery doc
-    const url = 'https://people.googleapis.com/v1/people/me/connections'
-      + '?pageSize=500&personFields=names,phoneNumbers,emailAddresses,addresses'
+    // Busca todos os contatos com paginação (nextPageToken) — pageSize máximo é 1000
+    const baseUrl = 'https://people.googleapis.com/v1/people/me/connections'
+      + '?pageSize=1000&personFields=names,phoneNumbers,emailAddresses,addresses'
       + '&sortOrder=FIRST_NAME_ASCENDING';
-    const resp = await fetch(url, {
-      headers: { Authorization: 'Bearer ' + GDrive.accessToken },
-    });
-    if (!resp.ok) {
-      const err = new Error('HTTP ' + resp.status);
-      err.status = resp.status;
-      throw err;
-    }
-    const data = await resp.json();
-    const conns = data.connections || [];
-    return conns.map(c => ({
+    let allConns = [];
+    let pageToken = null;
+    do {
+      const url = pageToken ? baseUrl + '&pageToken=' + encodeURIComponent(pageToken) : baseUrl;
+      const resp = await fetch(url, {
+        headers: { Authorization: 'Bearer ' + GDrive.accessToken },
+      });
+      if (!resp.ok) {
+        const err = new Error('HTTP ' + resp.status);
+        err.status = resp.status;
+        throw err;
+      }
+      const data = await resp.json();
+      allConns = allConns.concat(data.connections || []);
+      pageToken = data.nextPageToken || null;
+    } while (pageToken);
+    return allConns.map(c => ({
       nome: c.names?.[0]?.displayName || '',
       tel: c.phoneNumbers?.[0]?.value || '',
       email: c.emailAddresses?.[0]?.value || '',
