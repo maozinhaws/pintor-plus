@@ -140,7 +140,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#F3F4F6;display:flex
 .hoc{background:#fff;border-radius:16px;border:1px solid var(--bdr);padding:16px;margin-bottom:12px;box-shadow:var(--sh);transition:transform .2s;}
 .hoc:active{transform:scale(.98);}
 .hot{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-.hon{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.hon{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px;}
 .hos{font-size:12px;color:var(--ink3);}
 .hbadge{display:inline-flex;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
 .hbadge.hby{background:var(--aml);color:#92400E;}.hbadge.hbg{background:var(--gnl);color:#065F46;}.hbadge.hbb{background:var(--bll);color:var(--bld);}.hbadge.hbr{background:var(--rdl);color:var(--rd);}
@@ -148,7 +148,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#F3F4F6;display:flex
 .hood{font-size:11px;color:var(--ink3);}.hoov{font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--bl);}
 .hoas{display:flex;gap:6px;}
 .hoa{flex:1;height:36px;border-radius:9px;border:none;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
-.hoa.wa{background:#E5DDD5;color:#111;}.hoa.ok{background:var(--bll);color:var(--bl);}.hoa.recibo{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0;}.hoa:active{opacity:.7;}
+.hoa.wa{background:#E5DDD5;color:#111;}.hoa.ok{background:var(--bll);color:var(--bl);}.hoa:active{opacity:.7;}
+/* 3-dot card menu */
+.card-menu-wrap{position:relative;flex-shrink:0;}
+.card-menu-btn{width:34px;height:36px;border-radius:9px;border:1.5px solid var(--bdr);background:var(--bg-input);color:var(--ink2);font-size:18px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;letter-spacing:1px;line-height:1;padding:0;}
+.card-menu-btn:active{opacity:.7;}
+.card-menu-drop{position:absolute;right:0;top:calc(100% + 4px);z-index:200;background:var(--bg-modal);border:1px solid var(--bdr);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.18);min-width:170px;overflow:hidden;display:none;}
+.cmd-item{padding:11px 16px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:8px;}
+.cmd-item:hover,.cmd-item:active{background:var(--bg2);}
+.cmd-item.cmd-danger{color:var(--rd);}
+.cmd-item.cmd-disabled{color:var(--ink3);cursor:default;opacity:.5;}
 .theme-sw-wrap { display: flex; align-items: center; gap: 8px; background: var(--bg2); padding: 4px 8px; border-radius: 100px; border: 1.5px solid var(--bdr); }
 .theme-sw { width: 40px; height: 22px; border-radius: 20px; background: var(--bdr-input); position: relative; cursor: pointer; transition: background 0.3s; }
 .theme-sw::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: transform 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
@@ -269,13 +278,6 @@ body.acessivel .hm-name { font-size: 26px !important; }
 .srch-bar::placeholder{color:var(--ink3);}
 .srch-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none;display:flex;}
 .srch-empty{text-align:center;padding:28px 16px;background:var(--bg-card-alt);border-radius:14px;border:1px solid var(--bdr);font-size:13px;color:var(--ink3);}
-/* ── PWA Banner ── */
-.pwa-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:16px;cursor:pointer;box-shadow:0 6px 18px rgba(124,58,237,.3);}
-.pwa-banner-ico{font-size:22px;flex-shrink:0;}
-.pwa-banner-text{flex:1;}
-.pwa-banner-title{font-size:13px;font-weight:800;}
-.pwa-banner-sub{font-size:11px;opacity:.8;margin-top:2px;}
-.pwa-banner-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}
 .wizard-nav { display: flex; margin-top: 12px; justify-content: space-between; }
 .wbtn-back, .wbtn-next { height: 44px; border-radius: 14px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .15s; }
 .wbtn-back { min-width: 100px; padding: 0 16px; background: var(--bg2); border: 1.5px solid var(--bdr); color: var(--ink2); }
@@ -470,6 +472,7 @@ body.kb-open .title-big { font-size: 14px; }
 <symbol id="ico-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
 <symbol id="ico-headphones" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
 <symbol id="ico-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+<symbol id="ico-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="12" y1="17" x2="8" y2="17"/><line x1="16" y1="17" x2="14" y2="17"/></symbol>
 </svg>
 
 <div id="offline-banner"></div>
@@ -535,29 +538,20 @@ body.kb-open .title-big { font-size: 14px; }
           </button>
         </div>
         
-        <!-- Banner PWA Install -->
-        <div id="pwa-banner" class="pwa-banner" style="display:none;" onclick="installPWA()">
-          <div class="pwa-banner-ico"><svg class="ico" aria-hidden="true" style="width:1.4em;height:1.4em;"><use href="#ico-download"/></svg></div>
-          <div class="pwa-banner-text">
-            <div class="pwa-banner-title">Instale o Pintor Plus</div>
-            <div class="pwa-banner-sub">Acesse offline, sem abrir o browser</div>
-          </div>
-          <button class="pwa-banner-close" onclick="event.stopPropagation();dismissPWABanner()">✕</button>
-        </div>
 
-        <div class="sec-title" style="margin-bottom:12px; font-size: 11px; text-transform: uppercase;">Últimos Orçamentos</div>
+        <div class="sec-title" style="margin-bottom:12px; font-size: 13px; font-weight: 900; letter-spacing: -.1px;">Últimos Orçamentos</div>
         <div id="home-orcs-mini"></div>
         <button onclick="homeTab('orcamentos')" style="width:100%; height:40px; border-radius:10px; background:var(--bg-input); color:var(--bl); border:1.5px solid var(--bdr-input); font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; margin-top:4px; margin-bottom:24px;">
           Ver todos os orçamentos
         </button>
 
-        <div class="sec-title" style="margin-bottom:12px; font-size: 11px; text-transform: uppercase;">Eventos da Semana (7 dias)</div>
+        <div class="sec-title" style="margin-bottom:12px; font-size: 13px; font-weight: 900; letter-spacing: -.1px;">Eventos da Semana (7 dias)</div>
         <div id="home-events-mini"></div>
         <button onclick="homeTab('agenda')" style="width:100%; height:40px; border-radius:10px; background:var(--bg-input); color:var(--bl); border:1.5px solid var(--bdr-input); font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; margin-top:4px; margin-bottom:24px;">
           Ir para a Agenda
         </button>
 
-        <div class="sec-title" style="margin-bottom:12px; font-size: 11px; text-transform: uppercase;">Notícias do Setor</div>
+        <div class="sec-title" style="margin-bottom:12px; font-size: 13px; font-weight: 900; letter-spacing: -.1px;">Notícias do Setor</div>
         <div id="home-news-mini">
            <div style="text-align:center; padding:16px; font-size:12px; color:var(--ink3);">A carregar notícias...</div>
         </div>
@@ -1195,7 +1189,7 @@ body.kb-open .title-big { font-size: 14px; }
     .theme-toggle{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:14px;z-index:12;width:132px;height:56px;border:none;border-radius:999px;background:#F7F9FC;box-shadow:inset 0 0 0 1px rgba(203,213,225,.75),0 8px 22px rgba(15,23,42,.10);display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer}.theme-toggle .theme-icon{font-size:24px;line-height:1;position:relative;z-index:2}.theme-toggle .theme-track{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:38px;border-radius:999px;background:#D9E2EC;transition:background-color .25s ease}.theme-toggle .theme-knob{position:absolute;left:31px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;background:#fff;box-shadow:0 3px 10px rgba(15,23,42,.12);transition:left .25s ease, background-color .25s ease}.theme-toggle.is-dark{background:#EEF2F7;box-shadow:inset 0 0 0 1px rgba(71,85,105,.32),0 8px 22px rgba(0,0,0,.18)}.theme-toggle.is-dark .theme-track{background:#CBD5E1}.theme-toggle.is-dark .theme-knob{left:57px;background:#fff}
     .hero{flex-shrink:0;background:linear-gradient(135deg,var(--primary-a),var(--primary-b));color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 10px;border-radius:0 0 22px 22px;box-shadow:0 10px 24px rgba(124,58,237,.22);transition:opacity .25s ease, transform .25s ease}
     .hero.dimmed{opacity:.78;transform:translateY(-2px)}
-    .hero h1{font-size:15px;line-height:1.18;letter-spacing:-.2px;font-weight:400;padding-right:54px}
+    .hero h1{font-size:15px;line-height:1.18;letter-spacing:-.2px;font-weight:400;text-align:center;padding-left:58px;padding-right:14px;}
     .steps{display:flex;gap:6px;margin-top:8px}.step-pill{flex:1;height:5px;border-radius:999px;background:rgba(255,255,255,.24);overflow:hidden}.step-pill>span{display:block;width:0;height:100%;background:#fff;border-radius:999px;transition:width .25s ease}
     .screen{flex:1;min-height:0;position:relative;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px));overflow:hidden;touch-action:pan-y}
     .transition-overlay{position:absolute;inset:0;z-index:8;pointer-events:none;opacity:0;overflow:hidden;background:linear-gradient(90deg, rgba(2,6,23,.16) 0%, rgba(2,6,23,.38) 18%, rgba(124,58,237,.28) 36%, rgba(249,115,22,.34) 52%, rgba(2,6,23,.30) 72%, rgba(2,6,23,.10) 100%)}
@@ -1279,7 +1273,7 @@ body.kb-open .title-big { font-size: 14px; }
         </div>
       </div>
       <section class=&quot;hero&quot; id=&quot;hero&quot;>
-        <h1 style=&quot;font-size:1.1em;line-height:1.3;&quot;><strong>Capture agora. Complete depois.</strong><br><span style=&quot;font-weight:400;font-size:.9em;opacity:.85;&quot;>Versão rápida para visita técnica.</span></h1>
+        <h1 style=&quot;font-size:1.1em;line-height:1.3;&quot;><strong>Comece agora. Termine depois.</strong><br><span style=&quot;font-weight:400;font-size:.9em;opacity:.85;&quot;>Versão rápida para visita técnica</span></h1>
         <div class=&quot;steps&quot;>
           <div class=&quot;step-pill&quot;><span id=&quot;pill1&quot;></span></div>
           <div class=&quot;step-pill&quot;><span id=&quot;pill2&quot;></span></div>
@@ -1428,15 +1422,13 @@ body.kb-open .title-big { font-size: 14px; }
   </div>
   <!-- Modal Sair -->
   <div id=&quot;exitModal&quot; onclick=&quot;if(event.target===this)closeExitModal(false)&quot; style=&quot;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;&quot;>
-    <div style=&quot;background:#fff;padding:24px;border-radius:20px;width:100%;max-width:320px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.2);&quot;>
-      <div style=&quot;font-size:18px;font-weight:800;color:#0f172a;margin-bottom:12px;&quot;>Sair sem salvar?</div>
-      <div style=&quot;font-size:14px;line-height:1.4;color:#64748b;margin-bottom:20px;&quot;>Você tem dados em andamento. As alterações serão perdidas.</div>
-      <label style=&quot;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600;color:#334155;margin-bottom:24px;cursor:pointer;&quot;>
-        <input type=&quot;checkbox&quot; id=&quot;exitSkipCheck&quot; style=&quot;width:18px;height:18px;accent-color:#7c3aed;cursor:pointer;&quot;> Não perguntar novamente
-      </label>
-      <div style=&quot;display:flex;gap:12px;&quot;>
-        <button onclick=&quot;closeExitModal(false)&quot; style=&quot;flex:1;height:48px;border-radius:12px;border:1.5px solid #cbd5e1;background:#f8fafc;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#334155;cursor:pointer;&quot;>Cancelar</button>
-        <button id=&quot;btnConfirmExit&quot; onclick=&quot;closeExitModal(true)&quot; style=&quot;flex:1;height:48px;border-radius:12px;border:none;background:#fee2e2;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#dc2626;cursor:not-allowed;opacity:0.5;&quot;>Aguarde 5s</button>
+    <div style=&quot;background:#fff;padding:24px;border-radius:20px;width:100%;max-width:320px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.2);position:relative;&quot;>
+      <button onclick=&quot;closeExitModal(false)&quot; style=&quot;position:absolute;top:10px;right:10px;background:#fee2e2;border:none;width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:800;color:#dc2626;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;&quot;>✕</button>
+      <div style=&quot;font-size:18px;font-weight:800;color:#0f172a;margin-bottom:8px;&quot;>O que deseja fazer?</div>
+      <div style=&quot;font-size:13px;line-height:1.5;color:#64748b;margin-bottom:20px;&quot;>Você pode salvar um rascunho para continuar depois ou sair sem salvar.</div>
+      <div style=&quot;display:flex;flex-direction:column;gap:10px;&quot;>
+        <button onclick=&quot;saveDraftAndExit()&quot; style=&quot;width:100%;height:48px;border-radius:12px;border:none;background:#7c3aed;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#fff;cursor:pointer;&quot;>💾 Salvar Rascunho</button>
+        <button onclick=&quot;closeExitModal(true)&quot; style=&quot;width:100%;height:44px;border-radius:12px;border:1.5px solid #cbd5e1;background:#f8fafc;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#dc2626;cursor:pointer;&quot;>Sair sem salvar</button>
       </div>
     </div>
   </div>
@@ -1502,12 +1494,11 @@ body.kb-open .title-big { font-size: 14px; }
     function setValueMode(mode){ state.valueMode = state.valueMode===mode ? null : mode; const tA=state.valueMode==='total', m2A=state.valueMode==='m2'; els.optionValorTotal.classList.toggle('active',tA); els.optionValorTotal.setAttribute('aria-pressed',tA?'true':'false'); els.optionValorM2.classList.toggle('active',m2A); els.optionValorM2.setAttribute('aria-pressed',m2A?'true':'false'); updateSummary(); }
     function setupSwipe(){ let sx=0,sy=0,cx=0,tk=false; els.screen.addEventListener('touchstart',e=>{ if(els.itemModal.classList.contains('open')||els.cameraModal.classList.contains('open'))return; const t=e.changedTouches[0]; sx=t.clientX; sy=t.clientY; cx=t.clientX; tk=true; },{passive:true}); els.screen.addEventListener('touchmove',e=>{ if(!tk)return; cx=e.changedTouches[0].clientX; },{passive:true}); els.screen.addEventListener('touchend',e=>{ if(!tk||els.itemModal.classList.contains('open')||els.cameraModal.classList.contains('open'))return; const t=e.changedTouches[0]; const dx=(t.clientX||cx)-sx; const dy=Math.abs(t.clientY-sy); tk=false; if(dy>60||Math.abs(dx)<42)return; if(dx<0){if(state.currentStep===1){if(validateStep1(true))goStep(2);}else if(state.currentStep===2)goStep(3);}else{if(state.currentStep===3)goStep(2);else if(state.currentStep===2)goStep(1);} },{passive:true}); }
     // Modal sair com timer
-    let _exitTimer=null, _skipExit=false;
-    function openExitModal(){ if(_skipExit){notifyParentExit();return;} document.getElementById('exitModal').style.display='flex'; document.getElementById('exitSkipCheck').checked=false; const btn=document.getElementById('btnConfirmExit'); btn.style.opacity='0.5'; btn.style.cursor='not-allowed'; let secs=3; clearInterval(_exitTimer); _exitTimer=setInterval(()=>{ secs--; if(secs<=0){clearInterval(_exitTimer);btn.style.opacity='1';btn.style.cursor='pointer';btn.textContent='Sim, sair';}else{btn.textContent=`Aguarde ${secs}s`;} },1000); }
-    function closeExitModal(proceed){ clearInterval(_exitTimer); if(document.getElementById('exitSkipCheck').checked)_skipExit=true; document.getElementById('exitModal').style.display='none'; if(proceed)notifyParentExit(); }
+    function openExitModal(){ document.getElementById('exitModal').style.display='flex'; }
+    function closeExitModal(proceed){ document.getElementById('exitModal').style.display='none'; if(proceed)notifyParentExit(); }
+    function saveDraftAndExit(){ saveDraft(); }
     function notifyParentExit(){
-      // Auto-salva rascunho antes de sair
-      try { const d={cliente:els.cliente.value.trim(),telefone:els.telefone.value.trim(),items:state.items,valueMode:state.valueMode,valorTexto:els.valorTexto.value,atualizadoEm:new Date().toISOString()}; localStorage.setItem('orcamento-pocket-draft',JSON.stringify(d)); } catch(e){}
+      // Sai sem salvar
       try{ window.parent.postMessage({type:'flash-exit'}, window.parent.location.origin || '*'); }catch(e){}
     }
     els.btnIrItens.addEventListener('click', () => { if (!validateStep1(true)) { if (!validateFullName(els.cliente.value)) els.cliente.focus(); else els.telefone.focus(); return; } goStep(2); });
@@ -1553,7 +1544,7 @@ body.kb-open .title-big { font-size: 14px; }
     <div class="sidebar-hdr">
       <div style="display:flex; align-items:center; gap:12px; flex-direction: row;">
         <!-- IMPLEMENTAÇÃO: LOGÓTIPO PADRÃO DO MENU -->
-        <img id="sidebar-logo-img" src="https://lh3.googleusercontent.com/d/1WJXU6NvZ12GeL3GA4NzzGeGeaZvHpkfn" style="width:36px; height:36px; border-radius:50%; object-fit:cover; display:block; border:1.5px solid var(--bdr-input); background-color: #ffffff;">
+        <img id="sidebar-logo-img" src="/apple-touch-icon.png" style="width:36px; height:36px; border-radius:50%; object-fit:cover; display:block; border:1.5px solid var(--bdr-input); background-color: #ffffff;">
         <div class="hm-name" style="font-size:18px;">Menu</div>
       </div>
       <button onclick="toggleSidebar()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink2);"><svg class="ico" aria-hidden="true"><use href="#ico-x"/></svg></button>
@@ -1803,12 +1794,10 @@ body.kb-open .title-big { font-size: 14px; }
   <div id="confirm-modal" style="display:none;"></div>
 
   <div id="del-confirm-modal" onclick="if(event.target===this) closeDelConfirm(false)" class="glass-overlay">
-    <div class="modal-box" style="padding:24px; max-width:320px;">
+    <div class="modal-box" style="padding:24px; max-width:320px; position:relative;">
+      <button onclick="closeDelConfirm(false)" style="position:absolute;top:10px;right:10px;background:#fee2e2;border:none;width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:800;color:var(--rd);cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>
       <div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:12px;">Confirmar Exclusão</div>
-      <div id="del-confirm-msg" style="font-size:14px;line-height:1.4;color:var(--ink3);margin-bottom:20px;">Tem certeza?</div>
-      <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:24px;cursor:pointer;">
-        <input type="checkbox" id="del-confirm-skip" style="width:18px;height:18px;accent-color:var(--bl);cursor:pointer;"> Não perguntar novamente
-      </label>
+      <div id="del-confirm-msg" style="font-size:14px;line-height:1.4;color:var(--ink3);margin-bottom:24px;">Tem certeza?</div>
       <div style="display:flex;gap:12px;">
         <button onclick="closeDelConfirm(false)" style="flex:1;height:48px;border-radius:12px;border:1.5px solid var(--bdr-input);background:var(--bg-input);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;">Cancelar</button>
         <button onclick="closeDelConfirm(true)" style="flex:1;height:48px;border-radius:12px;border:none;background:var(--rdl);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--rd);cursor:pointer;">Sim, Excluir</button>
@@ -2287,8 +2276,8 @@ function canNavigateAsync(callback) { if (S.isDirty) { _autoSaveRascunho(); } ca
 function closeConfirm(proceed) { if (proceed) canNavigateAsync(() => {}); }
 
 let pendingDelAction = null;
-function askDelete(msg, action) { if (S.config.skipDelConfirm) { action(); } else { document.getElementById('del-confirm-msg').textContent = msg; document.getElementById('del-confirm-skip').checked = false; document.getElementById('del-confirm-modal').style.display = 'flex'; pendingDelAction = action; } }
-function closeDelConfirm(proceed) { const skip = document.getElementById('del-confirm-skip').checked; document.getElementById('del-confirm-modal').style.display = 'none'; if (proceed) { if (skip) { S.config.skipDelConfirm = true; localStorage.setItem('pp-config', JSON.stringify(S.config)); } if (pendingDelAction) pendingDelAction(); } pendingDelAction = null; }
+function askDelete(msg, action) { document.getElementById('del-confirm-msg').textContent = msg; document.getElementById('del-confirm-modal').style.display = 'flex'; pendingDelAction = action; }
+function closeDelConfirm(proceed) { document.getElementById('del-confirm-modal').style.display = 'none'; if (proceed && pendingDelAction) pendingDelAction(); pendingDelAction = null; }
 function restoreDelConfirms() { S.config.skipDelConfirm = false; localStorage.setItem('pp-config', JSON.stringify(S.config)); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Alertas ativados!'); }
 function restoreDirtyConfirm() { S.config.skipDirtyConfirm = false; localStorage.setItem('pp-config', JSON.stringify(S.config)); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Aviso ativado!'); }
 window.addEventListener('beforeunload', () => {
@@ -3269,7 +3258,8 @@ function renderLogoPreview() {
   const txt = document.getElementById('cfg-logo-placeholder'); 
   const homeImg = document.getElementById('home-logo-img'); 
   const sideImg = document.getElementById('sidebar-logo-img'); 
-  if(sideImg) { sideImg.src = userLogo || menuDefaultLogo; sideImg.style.display = 'block'; }
+  // Sidebar sempre exibe o favicon do Pintor Plus (não o logo da empresa)
+  if(sideImg) { sideImg.src = '/apple-touch-icon.png'; sideImg.style.display = 'block'; }
 
   // Lógica Opcional: Ecrã Home e Menu de Configurações (Apenas exibem se o user fez upload de foto)
   if(userLogo) {
@@ -3380,7 +3370,7 @@ function renderHomeMini() {
   
   const wrap=document.getElementById('home-orcs-mini');if(!wrap)return;
   if(!S.orcs.length){ wrap.innerHTML='<div style="text-align:center;padding:16px;background:var(--bg-card);border-radius:12px;border:1px solid var(--bdr);font-size:12px;color:var(--ink3);margin-bottom:8px;">Nenhum orçamento registado ainda.</div>'; return; }
-  wrap.innerHTML=S.orcs.slice(0,3).map((o,i)=>{ let tot = calcOrcTotal(o); const isR=(o.status||'')==='Rascunho'; const rTag=isR?`<span class="badge-rascunho">Rascunho</span>`:''; const badgeHtml=isR?'':(`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`); const waUrl=(()=>{const tel=(o.tel||'').replace(/\D/g,'');return tel?`https://wa.me/55${tel}?text=${encodeURIComponent(buildWAMsg(o))}`:`https://wa.me/?text=${encodeURIComponent(buildWAMsg(o))}`;})(); return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:9px;"><div class="hot" style="margin-bottom:6px;"><div><div class="hon">${o.nome||'(sem nome)'}${rTag}</div><div class="hos">${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">${badgeHtml}<div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div></div><div class="hoas"><button class="hoa wa" onclick="window.open('${waUrl}','_blank')" title="WhatsApp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></button><button class="hoa recibo" onclick="abrirModalRecibo(${i})" title="Recibo"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg></button><button class="hoa ok" onclick="editOrc(${i})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?',()=>delOrc(${i}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button></div></div>`; }).join('');
+  wrap.innerHTML=S.orcs.slice(0,3).map((o,sliceIdx)=>{ const realIdx=sliceIdx; let tot=calcOrcTotal(o); const isR=(o.status||'').includes('Rascunho'); const rTag=isR?`<span class="badge-rascunho">Rascunho</span>`:''; const badgeHtml=isR?'':(`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`); const menuId=`cm-h-${realIdx}`; return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:9px;"><div class="hot" style="margin-bottom:6px;"><div><div class="hon">${o.nome||'(sem nome)'}${rTag}</div><div class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">${badgeHtml}<div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div></div><div class="hoas" style="justify-content:flex-end;">${_buildCardMenu(menuId,realIdx,o)}</div></div>`; }).join('');
 }
 
 // --- MÓDULO: EVENTOS DA SEMANA NA HOME ---
@@ -3484,11 +3474,11 @@ function renderOrcamentosList() {
     const isRascunho=(o.status||'')==='Rascunho';
     const rascunhoTag=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:'';
     const badgeHtml=isRascunho?'':`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
-    return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button><button class="hoa ok" onclick="editOrc(${i})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button><button class="hoa recibo" onclick="event.stopPropagation();abrirModalRecibo(${i})" title="Gerar Recibo"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Recibo</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?',()=>delOrc(${i}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button></div></div>`;
+    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas" style="justify-content:flex-end;">${_buildCardMenu(menuId,i,o)}</div></div>`;
   }).join('');
 }
 
-function delOrc(i){ S.orcs.splice(i,1); _saveOrcs(); renderOrcamentosList(); toast('<svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg> Removido'); }
+function delOrc(i){ S.orcs.splice(i,1); _saveOrcs(); renderOrcamentosList(); renderHomeMini(); toast('<svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg> Removido'); }
 
 // ── RECIBO ────────────────────────────────────────────────────────
 let _reciboOrcIdx = -1;
@@ -3776,6 +3766,40 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
 
 
 
+// ── X CLOSE BUTTON — injeta em todos os modais ──────────────────────────
+(function _injectModalCloseButtons() {
+  // Mapa de modais com funções de fechar específicas
+  const closeFnMap = {
+    'backup-confirm-modal': () => closeBackupModal(false),
+    'cfg-save-modal': () => { document.getElementById('cfg-save-modal').style.display='none'; _cfgDirty=false; },
+    'del-confirm-modal': () => closeDelConfirm(false),
+    'modal-edit-client': () => { document.getElementById('modal-edit-client').style.display='none'; },
+    'modal-edit-fornecedor': () => { document.getElementById('modal-edit-fornecedor').style.display='none'; },
+    'services-modal': () => closeServicesModal(),
+    'item-modal-form': () => cancelItemModal(),
+  };
+
+  document.querySelectorAll('.glass-overlay, [id$="-modal"]').forEach(overlay => {
+    const box = overlay.querySelector('.modal-box, [style*="border-radius"]');
+    if (!box || box.querySelector('.modal-x-btn')) return;
+    // Já tem position:relative ou podemos adicionar
+    const currentPos = window.getComputedStyle(box).position;
+    if (currentPos === 'static') box.style.position = 'relative';
+
+    const btn = document.createElement('button');
+    btn.className = 'modal-x-btn';
+    btn.setAttribute('aria-label', 'Fechar');
+    btn.innerHTML = '✕';
+    btn.style.cssText = 'position:absolute;top:10px;right:10px;background:#fee2e2;border:none;width:28px;height:28px;border-radius:50%;font-size:13px;font-weight:900;color:#dc2626;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;z-index:10;flex-shrink:0;';
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      const fn = closeFnMap[overlay.id];
+      if (fn) { fn(); } else { overlay.style.display = 'none'; }
+    };
+    box.insertBefore(btn, box.firstChild);
+  });
+})();
+
 // ══════════════════════════════════════════════
 // APP FLASH — Integração com PintorPlus
 // ══════════════════════════════════════════════
@@ -3783,8 +3807,12 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
 
     // Abre o App Flash
   window.openFlash = function() {
+    // Limpa rascunho anterior para sempre começar em branco
+    localStorage.removeItem('orcamento-pocket-draft');
     const iframe = document.getElementById('flash-iframe');
-    if (iframe && !iframe.srcdoc) {
+    if (iframe) {
+      // Força recarga do iframe para limpar estado interno
+      iframe.srcdoc = '';
       iframe.srcdoc = iframe.getAttribute('data-srcdoc') || '';
     }
     // Sync tema atual com Flash após carregamento
@@ -4925,34 +4953,42 @@ const GPhotos = {
   },
 };
 
-// ─── PWA Install Banner ────────────────────────────────────────────────────
-let _deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  _deferredPrompt = e;
-  if (!localStorage.getItem('pp-pwa-dismissed')) {
-    const el = document.getElementById('pwa-banner');
-    if (el) el.style.display = 'flex';
-  }
-});
-window.addEventListener('appinstalled', () => {
-  const el = document.getElementById('pwa-banner');
-  if (el) el.style.display = 'none';
-  _deferredPrompt = null;
-});
-function installPWA() {
-  if (!_deferredPrompt) return;
-  _deferredPrompt.prompt();
-  _deferredPrompt.userChoice.then(() => {
-    const el = document.getElementById('pwa-banner');
-    if (el) el.style.display = 'none';
-    _deferredPrompt = null;
-  });
+
+// ─── 3-DOT CARD MENU ──────────────────────────────────────────────────────
+function toggleCardMenu(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isOpen = el.style.display !== 'none';
+  closeCardMenus();
+  if (!isOpen) { el.style.display = 'block'; }
 }
-function dismissPWABanner() {
-  const el = document.getElementById('pwa-banner');
-  if (el) el.style.display = 'none';
-  localStorage.setItem('pp-pwa-dismissed', '1');
+function closeCardMenus() {
+  document.querySelectorAll('.card-menu-drop').forEach(el => el.style.display = 'none');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.card-menu-wrap')) closeCardMenus();
+});
+
+function _canRecibo(o) {
+  const s = (o.status || '').toLowerCase();
+  return !o.isFlashDraft && !['rascunho', 'pendente', 'em andamento'].some(x => s.includes(x));
+}
+
+function _buildCardMenu(menuId, realIdx, o) {
+  const tel = (o.tel || '').replace(/\D/g, '');
+  const waUrl = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(buildWAMsg(o))}` : `https://wa.me/?text=${encodeURIComponent(buildWAMsg(o))}`;
+  const canR = _canRecibo(o);
+  return `<div class="card-menu-wrap">
+    <button class="card-menu-btn" onclick="event.stopPropagation();toggleCardMenu('${menuId}')" title="Ações">⋯</button>
+    <div id="${menuId}" class="card-menu-drop">
+      <div class="cmd-item" onclick="closeCardMenus();editOrc(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</div>
+      <div class="cmd-item" onclick="closeCardMenus();window.open('${waUrl}','_blank')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> WhatsApp</div>
+      ${canR
+        ? `<div class="cmd-item" onclick="closeCardMenus();abrirModalRecibo(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Gerar Recibo</div>`
+        : `<div class="cmd-item cmd-disabled"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Recibo indisponível</div>`}
+      <div class="cmd-item cmd-danger" onclick="closeCardMenus();askDelete('Excluir este orçamento?',()=>delOrc(${realIdx}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg> Excluir</div>
+    </div>
+  </div>`;
 }
 
 // ─── SUPORTE / BUG REPORT ─────────────────────────────────────────────────
