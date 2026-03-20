@@ -555,6 +555,10 @@ body.kb-open .title-big { font-size: 14px; }
           Aceder à Revista Completa
         </button>
 
+        <div style="text-align:center;padding:8px 0 4px;">
+          <a href="/privacy-policy.html" style="font-size:11px;color:var(--ink3);text-decoration:none;border-bottom:1px solid var(--bdr);">Política de Privacidade e Termos de Uso</a>
+        </div>
+
         <div style="height:24px;"></div>
       </div>
     </div>
@@ -1540,7 +1544,7 @@ body.kb-open .title-big { font-size: 14px; }
       <div class="sidebar-link" onclick="toggleSidebar(); homeTab('agenda')"><svg class="ico" aria-hidden="true"><use href="#ico-calendar"/></svg> Agenda e Lembretes</div>
       <div class="sidebar-link" onclick="toggleSidebar(); homeTab('backup')"><svg class="ico" aria-hidden="true"><use href="#ico-database"/></svg> Backup</div>
       <div class="sidebar-link" onclick="toggleSidebar(); openConfig()"><svg class="ico" aria-hidden="true"><use href="#ico-settings"/></svg> Configurações</div>
-      <div class="sidebar-link" onclick="toggleSidebar(); homeTab('termos')" style="font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Termos e Serviços</div>
+      <a href="/privacy-policy.html" class="sidebar-link" style="font-weight:400; font-size:13px; color:var(--ink3); text-decoration:none;"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Política de Privacidade</a>
       <div class="sidebar-link" onclick="toggleSidebar(); showTutorial()" style="margin-top:auto; font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-book"/></svg> Tutorial</div>
       <div class="sidebar-link" onclick="toggleSidebar(); showFaq()" style="font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-help"/></svg> FAQ</div>
       <div class="sidebar-link" onclick="toggleSidebar(); GDrive.signOut()" style="font-weight:700; font-size:13px; color:var(--rd); margin-top:8px; border-top:1px solid var(--bdr); padding-top:16px;"><svg class="ico" aria-hidden="true"><use href="#ico-logout"/></svg> Sair da conta</div>
@@ -4870,7 +4874,7 @@ function dismissPWABanner() {
 }
 
 </script>
-<footer style="display:none" aria-hidden="true">
+<footer style="display:none">
   <a href="/privacy-policy.html">Política de Privacidade e Termos de Uso — Pintor Plus</a>
 </footer>
 </body>
