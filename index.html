@@ -230,8 +230,8 @@ input[type="number"] { font-family: 'Calibri', sans-serif !important; }
 #del-confirm-modal { z-index: 99999999 !important; }
 .fab-add { position: absolute; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); right: 20px; width: 52px; height: 52px; border-radius: 50%; background: var(--am); color: #92400E; border: 2.5px solid #FDE68A; box-shadow: 0 8px 24px rgba(0,0,0,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 50; transition: transform 0.2s; }
 .fab-add:active { transform: scale(0.92); }
-.hm-hdr { background: var(--bg-modal) !important; padding: max(28px, env(safe-area-inset-top, 28px)) 18px 16px !important; }
-.hm-name { font-size: 20px !important; }
+.hm-hdr { background: var(--bg-modal) !important; padding: max(20px, env(safe-area-inset-top, 20px)) 16px 12px !important; }
+.hm-name { font-size: 17px !important; }
 .hoc { background: var(--bg-modal) !important; border-radius: 14px !important; padding: 14px !important; }
 .hon { font-size: 15px !important; }
 .hos { font-size: 12px !important; }
@@ -391,8 +391,10 @@ body.kb-open .title-big { font-size: 14px; }
 #offline-banner.mode-reconnect:hover{opacity:.88;}
 .card-rascunho{background:#fff3e0 !important;}
 .badge-rascunho{font-size:10px;font-weight:800;background:#ffe0bf;color:#a04000;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:middle;}
-:root.dark .card-rascunho{background:#3d2200 !important;}
-:root.dark .badge-rascunho{background:#3d2200;color:#fbbf24;}
+:root.dark .card-rascunho{background:rgba(120,53,15,0.22) !important;border-left:3px solid #FBBF24 !important;}
+:root.dark .badge-rascunho{background:rgba(251,191,36,0.18) !important;color:#FDE68A !important;}
+:root.dark .hbadge.hby{background:rgba(251,191,36,0.18) !important;color:#FDE68A !important;}
+:root.dark .hbadge.hbg{background:rgba(16,185,129,0.18) !important;color:#6EE7B7 !important;}
 @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
 .gd-btn{width:100%;height:42px;border-radius:11px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;transition:all .15s;}
 .gd-btn-primary{background:var(--bl);color:#fff;}
@@ -512,16 +514,13 @@ body.kb-open .title-big { font-size: 14px; }
     </div>
     <div class="page" id="pg-home">
       <div class="hm-hdr">
-        <div style="display:flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-          <div style="display:flex; align-items: center; gap: 16px;">
+        <div style="display:flex; align-items: center; justify-content: space-between;">
+          <div style="display:flex; align-items: center; gap: 12px;">
             <button onclick="toggleSidebar()" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--ink); padding:0;"><svg class="ico" aria-hidden="true"><use href="#ico-menu"/></svg></button>
-            <div style="display:flex; align-items:center; gap:12px;">
-              <img id="home-logo-img" style="width:40px; height:40px; border-radius:50%; object-fit:cover; display:none; border:2px solid var(--bdr-input); background-color: #ffffff;">
-              <div>
-                <div class="hm-greet" style="font-size:14px; color:var(--ink2); margin-bottom:4px;">Olá! </div>
-                <div class="hm-name" id="home-saudacao" style="font-size:20px; font-weight:800; color:var(--ink);"></div>
-              </div>
-            </div>
+            <button onclick="homeTab('config')" style="display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:0;" title="Configurações da empresa">
+              <img id="home-logo-img" style="width:32px; height:32px; border-radius:50%; object-fit:cover; display:none; border:1.5px solid var(--bdr-input); background-color:#ffffff;">
+              <div class="hm-name" id="home-saudacao" style="font-size:17px; font-weight:800; color:var(--ink); text-align:left;"></div>
+            </button>
           </div>
           <div class="theme-sw-wrap">
             <span class="tsw-ic" onclick="setTheme('light')"><svg class="ico" aria-hidden="true"><use href="#ico-sun"/></svg></span>
@@ -2270,7 +2269,7 @@ function _autoSaveRascunho() {
   orc.status = 'Rascunho';
   if (S.editId) { const i = S.orcs.findIndex(o => o.id === S.editId); if (i >= 0) S.orcs[i] = orc; else S.orcs.unshift(orc); } else { S.orcs.unshift(orc); S.editId = orc.id; }
   S.isDirty = false; _saveOrcs(); GDrive.scheduleSync();
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-save"/></svg> Rascunho salvo automaticamente');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-save"/></svg> Rascunho salvo — altere o status para gerar PDF');
 }
 function canNavigateAsync(callback) { if (S.isDirty) { _autoSaveRascunho(); } callback(); }
 function closeConfirm(proceed) { if (proceed) canNavigateAsync(() => {}); }
@@ -2286,14 +2285,21 @@ window.addEventListener('beforeunload', () => {
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     if (S.isDirty) _autoSaveRascunho();
+    GDrive.scheduleSync?.();
   } else if (document.visibilityState === 'visible') {
     // App voltou do background — se sessão existe mas token foi perdido, tenta reconectar silenciosamente
     if (GDrive._sessionLoaded && !GDrive.accessToken && GDrive._gisReady) {
       const savedEmail = localStorage.getItem('pp-gdrive-email');
       if (savedEmail) GDrive.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
     }
+    GDrive.scheduleSync?.();
   }
 });
+window.addEventListener('pagehide', () => {
+  if (S.isDirty) _autoSaveRascunho();
+  GDrive.scheduleSync?.();
+});
+setInterval(() => { GDrive.scheduleSync?.(); }, 3 * 60 * 1000);
 
 // ── CONFIGURAÇÕES: cards colapsáveis + confirmação de saída ────
 let _cfgDirty = false;
@@ -3370,7 +3376,7 @@ function renderHomeMini() {
   
   const wrap=document.getElementById('home-orcs-mini');if(!wrap)return;
   if(!S.orcs.length){ wrap.innerHTML='<div style="text-align:center;padding:16px;background:var(--bg-card);border-radius:12px;border:1px solid var(--bdr);font-size:12px;color:var(--ink3);margin-bottom:8px;">Nenhum orçamento registado ainda.</div>'; return; }
-  wrap.innerHTML=S.orcs.slice(0,3).map((o,sliceIdx)=>{ const realIdx=sliceIdx; let tot=calcOrcTotal(o); const isR=(o.status||'').includes('Rascunho'); const rTag=isR?`<span class="badge-rascunho">Rascunho</span>`:''; const badgeHtml=isR?'':(`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`); const menuId=`cm-h-${realIdx}`; return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:9px;"><div class="hot" style="margin-bottom:6px;"><div><div class="hon">${o.nome||'(sem nome)'}${rTag}</div><div class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">${badgeHtml}<div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div></div><div class="hoas" style="justify-content:flex-end;">${_buildCardMenu(menuId,realIdx,o)}</div></div>`; }).join('');
+  wrap.innerHTML=S.orcs.slice(0,3).map((o,sliceIdx)=>{ const realIdx=sliceIdx; let tot=calcOrcTotal(o); const isR=(o.status||'').includes('Rascunho'); const badgeHtml=isR?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`; const menuId=`cm-h-${realIdx}`; return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:8px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div>${_buildCardMenu(menuId,realIdx,o)}</div><div style="display:flex;align-items:center;justify-content:space-between;"><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div></div>`; }).join('');
 }
 
 // --- MÓDULO: EVENTOS DA SEMANA NA HOME ---
@@ -3472,9 +3478,8 @@ function renderOrcamentosList() {
   wrap.innerHTML=filtered.map(({o,i})=>{
     let tot=calcOrcTotal(o); const qtdLocais=(o.rooms||[]).length; const infoTxt=qtdLocais===1?`${o.rooms[0].items?.length||0} item(ns)`:`${qtdLocais} local(is)`;
     const isRascunho=(o.status||'')==='Rascunho';
-    const rascunhoTag=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:'';
-    const badgeHtml=isRascunho?'':`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
-    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas" style="justify-content:flex-end;">${_buildCardMenu(menuId,i,o)}</div></div>`;
+    const badgeHtml=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
+    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:10px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div>${_buildCardMenu(menuId,i,o)}</div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;"><span class="hood" style="display:flex;align-items:center;gap:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg>${o.end||'—'} · ${infoTxt}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span></div>`;
   }).join('');
 }
 
@@ -4973,16 +4978,33 @@ function _canRecibo(o) {
   const s = (o.status || '').toLowerCase();
   return !o.isFlashDraft && !['rascunho', 'pendente', 'em andamento'].some(x => s.includes(x));
 }
+function _canPDF(o) {
+  const s = (o.status || '').toLowerCase();
+  return !o.isFlashDraft && !s.includes('rascunho');
+}
+function genPDFFromIdx(i) {
+  const o = S.orcs[i];
+  if (!o) return;
+  const html = genPDFHtml(o, false);
+  const w = window.open('', '_blank');
+  if (!w) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Popup bloqueado — permita popups e tente novamente'); return; }
+  w.document.write(html); w.document.close(); w.focus();
+  setTimeout(() => { try { w.print(); } catch(e) {} }, 400);
+}
 
 function _buildCardMenu(menuId, realIdx, o) {
   const tel = (o.tel || '').replace(/\D/g, '');
   const waUrl = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(buildWAMsg(o))}` : `https://wa.me/?text=${encodeURIComponent(buildWAMsg(o))}`;
   const canR = _canRecibo(o);
+  const canP = _canPDF(o);
   return `<div class="card-menu-wrap">
     <button class="card-menu-btn" onclick="event.stopPropagation();toggleCardMenu('${menuId}')" title="Ações">⋯</button>
     <div id="${menuId}" class="card-menu-drop">
       <div class="cmd-item" onclick="closeCardMenus();editOrc(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</div>
       <div class="cmd-item" onclick="closeCardMenus();window.open('${waUrl}','_blank')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> WhatsApp</div>
+      ${canP
+        ? `<div class="cmd-item" onclick="closeCardMenus();genPDFFromIdx(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Gerar PDF</div>`
+        : `<div class="cmd-item cmd-disabled"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> PDF indisponível</div>`}
       ${canR
         ? `<div class="cmd-item" onclick="closeCardMenus();abrirModalRecibo(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Gerar Recibo</div>`
         : `<div class="cmd-item cmd-disabled"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Recibo indisponível</div>`}
@@ -5113,7 +5135,7 @@ function enviarSuporte() {
 }
 
 </script>
-<footer style="display:none">
+<footer style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">
   <a href="/privacy-policy.html">Política de Privacidade e Termos de Uso — Pintor Plus</a>
 </footer>
 </body>
