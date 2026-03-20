@@ -3821,7 +3821,13 @@ const GDrive = {
         error_callback: (err) => {
           console.warn('GDrive: GIS error', err);
           if (err && (err.type === 'popup_blocked_by_browser' || err.type === 'popup_failed_to_open')) {
-            self._showPopupBlockedMsg();
+            // Se há sessão existente, o erro veio do refresh silencioso (_tryStart),
+            // não de uma ação manual do usuário — mostra apenas o banner discreto.
+            if (self._sessionLoaded) {
+              self._showReconnectBanner();
+            } else {
+              self._showPopupBlockedMsg();
+            }
             return;
           }
           if (!self.accessToken) {
