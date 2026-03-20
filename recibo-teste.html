@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recibo — Referência Visual — Pintor Plus</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#F8FAFC;color:#0F172A;padding:32px 16px;}
+  .doc{max-width:720px;margin:0 auto;background:#fff;border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.07);}
+  .note{background:#FEF9C3;border:1px solid #FDE68A;border-radius:10px;padding:12px 16px;font-size:12px;color:#92400E;margin-bottom:16px;max-width:720px;margin:0 auto 16px;}
+  .head{display:flex;justify-content:space-between;align-items:flex-start;padding:28px 32px 20px;border-bottom:2px solid #0F172A;}
+  .company-row{display:flex;gap:14px;align-items:flex-start;}
+  .logo-ph{width:60px;height:60px;border-radius:10px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#7C3AED;flex-shrink:0;}
+  .cname{font-size:17px;font-weight:800;color:#0F172A;}
+  .cdet{font-size:11px;color:#64748B;line-height:1.7;margin-top:4px;}
+  .title-block{text-align:right;}
+  .rec-title{font-size:26px;font-weight:800;color:#7C3AED;}
+  .rec-id{font-family:monospace;font-size:12px;color:#475569;margin-top:3px;}
+  .rec-date{font-size:11px;color:#64748B;margin-top:4px;}
+  .body{padding:24px 32px;}
+  .legal{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:18px 20px;font-size:13.5px;color:#1E293B;line-height:1.85;margin-bottom:22px;}
+  .sec-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7C3AED;margin-bottom:8px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:18px;}
+  .field{display:flex;flex-direction:column;gap:2px;}
+  .flbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#94A3B8;}
+  .fval{font-size:13px;font-weight:600;color:#1E293B;}
+  .sigs{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding-top:18px;border-top:1px solid #E2E8F0;margin-top:24px;}
+  .sig-box{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .sig-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94A3B8;}
+  .sig-line{height:50px;border-bottom:1.5px solid #334155;width:220px;}
+  .sig-name{font-size:12px;font-weight:600;color:#334155;}
+  .disclaimer{margin-top:22px;padding:10px 14px;background:#FEF3C7;border-radius:8px;font-size:11px;color:#92400E;text-align:center;line-height:1.5;}
+  .footer{padding:12px 32px;background:#F8FAFC;border-top:1px solid #E2E8F0;font-size:10px;color:#94A3B8;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="note">
+  ℹ️ <strong>Referência visual.</strong> No app, o recibo é gerado automaticamente ao clicar em <strong>"Recibo"</strong> no card do orçamento. Esta página mostra apenas o layout final do documento impresso.
+</div>
+
+<div class="doc">
+  <div class="head">
+    <div class="company-row">
+      <div class="logo-ph">JP</div>
+      <div>
+        <div class="cname">João Silva Pinturas</div>
+        <div class="cdet">CNPJ: 12.345.678/0001-90 · Tel: (11) 99999-8888<br>contato@joaosilva.com.br<br>Rua das Flores, 123 — São Paulo/SP</div>
+      </div>
+    </div>
+    <div class="title-block">
+      <div class="rec-title">RECIBO</div>
+      <div class="rec-id">REC-20250320-A4F2</div>
+      <div class="rec-date">Data: <strong>20/03/2025</strong></div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="legal">
+      Recebi(emos) de <strong>Maria Oliveira Santos</strong>, portadora do CPF <strong>123.456.789-00</strong>,
+      a importância de <strong>um mil, quinhentos e quarenta reais</strong> (<strong>R$&nbsp;1.540,00</strong>),
+      referente a <strong>Pintura interna sala, quarto principal, quarto 2, massa corrida — 2 demãos</strong>,
+      pago mediante <strong>PIX</strong>.
+      <br>São Paulo/SP, 20/03/2025.
+    </div>
+
+    <div class="sec-title">Dados do Cliente</div>
+    <div class="grid2">
+      <div class="field"><span class="flbl">Nome</span><span class="fval">Maria Oliveira Santos</span></div>
+      <div class="field"><span class="flbl">CPF / CNPJ</span><span class="fval">123.456.789-00</span></div>
+      <div class="field"><span class="flbl">Telefone</span><span class="fval">(11) 98765-4321</span></div>
+      <div class="field" style="grid-column:1/-1"><span class="flbl">Endereço</span><span class="fval">Av. Paulista, 456, Apto 12 — São Paulo/SP</span></div>
+    </div>
+
+    <p style="font-size:12px;color:#475569;line-height:1.6;margin-bottom:18px;"><strong>Observações:</strong> Serviço garantido por 12 meses contra bolhas e descascamento.</p>
+
+    <div class="sigs">
+      <div class="sig-box">
+        <div class="sig-lbl">Prestador de Serviço</div>
+        <div class="sig-line"></div>
+        <div class="sig-name">João Silva</div>
+        <div style="font-size:10px;color:#94A3B8;">12.345.678/0001-90</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-lbl">Cliente (opcional)</div>
+        <div class="sig-line"></div>
+        <div class="sig-name">Maria Oliveira Santos</div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ Este recibo <strong>não tem valor como documento fiscal</strong>.
+      Não substitui Nota Fiscal de Serviço (NFS-e). Serve apenas como comprovante de pagamento entre as partes.
+    </div>
+  </div>
+
+  <div class="footer">
+    Gerado pelo <strong>Pintor Plus</strong> · pintorplus.com.br · ID: REC-20250320-A4F2
+  </div>
+</div>
+
+</body>
+</html>
