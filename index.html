@@ -262,6 +262,14 @@ body.acessivel .hoov { font-size: 17px !important; }
 body.acessivel .hoa { height: 44px !important; font-size: 13px !important; }
 body.acessivel .hoas { gap: 8px !important; margin-top: 14px !important; }
 body.acessivel .hm-name { font-size: 26px !important; }
+/* ── Busca ── */
+.srch-wrap{position:relative;margin-top:10px;}
+.srch-bar{width:100%;height:38px;background:var(--bg-input);border:1.5px solid var(--bdr-input);border-radius:100px;padding:0 14px 0 36px;font-family:'Sora',sans-serif;font-size:13px;color:var(--ink);outline:none;-webkit-appearance:none;}
+.srch-bar:focus{border-color:var(--bl);}
+.srch-bar::placeholder{color:var(--ink3);}
+.srch-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none;display:flex;}
+.srch-empty{text-align:center;padding:28px 16px;background:var(--bg-card-alt);border-radius:14px;border:1px solid var(--bdr);font-size:13px;color:var(--ink3);}
+/* ── PWA Banner ── */
 .pwa-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:16px;cursor:pointer;box-shadow:0 6px 18px rgba(124,58,237,.3);}
 .pwa-banner-ico{font-size:22px;flex-shrink:0;}
 .pwa-banner-text{flex:1;}
@@ -460,6 +468,8 @@ body.kb-open .title-big { font-size: 14px; }
 <symbol id="ico-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
 <symbol id="ico-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
 <symbol id="ico-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+<symbol id="ico-headphones" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
+<symbol id="ico-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
 </svg>
 
 <div id="offline-banner"></div>
@@ -570,8 +580,12 @@ body.kb-open .title-big { font-size: 14px; }
           <div class="title-big">MEUS ORÇAMENTOS</div>
           <button class="btn-home-global dark-nav" onclick="homeTab('home')" style="position:absolute;left:0;" aria-label="Página inicial" title="Página inicial"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></button>
         </div>
+        <div class="srch-wrap">
+          <span class="srch-ico"><svg class="ico" aria-hidden="true"><use href="#ico-search"/></svg></span>
+          <input type="search" class="srch-bar" id="orc-search" placeholder="Buscar por nome, valor, status, endereço…" oninput="renderOrcamentosList()">
+        </div>
       </div>
-      <div class="scr" id="orcamentos-list-full"></div>
+      <div class="scr"><div id="orcamentos-list-full"></div></div>
     </div>
 
     <div class="page" id="pg-clientes">
@@ -580,6 +594,10 @@ body.kb-open .title-big { font-size: 14px; }
           <button onclick="toggleSidebar()" style="position: absolute; left: 0; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--ink); padding: 0;"><svg class="ico" aria-hidden="true"><use href="#ico-menu"/></svg></button>
           <div class="title-big">MEUS CONTATOS</div>
           <button class="btn-home-global dark-nav" onclick="homeTab('home')" style="position:absolute;left:0;" aria-label="Página inicial" title="Página inicial"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></button>
+        </div>
+        <div class="srch-wrap">
+          <span class="srch-ico"><svg class="ico" aria-hidden="true"><use href="#ico-search"/></svg></span>
+          <input type="search" class="srch-bar" id="cli-search" placeholder="Buscar por nome, telefone, CPF, endereço…" oninput="renderClientes()">
         </div>
       </div>
       <div class="scr">
@@ -600,6 +618,10 @@ body.kb-open .title-big { font-size: 14px; }
           <button onclick="toggleSidebar()" style="position: absolute; left: 0; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--ink); padding: 0;"><svg class="ico" aria-hidden="true"><use href="#ico-menu"/></svg></button>
           <div class="title-big">FORNECEDORES</div>
           <button class="btn-home-global dark-nav" onclick="homeTab('home')" style="position:absolute;left:0;" aria-label="Página inicial" title="Página inicial"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></button>
+        </div>
+        <div class="srch-wrap">
+          <span class="srch-ico"><svg class="ico" aria-hidden="true"><use href="#ico-search"/></svg></span>
+          <input type="search" class="srch-bar" id="forn-search" placeholder="Buscar por nome, telefone, categoria…" oninput="renderFornecedores()">
         </div>
       </div>
       <div class="scr">
@@ -1547,6 +1569,7 @@ body.kb-open .title-big { font-size: 14px; }
       <a href="/privacy-policy.html" class="sidebar-link" style="font-weight:400; font-size:13px; color:var(--ink3); text-decoration:none;"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Política de Privacidade</a>
       <div class="sidebar-link" onclick="toggleSidebar(); showTutorial()" style="margin-top:auto; font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-book"/></svg> Tutorial</div>
       <div class="sidebar-link" onclick="toggleSidebar(); showFaq()" style="font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-help"/></svg> FAQ</div>
+      <div class="sidebar-link" onclick="toggleSidebar(); abrirModalSuporte()" style="font-weight:700; font-size:13px; color:var(--bl);"><svg class="ico" aria-hidden="true"><use href="#ico-headphones"/></svg> Suporte / Reportar Bug</div>
       <div class="sidebar-link" onclick="toggleSidebar(); GDrive.signOut()" style="font-weight:700; font-size:13px; color:var(--rd); margin-top:8px; border-top:1px solid var(--bdr); padding-top:16px;"><svg class="ico" aria-hidden="true"><use href="#ico-logout"/></svg> Sair da conta</div>
     </div>
   </div>
@@ -1595,6 +1618,43 @@ body.kb-open .title-big { font-size: 14px; }
       <div style="display:flex;gap:10px;margin-top:4px;">
         <button onclick="fecharModalRecibo()" style="flex:1;height:46px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr-input);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;">Cancelar</button>
         <button onclick="gerarReciboPDF()" style="flex:1;height:46px;border-radius:12px;background:#16A34A;border:none;color:#fff;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="ico" aria-hidden="true"><use href="#ico-printer"/></svg> Gerar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SUPORTE / BUG REPORT -->
+  <div id="modal-suporte" class="glass-overlay" style="display:none;align-items:flex-start;overflow-y:auto;padding:max(20px,env(safe-area-inset-top,20px)) 16px max(20px,env(safe-area-inset-bottom,20px));">
+    <div class="modal-box" style="max-width:420px;padding:20px;">
+      <div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-headphones"/></svg> Suporte / Reportar Bug</div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:18px;">Enviaremos para <strong>suporte@pintorplus.com</strong> com seus dados de cadastro e o log do app.</div>
+
+      <div class="fld">
+        <label class="flbl">SEUS DADOS (automático)</label>
+        <div id="sp-user-info" style="font-size:13px;color:var(--ink2);background:var(--bg-input);border:1px solid var(--bdr);border-radius:10px;padding:10px 14px;line-height:1.8;">—</div>
+      </div>
+
+      <div class="fld">
+        <label class="flbl">DESCREVA O PROBLEMA</label>
+        <textarea class="fta" id="sp-msg" placeholder="O que aconteceu? Quais passos causaram o bug?" style="min-height:110px;"></textarea>
+      </div>
+
+      <div class="fld">
+        <label class="flbl">IMAGENS / CAPTURAS DE TELA (opcional)</label>
+        <div id="sp-img-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;min-height:0;"></div>
+        <input type="file" id="sp-img-input" accept="image/*" multiple style="display:none;" onchange="addSupportImages(this)">
+        <button onclick="document.getElementById('sp-img-input').click()" style="width:100%;height:40px;border-radius:10px;background:var(--bg-input);border:1.5px dashed var(--bdr-input);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="ico" aria-hidden="true"><use href="#ico-camera"/></svg> Adicionar imagens</button>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="background:none;border:none;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;color:var(--bl);cursor:pointer;padding:0;"><svg class="ico" aria-hidden="true"><use href="#ico-eye"/></svg> Ver log técnico incluído</button>
+        <pre id="sp-log" style="display:none;margin-top:8px;font-size:10px;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:10px;overflow-x:auto;white-space:pre-wrap;color:var(--ink3);max-height:140px;overflow-y:auto;line-height:1.5;"></pre>
+      </div>
+
+      <div id="sp-img-note" style="display:none;margin-bottom:14px;font-size:11px;color:#92400E;background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:8px 12px;line-height:1.5;">📎 Após clicar em "Abrir Email", anexe as imagens selecionadas ao email antes de enviar.</div>
+
+      <div style="display:flex;gap:10px;">
+        <button onclick="document.getElementById('modal-suporte').style.display='none'" style="flex:1;height:46px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr-input);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;">Cancelar</button>
+        <button onclick="enviarSuporte()" style="flex:1;height:46px;border-radius:12px;background:var(--bl);border:none;color:#fff;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="ico" aria-hidden="true"><use href="#ico-send"/></svg> Abrir Email</button>
       </div>
     </div>
   </div>
@@ -2640,28 +2700,35 @@ async function pickPhoneContactToSave() {
 function openClientPicker() { document.getElementById('client-picker-list').innerHTML = S.clientes.map((c,i) => `<div style="padding:16px; border-bottom:1px solid var(--bdr); cursor:pointer;" onclick="selectClientPicker(${i})"><div style="font-weight:700; font-size:15px; color:var(--ink);">${c.nome}</div><div style="font-size:13px; color:var(--ink3);">${c.tel || ''}</div></div>`).join('') || '<div style="padding:16px; font-size:13px; color:var(--ink3);">Nenhum contato salvo.</div>'; document.getElementById('modal-client-picker').style.display='flex'; }
 function selectClientPicker(i) { const c = S.clientes[i]; document.getElementById('cli-nome').value = c.nome || ''; document.getElementById('cli-tel').value = c.tel || ''; document.getElementById('cli-email').value = c.email || ''; document.getElementById('cli-cpf').value = c.cpf || ''; document.getElementById('cli-logradouro').value = c.end || ''; document.getElementById('modal-client-picker').style.display='none'; toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Contato selecionado!'); }
 
-function renderClientes() { 
-  const wrap = document.getElementById('clientes-list-full'); 
-  if(!wrap) return; 
-  if(!S.clientes || !S.clientes.length) { 
-    wrap.innerHTML = '<div style="text-align:center;padding:24px 16px;background:#fff;border-radius:14px;border:1px solid var(--bdr);"><div style="font-size:32px;margin-bottom:8px;opacity:.3;"><svg class="ico" aria-hidden="true"><use href="#ico-users"/></svg></div><div style="font-size:13px;color:var(--ink3);font-style:italic;">Nenhum contato salvo ainda.</div></div>'; 
-    return; 
-  } 
-  wrap.innerHTML = S.clientes.map((c,i) => `
+function _cliMatch(c, q) {
+  return [c.nome, c.tel, c.email, c.cpf, c.end].some(p => p && String(p).toLowerCase().includes(q));
+}
+function renderClientes() {
+  const wrap = document.getElementById('clientes-list-full');
+  if(!wrap) return;
+  if(!S.clientes || !S.clientes.length) {
+    wrap.innerHTML = '<div style="text-align:center;padding:24px 16px;background:#fff;border-radius:14px;border:1px solid var(--bdr);"><div style="font-size:32px;margin-bottom:8px;opacity:.3;"><svg class="ico" aria-hidden="true"><use href="#ico-users"/></svg></div><div style="font-size:13px;color:var(--ink3);font-style:italic;">Nenhum contato salvo ainda.</div></div>';
+    return;
+  }
+  const q = (document.getElementById('cli-search')?.value || '').toLowerCase().trim();
+  const indexed = S.clientes.map((c,i) => ({c,i}));
+  const filtered = q ? indexed.filter(({c}) => _cliMatch(c, q)) : indexed;
+  if(!filtered.length) { wrap.innerHTML = `<div class="srch-empty">Nenhum contato encontrado para "<strong>${q}</strong>".</div>`; return; }
+  wrap.innerHTML = filtered.map(({c, i}) => `
     <div class="hoc" style="margin-bottom:12px;">
       <div class="hon">${c.nome}</div>
       <div class="hos" style="margin-bottom:8px;">${c.tel || 'Sem telefone'}</div>
       ${c.email ? `<div class="hos" style="margin-bottom:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-mail"/></svg> ${c.email}</div>` : ''}
       ${c.end ? `<div class="hos" style="margin-bottom:12px;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${c.end}</div>` : ''}
-      
+
       <div style="display:flex; gap:8px; margin-top:14px;">
         <button onclick="editClient(${i})" style="flex:1;height:38px;border-radius:10px;background:var(--bll);color:var(--bl);border:none;font-weight:700;font-size:12px;cursor:pointer;"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button>
         <button onclick="askDelete('Deseja excluir este contato?', () => deleteClient(${i}))" style="width:44px;height:38px;border-radius:10px;background:var(--rdl);color:var(--rd);border:none;cursor:pointer;"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button>
       </div>
-      
+
       <button onclick="exportVCF(${i})" style="width:100%;height:38px;border-radius:10px;background:transparent;color:var(--ink2);border:1px solid var(--bdr);font-family:'Sora',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:8px;"><svg class="ico" aria-hidden="true"><use href="#ico-save"/></svg> Salvar na Agenda do Celular</button>
     </div>
-  `).join(''); 
+  `).join('');
 }
 
 function deleteClient(i) {
@@ -2712,27 +2779,34 @@ function saveEditClient() {
 function exportVCF(i) { const c = S.clientes[i]; const vcf = `BEGIN:VCARD\nVERSION:3.0\nFN:${c.nome}\nTEL;TYPE=CELL:${c.tel||''}\nEND:VCARD`; const blob = new Blob([vcf], {type: 'text/vcard'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${c.nome.replace(/\s+/g,'_')}.vcf`; a.click(); URL.revokeObjectURL(url); toast('Baixando arquivo de contato...'); }
 
 // FORNECEDORES
-function renderFornecedores() { 
-  const wrap = document.getElementById('fornecedores-list-full'); 
-  if(!wrap) return; 
-  if(!S.fornecedores || !S.fornecedores.length) { 
-    wrap.innerHTML = '<div style="text-align:center;padding:24px 16px;background:#fff;border-radius:14px;border:1px solid var(--bdr);"><div style="font-size:32px;margin-bottom:8px;opacity:.3;"><svg class="ico" aria-hidden="true"><use href="#ico-truck"/></svg></div><div style="font-size:13px;color:var(--ink3);font-style:italic;">Nenhum fornecedor cadastrado.</div></div>'; 
-    return; 
-  } 
-  wrap.innerHTML = S.fornecedores.map((f,i) => `
+function _fornMatch(f, q) {
+  return [f.nome, f.tel, f.cat].some(p => p && String(p).toLowerCase().includes(q));
+}
+function renderFornecedores() {
+  const wrap = document.getElementById('fornecedores-list-full');
+  if(!wrap) return;
+  if(!S.fornecedores || !S.fornecedores.length) {
+    wrap.innerHTML = '<div style="text-align:center;padding:24px 16px;background:#fff;border-radius:14px;border:1px solid var(--bdr);"><div style="font-size:32px;margin-bottom:8px;opacity:.3;"><svg class="ico" aria-hidden="true"><use href="#ico-truck"/></svg></div><div style="font-size:13px;color:var(--ink3);font-style:italic;">Nenhum fornecedor cadastrado.</div></div>';
+    return;
+  }
+  const q = (document.getElementById('forn-search')?.value || '').toLowerCase().trim();
+  const indexed = S.fornecedores.map((f,i) => ({f,i}));
+  const filtered = q ? indexed.filter(({f}) => _fornMatch(f, q)) : indexed;
+  if(!filtered.length) { wrap.innerHTML = `<div class="srch-empty">Nenhum fornecedor encontrado para "<strong>${q}</strong>".</div>`; return; }
+  wrap.innerHTML = filtered.map(({f, i}) => `
     <div class="hoc" style="margin-bottom:12px; border-left:4px solid var(--am);">
       <div class="hon">${f.nome}</div>
       <div class="hos" style="margin-bottom:4px;">${f.tel || 'Sem telefone'}</div>
       ${f.cat ? `<div class="hbadge hby" style="margin-bottom:12px;">${f.cat}</div>` : ''}
-      
+
       <div style="display:flex; gap:8px; margin-top:14px;">
         <button onclick="editFornecedor(${i})" style="flex:1;height:38px;border-radius:10px;background:var(--bg2);color:var(--ink2);border:1px solid var(--bdr);font-weight:700;font-size:12px;cursor:pointer;"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button>
         <button onclick="askDelete('Deseja excluir este fornecedor?', () => deleteFornecedor(${i}))" style="width:44px;height:38px;border-radius:10px;background:var(--rdl);color:var(--rd);border:none;cursor:pointer;"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button>
       </div>
-      
+
       <button onclick="askQuoteFornecedor(${i})" style="width:100%;height:38px;border-radius:10px;background:#25D366;color:#fff;border:none;font-family:'Sora',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:8px;"><svg class="ico" aria-hidden="true"><use href="#ico-send"/></svg> Pedir Cotação de Materiais</button>
     </div>
-  `).join(''); 
+  `).join('');
 }
 
 function openEditFornecedor(i) {
@@ -3241,7 +3315,7 @@ function homeTab(tab){
     document.getElementById('cfg-save-modal').style.display = 'flex';
     return;
   }
-  if(tab === 'config') { openConfig(); return; } if(tab === 'flash') { canNavigateAsync(() => { S.isDirty = false; openFlash(); }); return; } canNavigateAsync(() => { S.isDirty = false; if(tab === 'home') { showPage('pg-home'); renderHomeMini(); renderHomeEvents(); renderHomeNews(); } else if(tab === 'orcamentos') { showPage('pg-orcamentos'); renderOrcamentosList(); } else if(tab === 'clientes') { showPage('pg-clientes'); renderClientes(); } else if(tab === 'fornecedores') { showPage('pg-fornecedores'); renderFornecedores(); } else if(tab === 'agenda') { showPage('pg-agenda'); renderAgenda(); } else if(tab === 'backup') { showPage('pg-backup'); } else if(tab === 'termos') { showPage('pg-termos'); } }); }
+  if(tab === 'config') { openConfig(); return; } if(tab === 'flash') { canNavigateAsync(() => { S.isDirty = false; openFlash(); }); return; } canNavigateAsync(() => { S.isDirty = false; ['orc-search','cli-search','forn-search'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); if(tab === 'home') { showPage('pg-home'); renderHomeMini(); renderHomeEvents(); renderHomeNews(); } else if(tab === 'orcamentos') { showPage('pg-orcamentos'); renderOrcamentosList(); } else if(tab === 'clientes') { showPage('pg-clientes'); renderClientes(); } else if(tab === 'fornecedores') { showPage('pg-fornecedores'); renderFornecedores(); } else if(tab === 'agenda') { showPage('pg-agenda'); renderAgenda(); } else if(tab === 'backup') { showPage('pg-backup'); } else if(tab === 'termos') { showPage('pg-termos'); } }); }
 
 // ── TERMOS & PRIVACIDADE — LGPD ──────────────────────────────
 const TERMS_VERSION = '1';
@@ -3393,16 +3467,24 @@ async function renderHomeNews() {
   }
 }
 
+function _orcMatch(o, q) {
+  const tot = calcOrcTotal(o);
+  const parts = [o.nome,o.tel,o.email,o.cpf,o.cep,o.logradouro,o.numero,o.comp,o.bairro,o.cidade,o.end,o.status,o.obs,o.date,o.inicio,o.tipoServico,o.pagNome,o.pagTel,o.pagEnd,(o.pgto||[]).join(' '),tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'',(o.rooms||[]).map(r=>[r.nome,r.obs,(r.items||[]).map(it=>[it.name,it.obs].join(' ')).join(' ')].join(' ')).join(' ')];
+  return parts.some(p=>p&&String(p).toLowerCase().includes(q));
+}
 function renderOrcamentosList() {
+  const q=(document.getElementById('orc-search')?.value||'').toLowerCase().trim();
   const wrap=document.getElementById('orcamentos-list-full');if(!wrap)return;
   if(!S.orcs.length){ wrap.innerHTML='<div style="text-align:center;padding:24px 16px;background:#fff;border-radius:14px;border:1px solid var(--bdr);"><div style="font-size:32px;margin-bottom:8px;opacity:.3;"><svg class="ico" aria-hidden="true"><use href="#ico-clipboard"/></svg></div><div style="font-size:13px;color:var(--ink3);font-style:italic;">Nenhum orçamento ainda</div><button onclick="newOrc()" style="margin-top:12px;padding:9px 20px;border-radius:10px;background:linear-gradient(135deg,var(--bl),var(--bld));border:none;font-family:\'Sora\',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;">＋ Criar primeiro</button></div>'; return; }
-  wrap.innerHTML=S.orcs.map((o,i)=>{
-    let tot = calcOrcTotal(o); const qtdLocais = (o.rooms||[]).length; const infoTxt = qtdLocais === 1 ? `${o.rooms[0].items?.length || 0} item(ns)` : `${qtdLocais} local(is)`;
-    const photoBtnHtml = '';
-    const isRascunho = (o.status||'') === 'Rascunho';
-    const rascunhoTag = isRascunho ? `<span class="badge-rascunho">Rascunho</span>` : '';
-    const badgeHtml = isRascunho ? '' : `<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
-    return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button><button class="hoa recibo" onclick="event.stopPropagation();abrirModalRecibo(${i})" title="Gerar Recibo"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Recibo</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button></div></div>`;
+  const indexed = S.orcs.map((o,i)=>({o,i}));
+  const filtered = q ? indexed.filter(({o})=>_orcMatch(o,q)) : indexed;
+  if(!filtered.length){ wrap.innerHTML=`<div class="srch-empty">Nenhum orçamento encontrado para "<strong>${q}</strong>".</div>`; return; }
+  wrap.innerHTML=filtered.map(({o,i})=>{
+    let tot=calcOrcTotal(o); const qtdLocais=(o.rooms||[]).length; const infoTxt=qtdLocais===1?`${o.rooms[0].items?.length||0} item(ns)`:`${qtdLocais} local(is)`;
+    const isRascunho=(o.status||'')==='Rascunho';
+    const rascunhoTag=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:'';
+    const badgeHtml=isRascunho?'':`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
+    return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button><button class="hoa ok" onclick="editOrc(${i})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button><button class="hoa recibo" onclick="event.stopPropagation();abrirModalRecibo(${i})" title="Gerar Recibo"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Recibo</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?',()=>delOrc(${i}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button></div></div>`;
   }).join('');
 }
 
@@ -4871,6 +4953,127 @@ function dismissPWABanner() {
   const el = document.getElementById('pwa-banner');
   if (el) el.style.display = 'none';
   localStorage.setItem('pp-pwa-dismissed', '1');
+}
+
+// ─── SUPORTE / BUG REPORT ─────────────────────────────────────────────────
+let _supportImages = [];
+
+function _gerarLogSuporte() {
+  const now = new Date().toLocaleString('pt-BR');
+  const cfg = S.config || {};
+  const session = (() => { try { return JSON.parse(localStorage.getItem('pp-session') || '{}'); } catch(e) { return {}; } })();
+  const gUser = (typeof GDrive !== 'undefined' && GDrive.user) ? GDrive.user : session;
+  const lines = [
+    '=== LOG PINTOR PLUS ===',
+    'Data/Hora: ' + now,
+    'Versão SW:  pintorplus-v13',
+    'UA: ' + navigator.userAgent,
+    '',
+    '--- CONTA GOOGLE ---',
+    'Nome:  ' + (gUser.name || '—'),
+    'Email: ' + (gUser.email || '—'),
+    '',
+    '--- CADASTRO DO APP ---',
+    'Nome empresa: ' + (cfg.nome || '—'),
+    'Telefone:     ' + (cfg.tel || '—'),
+    'Email app:    ' + (cfg.email || '—'),
+    'CNPJ/CPF:     ' + (cfg.cnpj || '—'),
+    'Endereço:     ' + (cfg.end || '—'),
+    '',
+    '--- DADOS ---',
+    'Orçamentos:  ' + (S.orcs ? S.orcs.length : 0),
+    'Clientes:    ' + (S.clientes ? S.clientes.length : 0),
+    'Fornecedores:' + (S.fornecedores ? S.fornecedores.length : 0),
+    'Eventos:     ' + (S.eventos ? S.eventos.length : 0),
+    '',
+    '--- LOCAL STORAGE ---',
+    'pp-gdrive-lastSync: ' + (localStorage.getItem('pp-gdrive-lastSync') || '—'),
+    'pp-gdrive-email:    ' + (localStorage.getItem('pp-gdrive-email') || '—'),
+    '====================='
+  ];
+  return lines.join('\n');
+}
+
+function abrirModalSuporte() {
+  _supportImages = [];
+  const preview = document.getElementById('sp-img-preview');
+  if (preview) preview.innerHTML = '';
+  const imgInput = document.getElementById('sp-img-input');
+  if (imgInput) imgInput.value = '';
+  const msg = document.getElementById('sp-msg');
+  if (msg) msg.value = '';
+  const imgNote = document.getElementById('sp-img-note');
+  if (imgNote) imgNote.style.display = 'none';
+
+  const log = _gerarLogSuporte();
+  const logEl = document.getElementById('sp-log');
+  if (logEl) { logEl.textContent = log; logEl.style.display = 'none'; }
+
+  const session = (() => { try { return JSON.parse(localStorage.getItem('pp-session') || '{}'); } catch(e) { return {}; } })();
+  const gUser = (typeof GDrive !== 'undefined' && GDrive.user) ? GDrive.user : session;
+  const cfg = S.config || {};
+  const infoEl = document.getElementById('sp-user-info');
+  if (infoEl) {
+    infoEl.innerHTML = [
+      gUser.name ? `<strong>${gUser.name}</strong>` : '',
+      gUser.email ? gUser.email : '',
+      cfg.nome ? cfg.nome : '',
+      cfg.tel ? cfg.tel : '',
+      cfg.cnpj ? cfg.cnpj : ''
+    ].filter(Boolean).join('<br>') || '—';
+  }
+
+  document.getElementById('modal-suporte').style.display = 'flex';
+}
+
+function addSupportImages(input) {
+  const files = Array.from(input.files || []);
+  _supportImages = _supportImages.concat(files);
+  const preview = document.getElementById('sp-img-preview');
+  if (!preview) return;
+  preview.innerHTML = '';
+  _supportImages.forEach((file, idx) => {
+    const url = URL.createObjectURL(file);
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;width:72px;height:72px;flex-shrink:0;';
+    wrap.innerHTML = `<img src="${url}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--bdr);">
+      <button onclick="_removeSupportImage(${idx})" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--rd);color:#fff;border:none;font-size:11px;font-weight:800;cursor:pointer;line-height:1;">✕</button>`;
+    preview.appendChild(wrap);
+  });
+  const imgNote = document.getElementById('sp-img-note');
+  if (imgNote) imgNote.style.display = _supportImages.length ? 'block' : 'none';
+}
+
+function _removeSupportImage(idx) {
+  _supportImages.splice(idx, 1);
+  const fakeInput = { files: _supportImages };
+  const preview = document.getElementById('sp-img-preview');
+  if (!preview) return;
+  preview.innerHTML = '';
+  _supportImages.forEach((file, i) => {
+    const url = URL.createObjectURL(file);
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;width:72px;height:72px;flex-shrink:0;';
+    wrap.innerHTML = `<img src="${url}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--bdr);">
+      <button onclick="_removeSupportImage(${i})" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--rd);color:#fff;border:none;font-size:11px;font-weight:800;cursor:pointer;line-height:1;">✕</button>`;
+    preview.appendChild(wrap);
+  });
+  const imgNote = document.getElementById('sp-img-note');
+  if (imgNote) imgNote.style.display = _supportImages.length ? 'block' : 'none';
+}
+
+function enviarSuporte() {
+  const msg = (document.getElementById('sp-msg')?.value || '').trim();
+  if (!msg) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Descreva o problema antes de enviar.'); return; }
+  const log = document.getElementById('sp-log')?.textContent || _gerarLogSuporte();
+  const body = [msg, '', '---', log].join('\n');
+  const subject = 'Bug/Suporte — Pintor Plus';
+  const mailto = `mailto:suporte@pintorplus.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailto);
+  document.getElementById('modal-suporte').style.display = 'none';
+  if (_supportImages.length) {
+    setTimeout(() => toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Lembre-se de anexar as imagens ao email!'), 600);
+  }
 }
 
 </script>
