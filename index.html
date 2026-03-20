@@ -144,7 +144,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#F3F4F6;display:flex
 .hood{font-size:11px;color:var(--ink3);}.hoov{font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--bl);}
 .hoas{display:flex;gap:6px;}
 .hoa{flex:1;height:36px;border-radius:9px;border:none;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
-.hoa.wa{background:#E5DDD5;color:#111;}.hoa.ok{background:var(--bll);color:var(--bl);}.hoa:active{opacity:.7;}
+.hoa.wa{background:#E5DDD5;color:#111;}.hoa.ok{background:var(--bll);color:var(--bl);}.hoa.recibo{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0;}.hoa:active{opacity:.7;}
 .theme-sw-wrap { display: flex; align-items: center; gap: 8px; background: var(--bg2); padding: 4px 8px; border-radius: 100px; border: 1.5px solid var(--bdr); }
 .theme-sw { width: 40px; height: 22px; border-radius: 20px; background: var(--bdr-input); position: relative; cursor: pointer; transition: background 0.3s; }
 .theme-sw::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: transform 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
@@ -829,6 +829,25 @@ body.kb-open .title-big { font-size: 14px; }
           </div>
         </div>
 
+        <!-- CARD: Assinatura do Pintor -->
+        <div class="cfg-card">
+          <button class="cfg-card-hdr" onclick="toggleCfgCard('cc-assinatura')">
+            <span><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg></span><span>Assinatura do Pintor</span><span class="cfg-chev">›</span>
+          </button>
+          <div class="cfg-card-body" id="cc-assinatura">
+            <div style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.55;">Carregue uma imagem da sua assinatura (PNG, JPG ou JPEG). Ela aparecerá automaticamente nos recibos gerados — sem precisar assinar toda vez.</div>
+            <label style="cursor:pointer;display:block;text-align:center;">
+              <div id="cfg-sig-wrap" style="width:100%;max-width:320px;height:110px;border:2px dashed var(--bdr-input);border-radius:12px;background:var(--bg-input);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto;">
+                <span id="cfg-sig-placeholder" style="font-size:12px;color:var(--ink3);padding:8px;text-align:center;">Toque para carregar assinatura<br><span style="font-size:10px;opacity:.7;">PNG, JPG ou JPEG</span></span>
+                <img id="cfg-sig-preview" src="" alt="Assinatura" style="max-width:100%;max-height:100%;object-fit:contain;display:none;">
+              </div>
+              <input type="file" id="cfg-sig-file" accept="image/png,image/jpeg,image/jpg" style="display:none;" onchange="loadSigCfg(this);_cfgDirty=true;">
+              <div style="font-size:12px;font-weight:700;color:var(--bl);margin-top:8px;">Alterar Assinatura</div>
+            </label>
+            <div style="text-align:center;margin-top:6px;"><button onclick="clearSigCfg();_cfgDirty=true;" style="background:none;border:none;font-size:12px;color:var(--rd);cursor:pointer;padding:4px 8px;">Remover Assinatura</button></div>
+          </div>
+        </div>
+
         <div style="height:30px;"></div>
       </div>
     </div>
@@ -1454,6 +1473,54 @@ body.kb-open .title-big { font-size: 14px; }
       <div class="sidebar-link" onclick="toggleSidebar(); showTutorial()" style="margin-top:auto; font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-book"/></svg> Tutorial</div>
       <div class="sidebar-link" onclick="toggleSidebar(); showFaq()" style="font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-help"/></svg> FAQ</div>
       <div class="sidebar-link" onclick="toggleSidebar(); GDrive.signOut()" style="font-weight:700; font-size:13px; color:var(--rd); margin-top:8px; border-top:1px solid var(--bdr); padding-top:16px;"><svg class="ico" aria-hidden="true"><use href="#ico-logout"/></svg> Sair da conta</div>
+    </div>
+  </div>
+
+  <!-- MODAL: RECIBO -->
+  <div id="modal-recibo" class="glass-overlay" style="display:none;">
+    <div class="modal-box" style="max-width:400px;max-height:92vh;overflow-y:auto;padding:20px;">
+      <div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Gerar Recibo</div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:18px;">Comprovante simples de pagamento. Não é documento fiscal.</div>
+
+      <div class="fld">
+        <label class="flbl">CLIENTE</label>
+        <div id="rb-cliente-label" style="font-size:14px;font-weight:700;color:var(--ink);padding:10px 14px;background:var(--bg-input);border-radius:10px;border:1px solid var(--bdr);">—</div>
+      </div>
+
+      <div class="fld">
+        <label class="flbl">DATA DO RECEBIMENTO</label>
+        <input type="date" class="finput" id="rb-data">
+      </div>
+
+      <div class="fld">
+        <label class="flbl">VALOR RECEBIDO</label>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer;">
+            <input type="radio" name="rb-valor-tipo" value="total" id="rb-valor-auto" onchange="toggleRbValor()" checked>
+            Total do orçamento: <span id="rb-total-label" style="color:var(--bl);font-weight:800;">—</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer;">
+            <input type="radio" name="rb-valor-tipo" value="custom" id="rb-valor-custom" onchange="toggleRbValor()">
+            Definir valor:
+          </label>
+          <input type="number" class="finput" id="rb-valor-input" placeholder="0,00" step="0.01" min="0" style="display:none;">
+        </div>
+      </div>
+
+      <div class="fld">
+        <label class="flbl">FORMA DE PAGAMENTO</label>
+        <input type="text" class="finput" id="rb-pgto" placeholder="Ex: PIX, Dinheiro, Cartão">
+      </div>
+
+      <div class="fld">
+        <label class="flbl">OBSERVAÇÕES</label>
+        <textarea class="fta" id="rb-obs" style="min-height:80px;" placeholder="Observações adicionais (opcional)"></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button onclick="fecharModalRecibo()" style="flex:1;height:46px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr-input);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;">Cancelar</button>
+        <button onclick="gerarReciboPDF()" style="flex:1;height:46px;border-radius:12px;background:#16A34A;border:none;color:#fff;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="ico" aria-hidden="true"><use href="#ico-printer"/></svg> Gerar PDF</button>
+      </div>
     </div>
   </div>
 
@@ -3007,10 +3074,38 @@ function loadLogoCfg(input) {
   input.value = '';
 }
 
-function clearLogoCfg() { 
-  S.config.logo = ''; 
-  document.getElementById('cfg-logo-file').value = ''; 
-  renderLogoPreview(); 
+function clearLogoCfg() {
+  S.config.logo = '';
+  document.getElementById('cfg-logo-file').value = '';
+  renderLogoPreview();
+}
+
+function loadSigCfg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { S.config.assinatura = e.target.result; renderSigPreview(); };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+function clearSigCfg() {
+  S.config.assinatura = '';
+  document.getElementById('cfg-sig-file').value = '';
+  renderSigPreview();
+}
+function renderSigPreview() {
+  const img = document.getElementById('cfg-sig-preview');
+  const ph  = document.getElementById('cfg-sig-placeholder');
+  if (!img || !ph) return;
+  if (S.config.assinatura) {
+    img.src = S.config.assinatura;
+    img.style.display = 'block';
+    ph.style.display  = 'none';
+  } else {
+    img.src = '';
+    img.style.display = 'none';
+    ph.style.display  = 'block';
+  }
 }
 
 function renderLogoPreview() { 
@@ -3037,9 +3132,9 @@ function renderLogoPreview() {
   }
 }
 
-function openConfig() { canNavigateAsync(() => { S.isDirty = false; document.getElementById('cfg-empresa').value = S.config.empresa || ''; document.getElementById('cfg-tel').value = S.config.tel || ''; document.getElementById('cfg-email-empresa').value = S.config.emailEmpresa || ''; document.getElementById('cfg-end-empresa').value = S.config.endEmpresa || ''; document.getElementById('cfg-doc').value = S.config.doc || ''; document.getElementById('cfg-msg').value = S.config.msg || defCfg.msg; document.getElementById('cfg-servicos').value = S.config.servicos || defCfg.servicos; document.getElementById('cfg-pgto').value = S.config.pgto || defCfg.pgto; document.getElementById('cfg-status').value = S.config.statusList || defCfg.statusList; renderLogoPreview(); _cfgDirty = false; showPage('pg-config'); }); }
+function openConfig() { canNavigateAsync(() => { S.isDirty = false; document.getElementById('cfg-empresa').value = S.config.empresa || ''; document.getElementById('cfg-tel').value = S.config.tel || ''; document.getElementById('cfg-email-empresa').value = S.config.emailEmpresa || ''; document.getElementById('cfg-end-empresa').value = S.config.endEmpresa || ''; document.getElementById('cfg-doc').value = S.config.doc || ''; document.getElementById('cfg-msg').value = S.config.msg || defCfg.msg; document.getElementById('cfg-servicos').value = S.config.servicos || defCfg.servicos; document.getElementById('cfg-pgto').value = S.config.pgto || defCfg.pgto; document.getElementById('cfg-status').value = S.config.statusList || defCfg.statusList; renderLogoPreview(); renderSigPreview(); _cfgDirty = false; showPage('pg-config'); }); }
 function saveConfig() { 
-  S.config = { empresa: document.getElementById('cfg-empresa').value, tel: document.getElementById('cfg-tel').value, emailEmpresa: document.getElementById('cfg-email-empresa').value, endEmpresa: document.getElementById('cfg-end-empresa').value, doc: document.getElementById('cfg-doc').value, msg: document.getElementById('cfg-msg').value, servicos: document.getElementById('cfg-servicos').value, pgto: document.getElementById('cfg-pgto').value, statusList: document.getElementById('cfg-status').value, skipDelConfirm: S.config.skipDelConfirm || false, skipDirtyConfirm: S.config.skipDirtyConfirm || false, logo: S.config.logo || '' }; 
+  S.config = { empresa: document.getElementById('cfg-empresa').value, tel: document.getElementById('cfg-tel').value, emailEmpresa: document.getElementById('cfg-email-empresa').value, endEmpresa: document.getElementById('cfg-end-empresa').value, doc: document.getElementById('cfg-doc').value, msg: document.getElementById('cfg-msg').value, servicos: document.getElementById('cfg-servicos').value, pgto: document.getElementById('cfg-pgto').value, statusList: document.getElementById('cfg-status').value, skipDelConfirm: S.config.skipDelConfirm || false, skipDirtyConfirm: S.config.skipDirtyConfirm || false, logo: S.config.logo || '', assinatura: S.config.assinatura || '' };
   S.DEFAULT_SERVICES = S.config.servicos.split(',').map(s=>s.trim()).filter(Boolean); 
   if(!S.DEFAULT_SERVICES.length) S.DEFAULT_SERVICES = defCfg.servicos.split(',').map(s=>s.trim()); 
   S.statusArr = (S.config.statusList || defCfg.statusList).split(',').map(s=>s.trim()).filter(Boolean); 
@@ -3230,11 +3325,263 @@ function renderOrcamentosList() {
     const isRascunho = (o.status||'') === 'Rascunho';
     const rascunhoTag = isRascunho ? `<span class="badge-rascunho">Rascunho</span>` : '';
     const badgeHtml = isRascunho ? '' : `<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
-    return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button></div></div>`;
+    return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit || o.ts || Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas"><button class="hoa wa" onclick="sendWAIdx(${i})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#25D366;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>${photoBtnHtml}<button class="hoa ok" onclick="editOrc(${i})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button><button class="hoa recibo" onclick="event.stopPropagation();abrirModalRecibo(${i})" title="Gerar Recibo"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Recibo</button><button class="hoa" style="background:var(--rdl);color:var(--rd);" onclick="askDelete('Excluir este orçamento?', ()=>delOrc(${i}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg></button></div></div>`;
   }).join('');
 }
 
 function delOrc(i){ S.orcs.splice(i,1); _saveOrcs(); renderOrcamentosList(); toast('<svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg> Removido'); }
+
+// ── RECIBO ────────────────────────────────────────────────────────
+let _reciboOrcIdx = -1;
+
+function abrirModalRecibo(i) {
+  _reciboOrcIdx = i;
+  const o = S.orcs[i];
+  if (!o) return;
+  const tot = calcOrcTotal(o);
+
+  // Preenche campo cliente
+  document.getElementById('rb-cliente-label').textContent = o.nome || '(sem nome)';
+
+  // Data de hoje no formato yyyy-mm-dd
+  const hoje = new Date();
+  document.getElementById('rb-data').value =
+    hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0') + '-' + String(hoje.getDate()).padStart(2,'0');
+
+  // Valor total
+  document.getElementById('rb-total-label').textContent =
+    tot > 0 ? 'R$ ' + tot.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'R$ 0,00';
+  document.getElementById('rb-valor-auto').checked = true;
+  document.getElementById('rb-valor-input').style.display = 'none';
+  document.getElementById('rb-valor-input').value = '';
+
+  // Forma de pagamento do orçamento (se tiver)
+  document.getElementById('rb-pgto').value = o.pgto || '';
+  document.getElementById('rb-obs').value = '';
+
+  document.getElementById('modal-recibo').style.display = 'flex';
+}
+
+function fecharModalRecibo() {
+  document.getElementById('modal-recibo').style.display = 'none';
+  _reciboOrcIdx = -1;
+}
+
+function toggleRbValor() {
+  const custom = document.getElementById('rb-valor-custom').checked;
+  document.getElementById('rb-valor-input').style.display = custom ? '' : 'none';
+}
+
+function valorPorExtenso(valor) {
+  const inteiro = Math.floor(Math.abs(valor));
+  const dec = Math.round((Math.abs(valor) - inteiro) * 100);
+  const u = ['','um','dois','três','quatro','cinco','seis','sete','oito','nove',
+    'dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'];
+  const d = ['','','vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'];
+  const c = ['','cento','duzentos','trezentos','quatrocentos','quinhentos',
+    'seiscentos','setecentos','oitocentos','novecentos'];
+  function g3(n) {
+    if (n === 0) return '';
+    if (n === 100) return 'cem';
+    const ct = Math.floor(n/100), r = n%100, dz = Math.floor(r/10), un = r%10;
+    let s = ct > 0 ? c[ct] : '';
+    if (ct > 0 && r > 0) s += ' e ';
+    if (r > 0 && r < 20) s += u[r];
+    else if (dz > 0) { s += d[dz]; if (un > 0) s += ' e ' + u[un]; }
+    return s;
+  }
+  function i2e(n) {
+    if (n === 0) return 'zero';
+    const mi = Math.floor(n/1000000), mil = Math.floor((n%1000000)/1000), res = n%1000;
+    const p = [];
+    if (mi > 0) p.push(g3(mi) + (mi === 1 ? ' milhão' : ' milhões'));
+    if (mil > 0) p.push(g3(mil) + ' mil');
+    if (res > 0) p.push(g3(res));
+    return p.join(', ');
+  }
+  let r = '';
+  if (inteiro > 0) r += i2e(inteiro) + (inteiro === 1 ? ' real' : ' reais');
+  if (dec > 0) {
+    if (inteiro > 0) r += ' e ';
+    r += i2e(dec) + (dec === 1 ? ' centavo' : ' centavos');
+  }
+  return r || 'zero reais';
+}
+
+function _reciboFmtBRL(v) {
+  return 'R$\u00A0' + Number(v).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+
+function _reciboFmtData(ymd) {
+  // ymd = "2025-03-20" → "20/03/2025"
+  if (!ymd) return '—';
+  const p = ymd.split('-');
+  return (p[2]||'??') + '/' + (p[1]||'??') + '/' + (p[0]||'????');
+}
+
+function gerarReciboPDF() {
+  const i = _reciboOrcIdx;
+  if (i < 0) return;
+  const o = S.orcs[i];
+  if (!o) return;
+
+  const tot = calcOrcTotal(o);
+  const custom = document.getElementById('rb-valor-custom').checked;
+  let valor = custom
+    ? parseFloat(document.getElementById('rb-valor-input').value) || 0
+    : tot;
+  if (valor <= 0) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Informe um valor válido.'); return; }
+
+  const dataYMD = document.getElementById('rb-data').value;
+  const pgto    = document.getElementById('rb-pgto').value.trim() || 'Não informada';
+  const obs     = document.getElementById('rb-obs').value.trim();
+  const cfg     = S.config || {};
+
+  // Monta lista de serviços do orçamento
+  const servicos = [];
+  (o.rooms || []).forEach(room => {
+    (room.items || []).forEach(item => {
+      if (item.name) servicos.push(item.name);
+    });
+  });
+  const descServicos = servicos.length
+    ? servicos.join(', ')
+    : 'Serviços de pintura conforme combinado';
+
+  const data = {
+    id:           'REC-' + new Date().getFullYear() + String(new Date().getMonth()+1).padStart(2,'0') + String(new Date().getDate()).padStart(2,'0') + '-' + Math.random().toString(36).substring(2,6).toUpperCase(),
+    dataRecebimento: dataYMD,
+    empresa:      { nome: cfg.empresa || 'Prestador', cnpj: cfg.doc || '', tel: cfg.tel || '', email: cfg.emailEmpresa || '', end: cfg.endEmpresa || '', logo: cfg.logo || '' },
+    cliente:      { nome: o.nome || '—', doc: o.cpf || '', tel: o.tel || '', end: o.end || '' },
+    descServicos,
+    valor,
+    pgto,
+    obs,
+    sigPintor: cfg.assinatura || '',
+  };
+
+  fecharModalRecibo();
+
+  const html = gerarReciboHTML(data);
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const w    = window.open(url, '_blank');
+  if (!w) toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Pop-up bloqueado. Permita pop-ups para abrir o recibo.');
+  else setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
+
+function gerarReciboHTML(d) {
+  const extenso    = valorPorExtenso(d.valor);
+  const valorFmt   = _reciboFmtBRL(d.valor);
+  const dataFmt    = _reciboFmtData(d.dataRecebimento);
+  const cidade     = (d.empresa.end || '').split('—').pop().trim() || 'Local';
+  const logoHtml   = d.empresa.logo
+    ? `<img src="${d.empresa.logo}" style="width:60px;height:60px;border-radius:10px;object-fit:cover;" alt="Logo">`
+    : `<div style="width:60px;height:60px;border-radius:10px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#7C3AED;">${(d.empresa.nome||'P').charAt(0)}</div>`;
+  const sigHtml    = d.sigPintor
+    ? `<img src="${d.sigPintor}" style="max-height:70px;max-width:220px;object-fit:contain;" alt="Assinatura">`
+    : `<div style="height:50px;border-bottom:1.5px solid #334155;width:220px;"></div>`;
+  const obsHtml    = d.obs ? `<p style="margin-top:18px;font-size:12px;color:#475569;line-height:1.6;"><strong>Observações:</strong> ${d.obs}</p>` : '';
+  const docHtml    = d.empresa.cnpj ? `CPF/CNPJ: ${d.empresa.cnpj} · ` : '';
+  const cliDocHtml = d.cliente.doc  ? `, portador(a) do CPF/CNPJ <strong>${d.cliente.doc}</strong>,` : '';
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Recibo ${d.id}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#0F172A;padding:32px 40px;}
+  @media print{body{padding:20px 28px;}@page{margin:12mm 14mm;}}
+  .doc{max-width:720px;margin:0 auto;}
+  .head{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:20px;border-bottom:2px solid #0F172A;margin-bottom:22px;}
+  .company-row{display:flex;gap:14px;align-items:flex-start;}
+  .company-info .name{font-size:17px;font-weight:800;color:#0F172A;}
+  .company-info .detail{font-size:11px;color:#64748B;line-height:1.7;margin-top:4px;}
+  .title-block{text-align:right;}
+  .rec-title{font-size:26px;font-weight:800;color:#7C3AED;letter-spacing:-0.5px;}
+  .rec-id{font-family:monospace;font-size:12px;color:#475569;margin-top:3px;}
+  .rec-date{font-size:11px;color:#64748B;margin-top:4px;}
+  .legal-text{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:18px 20px;font-size:13.5px;color:#1E293B;line-height:1.85;margin-bottom:22px;}
+  .legal-text strong{color:#0F172A;}
+  .section{margin-bottom:18px;}
+  .section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7C3AED;margin-bottom:8px;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;}
+  .info-item{display:flex;flex-direction:column;gap:1px;}
+  .info-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#94A3B8;}
+  .info-val{font-size:13px;font-weight:600;color:#1E293B;}
+  .sig-area{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px;padding-top:18px;border-top:1px solid #E2E8F0;}
+  .sig-box{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .sig-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#94A3B8;}
+  .sig-name{font-size:12px;font-weight:600;color:#334155;}
+  .disclaimer{margin-top:24px;padding:10px 14px;background:#FEF3C7;border-radius:8px;font-size:11px;color:#92400E;text-align:center;line-height:1.5;}
+  .footer{margin-top:18px;text-align:center;font-size:10px;color:#94A3B8;border-top:1px solid #E2E8F0;padding-top:12px;}
+</style>
+</head>
+<body onload="setTimeout(()=>window.print(),400)">
+<div class="doc">
+  <div class="head">
+    <div class="company-row">
+      ${logoHtml}
+      <div class="company-info">
+        <div class="name">${d.empresa.nome}</div>
+        <div class="detail">${docHtml}${d.empresa.tel ? 'Tel: ' + d.empresa.tel : ''}${d.empresa.email ? ' · ' + d.empresa.email : ''}<br>${d.empresa.end || ''}</div>
+      </div>
+    </div>
+    <div class="title-block">
+      <div class="rec-title">RECIBO</div>
+      <div class="rec-id">${d.id}</div>
+      <div class="rec-date">Data: <strong>${dataFmt}</strong></div>
+    </div>
+  </div>
+
+  <div class="legal-text">
+    Recebi(emos) de <strong>${d.cliente.nome}</strong>${cliDocHtml} a importância de
+    <strong>${extenso}</strong> (<strong>${valorFmt}</strong>),
+    referente a <strong>${d.descServicos}</strong>,
+    pago mediante <strong>${d.pgto}</strong>.
+    ${cidade ? '<br>' + cidade + ', ' + dataFmt + '.' : ''}
+  </div>
+
+  <div class="section">
+    <div class="section-title">Dados do Cliente</div>
+    <div class="info-grid">
+      <div class="info-item"><span class="info-lbl">Nome</span><span class="info-val">${d.cliente.nome}</span></div>
+      ${d.cliente.doc ? `<div class="info-item"><span class="info-lbl">CPF / CNPJ</span><span class="info-val">${d.cliente.doc}</span></div>` : ''}
+      ${d.cliente.tel ? `<div class="info-item"><span class="info-lbl">Telefone</span><span class="info-val">${d.cliente.tel}</span></div>` : ''}
+      ${d.cliente.end ? `<div class="info-item" style="grid-column:1/-1"><span class="info-lbl">Endereço</span><span class="info-val">${d.cliente.end}</span></div>` : ''}
+    </div>
+  </div>
+
+  ${obsHtml}
+
+  <div class="sig-area">
+    <div class="sig-box">
+      <div class="sig-lbl">Prestador de Serviço</div>
+      ${sigHtml}
+      <div class="sig-name">${d.empresa.nome}</div>
+      ${d.empresa.cnpj ? `<div style="font-size:10px;color:#94A3B8;">${d.empresa.cnpj}</div>` : ''}
+    </div>
+    <div class="sig-box">
+      <div class="sig-lbl">Cliente (opcional)</div>
+      <div style="height:50px;border-bottom:1.5px solid #334155;width:220px;"></div>
+      <div class="sig-name">${d.cliente.nome}</div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ⚠️ Este recibo <strong>não tem valor como documento fiscal</strong>.
+    Não substitui Nota Fiscal de Serviço (NFS-e). Serve apenas como comprovante de pagamento entre as partes.
+  </div>
+
+  <div class="footer">
+    Gerado pelo <strong>Pintor Plus</strong> · pintorplus.com.br · ID: ${d.id}
+  </div>
+</div>
+</body>
+</html>`;
+}
 function sendWAIdx(i){ const o=S.orcs[i];if(!o)return; const msg=buildWAMsg(o); const tel=(o.tel||'').replace(/\D/g,''); const url = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`; window.open(url,'_blank'); }
 function editOrc(i){
   canNavigateAsync(() => {
