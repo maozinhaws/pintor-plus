@@ -3559,11 +3559,103 @@ const GDrive = {
       const data = await r.json();
       const files = data.files || [];
       this.fileId = files.length > 0 ? files[0].id : null;
+
+      // ── Auto-sync: se Drive tem dados mais recentes, importa automaticamente ──
+      if (this.fileId && files[0].modifiedTime) {
+        const driveTs = new Date(files[0].modifiedTime).getTime();
+        const localTsStr = localStorage.getItem('pp-gdrive-lastSyncIso');
+        const localTs = localTsStr ? new Date(localTsStr).getTime() : 0;
+        if (driveTs > localTs) {
+          await this._autoImportFromDrive();
+          return;
+        }
+      }
+
       const lastSync = localStorage.getItem('pp-gdrive-lastSync');
       this._setStatus('ok', 'Conectado' + (lastSync ? ' · Último sync: ' + lastSync : ''));
     } catch(e) {
       console.error('GDrive: findFile falhou', e);
       this._setStatus('err', 'Erro ao conectar ao Drive');
+    }
+  },
+
+  // ── AUTO-IMPORT: importa dados do Drive quando Drive é mais recente ────────
+  async _autoImportFromDrive() {
+    try {
+      this._setStatus('sync', 'Recebendo dados do Drive...');
+      const data = await this.readFromDrive();
+      if (!data || !data.orcs) {
+        const lastSync = localStorage.getItem('pp-gdrive-lastSync');
+        this._setStatus('ok', 'Conectado' + (lastSync ? ' · Último sync: ' + lastSync : ''));
+        return;
+      }
+
+      const isFirstDevice = !localStorage.getItem('pp-gdrive-lastSyncIso');
+
+      if (isFirstDevice) {
+        // Primeiro uso neste dispositivo — importa tudo diretamente
+        S.orcs = data.orcs || [];
+        S.clientes = data.clientes || [];
+        S.fornecedores = data.fornecedores || [];
+        S.eventos = data.eventos || [];
+        if (data.config) S.config = Object.assign({}, S.config, data.config);
+        _saveOrcs();
+        localStorage.setItem('pp-clientes', JSON.stringify(S.clientes));
+        localStorage.setItem('pp-fornecedores', JSON.stringify(S.fornecedores));
+        localStorage.setItem('pp-eventos', JSON.stringify(S.eventos));
+        localStorage.setItem('pp-config', JSON.stringify(S.config));
+        toast('☁️ Dados do Drive carregados!');
+      } else {
+        // Dispositivo já usado antes — mescla, mantendo versão mais recente de cada item
+        let changed = false;
+
+        // Orçamentos: ganha quem tem tsEdit maior
+        const localOrcs = S.orcs || [];
+        (data.orcs || []).forEach(imp => {
+          const idx = localOrcs.findIndex(o => o.id === imp.id);
+          if (idx >= 0) {
+            if ((imp.tsEdit || 0) > (localOrcs[idx].tsEdit || 0)) { localOrcs[idx] = imp; changed = true; }
+          } else { localOrcs.push(imp); changed = true; }
+        });
+        if (changed) { S.orcs = localOrcs.sort((a, b) => (b.ts || 0) - (a.ts || 0)); _saveOrcs(); }
+
+        // Clientes: adiciona os que não existem localmente (por nome)
+        const localCl = S.clientes || [];
+        (data.clientes || []).forEach(c => {
+          if (!localCl.some(lc => lc.nome === c.nome)) { localCl.push(c); changed = true; }
+        });
+        if (changed) { S.clientes = localCl; localStorage.setItem('pp-clientes', JSON.stringify(S.clientes)); }
+
+        // Fornecedores: idem
+        const localForn = S.fornecedores || [];
+        (data.fornecedores || []).forEach(f => {
+          if (!localForn.some(lf => lf.nome === f.nome)) { localForn.push(f); changed = true; }
+        });
+        if (changed) { S.fornecedores = localForn; localStorage.setItem('pp-fornecedores', JSON.stringify(S.fornecedores)); }
+
+        // Eventos: adiciona os que não existem localmente (por id)
+        const localEvts = S.eventos || [];
+        (data.eventos || []).forEach(ev => {
+          if (!localEvts.some(le => le.id === ev.id)) { localEvts.push(ev); changed = true; }
+        });
+        if (changed) { S.eventos = localEvts; localStorage.setItem('pp-eventos', JSON.stringify(S.eventos)); }
+
+        if (changed) toast('☁️ Dados sincronizados do Drive');
+      }
+
+      // Re-renderiza home com dados atualizados
+      if (typeof renderHomeMini === 'function') renderHomeMini();
+      if (typeof renderHomeEvents === 'function') renderHomeEvents();
+
+      const nowIso = new Date().toISOString();
+      const nowFmt = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      localStorage.setItem('pp-gdrive-lastSyncIso', nowIso);
+      localStorage.setItem('pp-gdrive-lastSync', nowFmt);
+      this._setStatus('ok', 'Sincronizado · ' + nowFmt);
+    } catch(e) {
+      console.error('GDrive: autoImport falhou', e);
+      const lastSync = localStorage.getItem('pp-gdrive-lastSync');
+      this._setStatus('ok', 'Conectado' + (lastSync ? ' · Último sync: ' + lastSync : ''));
     }
   },
 
@@ -3616,6 +3708,7 @@ const GDrive = {
       this.fileId = result.id;
       const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       localStorage.setItem('pp-gdrive-lastSync', now);
+      localStorage.setItem('pp-gdrive-lastSyncIso', new Date().toISOString());
       this._setStatus('ok', 'Sincronizado às ' + now);
     } catch(e) {
       console.error('GDrive: saveToDrive falhou', e);
