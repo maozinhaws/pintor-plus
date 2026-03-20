@@ -3409,6 +3409,10 @@ const GDrive = {
         callback: (resp) => self._onToken(resp),
         error_callback: (err) => {
           console.warn('GDrive: GIS error', err);
+          if (err && (err.type === 'popup_blocked_by_browser' || err.type === 'popup_failed_to_open')) {
+            self._showPopupBlockedMsg();
+            return;
+          }
           if (!self.accessToken) {
             if (self._sessionLoaded) {
               // Sessão existe mas token falhou — atualiza status no backup silenciosamente
@@ -3758,6 +3762,23 @@ const GDrive = {
     if (out) out.style.display = 'block';
     if (inn) inn.style.display = 'none';
     this._setStatus('off', 'Desconectado');
+  },
+
+  _showPopupBlockedMsg() {
+    const msgId = 'popup-blocked-msg';
+    let el = document.getElementById(msgId);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = msgId;
+      el.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:#FFF3CD;border:1.5px solid #F59E0B;border-radius:14px;padding:14px 16px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.18);';
+      document.body.appendChild(el);
+    }
+    el.innerHTML = '<div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:6px;">🚫 Pop-up bloqueado pelo navegador</div>'
+      + '<div style="font-size:12px;color:#78350F;line-height:1.6;margin-bottom:10px;">O navegador bloqueou a janela de login do Google.<br>Na barra de endereço, toque em <b>"Pop-up bloqueado"</b> e escolha <b>"Sempre permitir"</b>. Depois tente novamente.</div>'
+      + '<div style="display:flex;gap:8px;">'
+      + '<button onclick="document.getElementById(\'' + msgId + '\').remove();GDrive.reconnectDrive();" style="flex:1;height:36px;border-radius:8px;background:#F59E0B;border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Tentar novamente</button>'
+      + '<button onclick="document.getElementById(\'' + msgId + '\').remove();" style="height:36px;padding:0 14px;border-radius:8px;background:none;border:1.5px solid #D97706;color:#92400E;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Fechar</button>'
+      + '</div>';
   },
 
   _showLoginBtn() {
