@@ -4,7 +4,7 @@
   "description": "Gestão de orçamentos para pintores profissionais com suporte a voz e nuvem.",
   "lang": "pt-BR",
   "dir": "ltr",
-  "start_url": "/",
+  "start_url": "/app.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pintorplus-v13';
+const CACHE_NAME = 'pintorplus-v14';
 const STATIC_ASSETS = [
   'https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap'
 ];
@@ -28,8 +28,8 @@ self.addEventListener('fetch', (evt) => {
     return;
   }
 
-  // index.html e raiz do app: network-first (sempre busca versão atualizada)
-  if (url.endsWith('/') || url.includes('index.html') || url === self.location.origin + '/') {
+  // Páginas HTML principais: network-first (sempre busca versão atualizada)
+  if (url.endsWith('/') || url.includes('index.html') || url.includes('app.html') || url === self.location.origin + '/') {
     evt.respondWith(
       fetch(evt.request)
         .then((response) => {
