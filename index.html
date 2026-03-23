@@ -10,10 +10,10 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="canonical" href="https://pintorplus.com.br/index.html">
+<link rel="canonical" href="https://pintorplus.com.br/">
 <meta property="og:title" content="Pintor Plus — Orçamentos Inteligentes">
 <meta property="og:description" content="Crie orçamentos profissionais, gere recibos e sincronize seus dados com o Google Drive.">
-<meta property="og:url" content="https://pintorplus.com.br/index.html">
+<meta property="og:url" content="https://pintorplus.com.br/">
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -173,6 +173,23 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
 .screen-recibo-row{display:flex;justify-content:space-between;font-size:11px;padding:5px 0;border-bottom:1px solid #f1f5f9;color:var(--ink2);}
 .screen-recibo-row:last-child{border-bottom:none;font-weight:800;color:var(--ink);}
 
+/* ── PHONE MOCKUP REAL APP LAYOUT ── */
+.mockup-phone.main{height:430px;display:flex;flex-direction:column;}
+.mockup-app-hdr{background:#fff;border-bottom:1px solid #E2E8F0;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.mockup-hdr-ico{display:flex;flex-direction:column;gap:2.5px;width:14px;}
+.mockup-hdr-ico span{display:block;height:1.5px;background:#475569;border-radius:2px;}
+.mockup-hdr-cname{font-size:8px;font-weight:800;color:#0F172A;}
+.mockup-hdr-acts{display:flex;gap:3px;}
+.mockup-hdr-act{width:16px;height:16px;border-radius:50%;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:8px;color:#475569;line-height:1;}
+.mockup-btns-area{padding:8px 10px 6px;display:flex;gap:6px;flex-shrink:0;}
+.mockup-flash-btn2{flex:0 0 54px;height:54px;border-radius:12px;background:linear-gradient(135deg,#f97316,#fb923c);border:2.5px solid #fed7aa;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.mockup-orc-btn{flex:1;height:54px;border-radius:10px;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff;text-align:center;line-height:1.4;padding:0 6px;}
+.mockup-phone.main .mockup-screen{flex:1;min-height:0;overflow:hidden;padding:8px 10px;background:#F8FAFC;}
+.mockup-bottom-nav{background:#fff;border-top:1px solid #E2E8F0;padding:5px 2px 3px;display:flex;justify-content:space-around;flex-shrink:0;}
+.mockup-nav-item{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:4.5px;color:#94A3B8;}
+.mockup-nav-item.active{color:#7C3AED;}
+.mockup-nav-ico{font-size:10px;line-height:1;}
+
 @media(max-width:600px){
   .hero-mockup{display:none;}
   .backup-inner{grid-template-columns:1fr;}
@@ -185,7 +202,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
 <!-- NAVBAR -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="/index.html" class="nav-brand">
+    <a href="/" class="nav-brand">
       <img src="/apple-touch-icon.png" alt="Pintor Plus">
       <span class="nav-brand-name">Pintor<span>+</span></span>
     </a>
@@ -221,14 +238,25 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
           <div style="background:#ECFDF5;border-radius:8px;padding:6px 8px;font-size:7px;font-weight:700;color:#059669;text-align:center;margin-top:6px;">Assinatura digital incluída</div>
         </div>
       </div>
-      <!-- Tela 1: Home (principal) -->
+      <!-- Tela 1: Home (principal) — layout real do app -->
       <div class="mockup-phone main">
-        <div class="mockup-header">
-          <div class="mockup-title">Pintor Plus</div>
-          <div class="mockup-name">Sua Empresa</div>
+        <!-- Header branco: hamburger | nome empresa | sync + tema -->
+        <div class="mockup-app-hdr">
+          <div class="mockup-hdr-ico"><span></span><span></span><span></span></div>
+          <div class="mockup-hdr-cname">Minha Empresa</div>
+          <div class="mockup-hdr-acts">
+            <div class="mockup-hdr-act">↻</div>
+            <div class="mockup-hdr-act">☀</div>
+          </div>
         </div>
-        <div class="mockup-screen" style="min-height:auto;padding-top:0;">
-          <div style="font-size:8px;font-weight:800;text-transform:uppercase;color:#64748B;letter-spacing:.5px;margin-bottom:8px;">Últimos Orçamentos</div>
+        <!-- Botões de ação: Flash (laranja) + Orçamento Detalhado (roxo) -->
+        <div class="mockup-btns-area">
+          <div class="mockup-flash-btn2">⚡</div>
+          <div class="mockup-orc-btn">+ Orçamento<br>Detalhado</div>
+        </div>
+        <!-- Área de conteúdo: cards de orçamentos recentes -->
+        <div class="mockup-screen">
+          <div style="font-size:7px;font-weight:800;text-transform:uppercase;color:#64748B;letter-spacing:.5px;margin-bottom:7px;">Últimos Orçamentos</div>
           <div class="mockup-card">
             <div class="mockup-card-row"><span class="mockup-card-name">Residência Alves</span><span class="mockup-badge">Aprovado</span></div>
             <div class="mockup-card-row"><span class="mockup-card-date">23/03/2026</span><span class="mockup-card-val">R$ 3.800,00</span></div>
@@ -241,7 +269,14 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
             <div class="mockup-card-row"><span class="mockup-card-name">Galpão Industrial</span><span style="font-size:7px;font-weight:700;padding:2px 5px;border-radius:100px;background:#FFFBEB;color:#D97706;">Pendente</span></div>
             <div class="mockup-card-row"><span class="mockup-card-date">15/03/2026</span><span class="mockup-card-val">R$ 8.200,00</span></div>
           </div>
-          <div class="mockup-btn">+ Novo Orçamento</div>
+        </div>
+        <!-- Nav inferior: 5 ícones (Home ativo) -->
+        <div class="mockup-bottom-nav">
+          <div class="mockup-nav-item active"><div class="mockup-nav-ico">🏠</div><span>Home</span></div>
+          <div class="mockup-nav-item"><div class="mockup-nav-ico">📋</div><span>Orçam.</span></div>
+          <div class="mockup-nav-item"><div class="mockup-nav-ico">👥</div><span>Clientes</span></div>
+          <div class="mockup-nav-item"><div class="mockup-nav-ico">🏪</div><span>Fornec.</span></div>
+          <div class="mockup-nav-item"><div class="mockup-nav-ico">⚙️</div><span>Config</span></div>
         </div>
       </div>
       <!-- Tela 3: Flash -->
@@ -268,7 +303,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
 <!-- ESTATÍSTICAS -->
 <div class="stats-bar">
   <div class="stats-inner">
-    <div><div class="stat-val">+15</div><div class="stat-lbl">Status de Orçamento</div></div>
+    <div><div class="stat-val">9+</div><div class="stat-lbl">Funcionalidades integradas</div></div>
     <div><div class="stat-val">100%</div><div class="stat-lbl">Gratuito</div></div>
     <div><div class="stat-val">PWA</div><div class="stat-lbl">Funciona offline e como app</div></div>
     <div><div class="stat-val">Google</div><div class="stat-lbl">Backup automático no Drive</div></div>
