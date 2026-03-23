@@ -178,17 +178,18 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
 .mockup-app-hdr{background:#fff;border-bottom:1px solid #E2E8F0;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .mockup-hdr-ico{display:flex;flex-direction:column;gap:2.5px;width:14px;}
 .mockup-hdr-ico span{display:block;height:1.5px;background:#475569;border-radius:2px;}
-.mockup-hdr-cname{font-size:8px;font-weight:800;color:#0F172A;}
-.mockup-hdr-acts{display:flex;gap:3px;}
+.mockup-hdr-cname{font-size:9px;font-weight:800;color:#0F172A;}
+.mockup-hdr-acts{display:flex;gap:3px;align-items:center;}
 .mockup-hdr-act{width:16px;height:16px;border-radius:50%;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:8px;color:#475569;line-height:1;}
+.mockup-toggle{display:flex;align-items:center;background:#E2E8F0;border-radius:20px;padding:2px 4px;gap:2px;font-size:7px;color:#64748B;}
+.mockup-toggle-knob{width:10px;height:10px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .mockup-btns-area{padding:8px 10px 6px;display:flex;gap:6px;flex-shrink:0;}
-.mockup-flash-btn2{flex:0 0 54px;height:54px;border-radius:12px;background:linear-gradient(135deg,#f97316,#fb923c);border:2.5px solid #fed7aa;display:flex;align-items:center;justify-content:center;font-size:22px;}
-.mockup-orc-btn{flex:1;height:54px;border-radius:10px;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff;text-align:center;line-height:1.4;padding:0 6px;}
-.mockup-phone.main .mockup-screen{flex:1;min-height:0;overflow:hidden;padding:8px 10px;background:#F8FAFC;}
-.mockup-bottom-nav{background:#fff;border-top:1px solid #E2E8F0;padding:5px 2px 3px;display:flex;justify-content:space-around;flex-shrink:0;}
-.mockup-nav-item{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:4.5px;color:#94A3B8;}
-.mockup-nav-item.active{color:#7C3AED;}
-.mockup-nav-ico{font-size:10px;line-height:1;}
+.mockup-flash-btn2{flex:0 0 58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#f97316,#fb923c);border:2.5px solid #fed7aa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+.mockup-orc-btn{flex:1;height:58px;border-radius:100px;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;text-align:center;line-height:1.3;padding:0 8px;}
+.mockup-phone.main .mockup-screen{flex:1;min-height:0;overflow:hidden;padding:10px;background:#F1F5F9;}
+.mockup-section-lbl{font-size:8px;font-weight:800;color:#0F172A;margin-bottom:5px;}
+.mockup-empty-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:8px;text-align:center;font-size:7px;color:#94A3B8;margin-bottom:5px;}
+.mockup-outline-btn{border:1px solid #E2E8F0;border-radius:8px;padding:5px;text-align:center;font-size:7px;font-weight:700;color:#7C3AED;margin-bottom:9px;background:#fff;}
 
 @media(max-width:600px){
   .hero-mockup{display:none;}
@@ -224,78 +225,94 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
       <a href="#features"><button class="btn-outline">Ver Funcionalidades</button></a>
     </div>
 
-    <!-- Mockup visual -->
+    <!-- Mockup visual — baseado nas telas reais do app -->
     <div class="hero-mockup">
-      <!-- Tela 2: Recibo -->
+
+      <!-- Tela: Menu lateral (hamburger aberto) -->
       <div class="mockup-phone">
-        <div class="mockup-screen">
-          <div style="font-size:9px;font-weight:800;color:#7C3AED;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Recibo de Serviço</div>
-          <div class="mockup-card">
-            <div style="font-size:8px;font-weight:700;color:#0F172A;margin-bottom:6px;">João Silva</div>
-            <div class="mockup-card-row"><span class="mockup-card-date">Pintura interna</span><span style="font-size:8px;font-weight:800;color:#10B981;">✓ Pago</span></div>
-            <div style="border-top:1px solid #E2E8F0;margin-top:6px;padding-top:6px;font-size:8px;color:#64748B;display:flex;justify-content:space-between;"><span>Total</span><span style="font-weight:800;color:#0F172A;">R$ 2.400,00</span></div>
+        <div class="mockup-screen" style="padding:0;background:#F8FAFC;position:relative;min-height:360px;overflow:hidden;">
+          <!-- overlay escuro atrás do menu -->
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,.25);z-index:1;"></div>
+          <!-- Painel do menu -->
+          <div style="position:absolute;left:0;top:0;bottom:0;width:78%;background:#fff;z-index:2;padding:12px 10px;overflow:hidden;">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #E2E8F0;">
+              <div style="width:22px;height:22px;border-radius:7px;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:900;flex-shrink:0;">P</div>
+              <div style="font-size:10px;font-weight:800;color:#0F172A;flex:1;">Menu</div>
+              <div style="font-size:11px;color:#94A3B8;line-height:1;">✕</div>
+            </div>
+            <div style="font-size:8px;color:#334155;padding:5px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:5px;align-items:center;">🏠 Início</div>
+            <div style="font-size:8px;color:#334155;padding:5px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:5px;align-items:center;">📋 Meus Orçamentos</div>
+            <div style="font-size:8px;color:#334155;padding:5px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:5px;align-items:center;">👥 Contatos</div>
+            <div style="font-size:8px;color:#334155;padding:5px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:5px;align-items:center;">🚚 Fornecedores</div>
+            <div style="font-size:8px;color:#334155;padding:5px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:5px;align-items:center;">📅 Agenda e Lembretes</div>
+            <div style="font-size:8px;color:#334155;padding:5px 0;border-bottom:1px solid #F1F5F9;display:flex;gap:5px;align-items:center;">☁️ Backup</div>
+            <div style="font-size:8px;color:#334155;padding:5px 0;display:flex;gap:5px;align-items:center;">⚙️ Configurações</div>
+            <div style="margin-top:10px;padding-top:8px;border-top:1px solid #E2E8F0;">
+              <div style="font-size:8px;color:#7C3AED;font-weight:700;padding:4px 0;display:flex;gap:5px;">🎧 Suporte / Reportar Bug</div>
+              <div style="font-size:8px;color:#EF4444;font-weight:700;padding:4px 0;display:flex;gap:5px;">→ Sair da conta</div>
+            </div>
           </div>
-          <div style="background:#ECFDF5;border-radius:8px;padding:6px 8px;font-size:7px;font-weight:700;color:#059669;text-align:center;margin-top:6px;">Assinatura digital incluída</div>
         </div>
       </div>
-      <!-- Tela 1: Home (principal) — layout real do app -->
+
+      <!-- Tela: Home (principal) — fiel ao screenshot real -->
       <div class="mockup-phone main">
-        <!-- Header branco: hamburger | nome empresa | sync + tema -->
+        <!-- Header: hamburger | Sua Empresa | sync + toggle -->
         <div class="mockup-app-hdr">
           <div class="mockup-hdr-ico"><span></span><span></span><span></span></div>
-          <div class="mockup-hdr-cname">Minha Empresa</div>
+          <div class="mockup-hdr-cname">Sua Empresa</div>
           <div class="mockup-hdr-acts">
-            <div class="mockup-hdr-act">↻</div>
-            <div class="mockup-hdr-act">☀</div>
+            <div class="mockup-hdr-act" style="border:1.5px solid #E2E8F0;background:#fff;">↻</div>
+            <div class="mockup-toggle">☀<div class="mockup-toggle-knob"></div>🌙</div>
           </div>
         </div>
-        <!-- Botões de ação: Flash (laranja) + Orçamento Detalhado (roxo) -->
+        <!-- Flash + Orçamento Detalhado -->
         <div class="mockup-btns-area">
-          <div class="mockup-flash-btn2">⚡</div>
-          <div class="mockup-orc-btn">+ Orçamento<br>Detalhado</div>
+          <div class="mockup-flash-btn2">
+            <span style="font-size:18px;line-height:1;">⚡</span>
+            <span style="font-size:5.5px;font-weight:900;color:#fff;letter-spacing:.5px;">FLASH</span>
+          </div>
+          <div class="mockup-orc-btn">Orçamento detalhado</div>
         </div>
-        <!-- Área de conteúdo: cards de orçamentos recentes -->
+        <!-- Conteúdo da home -->
         <div class="mockup-screen">
-          <div style="font-size:7px;font-weight:800;text-transform:uppercase;color:#64748B;letter-spacing:.5px;margin-bottom:7px;">Últimos Orçamentos</div>
-          <div class="mockup-card">
-            <div class="mockup-card-row"><span class="mockup-card-name">Residência Alves</span><span class="mockup-badge">Aprovado</span></div>
-            <div class="mockup-card-row"><span class="mockup-card-date">23/03/2026</span><span class="mockup-card-val">R$ 3.800,00</span></div>
-          </div>
-          <div class="mockup-card">
-            <div class="mockup-card-row"><span class="mockup-card-name">Ap. Centro</span><span style="font-size:7px;font-weight:700;padding:2px 5px;border-radius:100px;background:#EFF6FF;color:#2563EB;">Em andamento</span></div>
-            <div class="mockup-card-row"><span class="mockup-card-date">18/03/2026</span><span class="mockup-card-val">R$ 1.950,00</span></div>
-          </div>
-          <div class="mockup-card">
-            <div class="mockup-card-row"><span class="mockup-card-name">Galpão Industrial</span><span style="font-size:7px;font-weight:700;padding:2px 5px;border-radius:100px;background:#FFFBEB;color:#D97706;">Pendente</span></div>
-            <div class="mockup-card-row"><span class="mockup-card-date">15/03/2026</span><span class="mockup-card-val">R$ 8.200,00</span></div>
-          </div>
-        </div>
-        <!-- Nav inferior: 5 ícones (Home ativo) -->
-        <div class="mockup-bottom-nav">
-          <div class="mockup-nav-item active"><div class="mockup-nav-ico">🏠</div><span>Home</span></div>
-          <div class="mockup-nav-item"><div class="mockup-nav-ico">📋</div><span>Orçam.</span></div>
-          <div class="mockup-nav-item"><div class="mockup-nav-ico">👥</div><span>Clientes</span></div>
-          <div class="mockup-nav-item"><div class="mockup-nav-ico">🏪</div><span>Fornec.</span></div>
-          <div class="mockup-nav-item"><div class="mockup-nav-ico">⚙️</div><span>Config</span></div>
+          <div class="mockup-section-lbl">Últimos Orçamentos</div>
+          <div class="mockup-empty-card">Nenhum orçamento registrado ainda.</div>
+          <div class="mockup-outline-btn">Ver todos os orçamentos</div>
+          <div class="mockup-section-lbl">Eventos da Semana (7 dias)</div>
+          <div class="mockup-empty-card">Nenhum evento nos próximos 7 dias.</div>
+          <div class="mockup-outline-btn">Ir para a Agenda</div>
         </div>
       </div>
-      <!-- Tela 3: Flash -->
+
+      <!-- Tela: Orçamento Flash — passo 1 (Cliente) -->
       <div class="mockup-phone">
-        <div class="mockup-screen">
-          <div style="background:linear-gradient(135deg,#f97316,#fb923c);border-radius:10px;padding:8px;color:#fff;text-align:center;margin-bottom:10px;">
-            <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;">Orçamento Flash</div>
-            <div style="font-size:7px;opacity:.8;margin-top:2px;">Visita técnica rápida</div>
+        <div class="mockup-screen" style="padding:0;background:#fff;min-height:360px;display:flex;flex-direction:column;overflow:hidden;">
+          <!-- Header gradiente roxo→laranja -->
+          <div style="background:linear-gradient(135deg,#7C3AED,#f97316);padding:10px 12px;color:#fff;text-align:center;flex-shrink:0;">
+            <div style="font-size:8px;font-weight:800;line-height:1.3;">Comece agora. Termine depois.</div>
+            <div style="font-size:6.5px;opacity:.85;margin-top:2px;">Versão rápida para visita técnica</div>
+            <div style="height:3px;background:rgba(255,255,255,.25);border-radius:2px;margin-top:8px;">
+              <div style="width:33%;height:100%;background:#fff;border-radius:2px;"></div>
+            </div>
           </div>
-          <div class="mockup-card">
-            <div style="font-size:8px;font-weight:700;color:#0F172A;margin-bottom:5px;">Sala / Living</div>
-            <div class="mockup-card-row"><span class="mockup-card-date">12 × 4 m = 48 m²</span><span style="font-size:8px;font-weight:800;color:#f97316;">R$ 35/m²</span></div>
+          <!-- Formulário passo 1 -->
+          <div style="padding:10px 12px;flex:1;">
+            <div style="font-size:10px;font-weight:800;color:#0F172A;margin-bottom:2px;">1. Cliente</div>
+            <div style="font-size:7px;color:#64748B;margin-bottom:10px;">Preencha o essencial para não perder a visita.</div>
+            <div style="font-size:7px;font-weight:700;text-transform:uppercase;color:#64748B;letter-spacing:.4px;margin-bottom:3px;">Nome do cliente</div>
+            <div style="border:1.5px solid #E2E8F0;border-radius:10px;padding:7px 9px;font-size:8px;color:#94A3B8;margin-bottom:9px;">Ex.: João da Silva</div>
+            <div style="font-size:7px;font-weight:700;text-transform:uppercase;color:#64748B;letter-spacing:.4px;margin-bottom:3px;">Telefone (WhatsApp)</div>
+            <div style="border:1.5px solid #E2E8F0;border-radius:10px;padding:7px 9px;font-size:8px;color:#94A3B8;">(11) 99999-9999</div>
           </div>
-          <div style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);border-radius:8px;padding:8px;margin-top:6px;text-align:center;">
-            <div style="font-size:7px;font-weight:700;text-transform:uppercase;color:#ea580c;letter-spacing:.5px;">Total Estimado</div>
-            <div style="font-size:16px;font-weight:900;color:#ea580c;">R$ 1.680,00</div>
+          <!-- Botão Avançar -->
+          <div style="padding:8px 10px;display:flex;gap:6px;flex-shrink:0;border-top:1px solid #F1F5F9;">
+            <div style="width:30px;height:30px;border-radius:9px;background:#EF4444;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">↺</div>
+            <div style="flex:1;height:30px;border-radius:100px;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;">Avançar →</div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -378,13 +395,31 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
     </div>
     <div class="screens-grid">
 
-      <!-- Tela: Lista de Orçamentos -->
+      <!-- Tela: Home -->
       <div class="screen-card">
-        <div class="screen-header">
-          <div class="screen-header-title">Orçamentos</div>
-          <div class="screen-header-name">Todos os orçamentos</div>
+        <!-- Header branco igual ao app real -->
+        <div class="screen-header" style="background:#fff;border-bottom:1px solid #E2E8F0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;flex-direction:column;gap:3px;width:18px;">
+            <div style="height:2px;background:#475569;border-radius:2px;"></div>
+            <div style="height:2px;background:#475569;border-radius:2px;"></div>
+            <div style="height:2px;background:#475569;border-radius:2px;"></div>
+          </div>
+          <div style="font-size:15px;font-weight:800;color:#0F172A;">Sua Empresa</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="width:28px;height:28px;border-radius:50%;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#475569;">↻</div>
+            <div style="display:flex;align-items:center;background:#E2E8F0;border-radius:20px;padding:3px 6px;gap:3px;font-size:11px;">☀<div style="width:14px;height:14px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>🌙</div>
+          </div>
         </div>
-        <div class="screen-body">
+        <div class="screen-body" style="padding:12px;">
+          <!-- Flash + Orçamento -->
+          <div style="display:flex;gap:8px;margin-bottom:14px;">
+            <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#f97316,#fb923c);border:3px solid #fed7aa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex-shrink:0;">
+              <span style="font-size:20px;line-height:1;">⚡</span>
+              <span style="font-size:7px;font-weight:900;color:#fff;letter-spacing:.5px;">FLASH</span>
+            </div>
+            <div style="flex:1;height:64px;border-radius:100px;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;text-align:center;">Orçamento detalhado</div>
+          </div>
+          <div style="font-size:13px;font-weight:800;color:#0F172A;margin-bottom:8px;">Últimos Orçamentos</div>
           <div class="screen-item">
             <div class="screen-item-row"><span class="screen-item-name">Residência Alves</span><span class="screen-badge badge-aprov">Aprovado</span></div>
             <div class="screen-item-row"><span class="screen-item-date">23/03/2026</span><span class="screen-item-val">R$ 3.800,00</span></div>
@@ -393,93 +428,92 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);padding:40px 24px;}
             <div class="screen-item-row"><span class="screen-item-name">Apartamento Centro</span><span class="screen-badge badge-and">Em andamento</span></div>
             <div class="screen-item-row"><span class="screen-item-date">18/03/2026</span><span class="screen-item-val">R$ 1.950,00</span></div>
           </div>
-          <div class="screen-item">
-            <div class="screen-item-row"><span class="screen-item-name">Galpão Industrial</span><span class="screen-badge badge-pend">Pendente</span></div>
-            <div class="screen-item-row"><span class="screen-item-date">15/03/2026</span><span class="screen-item-val">R$ 8.200,00</span></div>
+        </div>
+      </div>
+
+      <!-- Tela: Novo Orçamento — Dados do Cliente -->
+      <div class="screen-card">
+        <div class="screen-header" style="background:#fff;border-bottom:1px solid #E2E8F0;padding:10px 16px;">
+          <!-- Step indicator -->
+          <div style="display:flex;gap:4px;margin-bottom:8px;">
+            <div style="flex:1;height:3px;background:#7C3AED;border-radius:2px;"></div>
+            <div style="flex:1;height:3px;background:#E2E8F0;border-radius:2px;"></div>
+            <div style="flex:1;height:3px;background:#E2E8F0;border-radius:2px;"></div>
+            <div style="flex:1;height:3px;background:#E2E8F0;border-radius:2px;"></div>
           </div>
-          <div class="screen-item">
-            <div class="screen-item-row"><span class="screen-item-name">Casa Rascunho</span><span class="screen-badge badge-rasc">Rascunho</span></div>
-            <div class="screen-item-row"><span class="screen-item-date">10/03/2026</span><span class="screen-item-val">R$ 650,00</span></div>
+          <div style="font-size:13px;font-weight:800;color:#0F172A;text-align:center;">NOVO ORÇAMENTO</div>
+          <div style="font-size:10px;color:#64748B;text-align:center;margin-top:2px;text-transform:uppercase;letter-spacing:.5px;">Dados do Cliente</div>
+        </div>
+        <div class="screen-body">
+          <!-- Import buttons -->
+          <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+            <div style="border:1.5px solid #7C3AED;border-radius:8px;padding:5px 8px;font-size:10px;font-weight:700;color:#7C3AED;display:flex;align-items:center;gap:4px;">📱 Agenda do Celular</div>
+            <div style="border:1.5px solid #E2E8F0;border-radius:8px;padding:5px 8px;font-size:10px;font-weight:700;color:#334155;display:flex;align-items:center;gap:4px;">📋 Contatos Salvos</div>
+          </div>
+          <div class="screen-field">
+            <div class="screen-field-lbl">Nome</div>
+            <div class="screen-field-val" style="color:#94A3B8;">Nome do cliente</div>
+          </div>
+          <div class="screen-field">
+            <div class="screen-field-lbl">Telefone (com DDD)</div>
+            <div class="screen-field-val" style="color:#94A3B8;">(11) 99999-9999</div>
+          </div>
+          <div class="screen-field">
+            <div class="screen-field-lbl">Email</div>
+            <div class="screen-field-val" style="color:#94A3B8;">email@exemplo.com</div>
+          </div>
+          <div class="screen-field">
+            <div class="screen-field-lbl">CEP</div>
+            <div class="screen-field-val" style="color:#94A3B8;">00000-000</div>
           </div>
         </div>
       </div>
 
-      <!-- Tela: Novo Orçamento -->
+      <!-- Tela: Configurações -->
       <div class="screen-card">
-        <div class="screen-header">
-          <div class="screen-header-title">Novo Orçamento</div>
-          <div class="screen-header-name">Dados do Cliente</div>
+        <div class="screen-header" style="background:#fff;border-bottom:1px solid #E2E8F0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="width:28px;height:28px;border-radius:50%;border:1.5px solid #E2E8F0;display:flex;align-items:center;justify-content:center;font-size:13px;">🏠</div>
+          <div style="font-size:13px;font-weight:800;color:#0F172A;">CONFIGURAÇÕES</div>
+          <div style="height:30px;padding:0 12px;border-radius:100px;background:#7C3AED;display:flex;align-items:center;font-size:10px;font-weight:800;color:#fff;">Salvar →</div>
         </div>
         <div class="screen-body">
-          <div class="screen-field">
-            <div class="screen-field-lbl">Nome do Cliente</div>
-            <div class="screen-field-val">Maria Fernanda Costa</div>
-          </div>
-          <div class="screen-field">
-            <div class="screen-field-lbl">Telefone</div>
-            <div class="screen-field-val">(11) 99876-5432</div>
-          </div>
-          <div class="screen-field">
-            <div class="screen-field-lbl">Endereço</div>
-            <div class="screen-field-val">Rua das Flores, 142</div>
-          </div>
-          <div class="screen-title">Ambientes e Serviços</div>
-          <div class="screen-item">
-            <div class="screen-item-name">Sala de Estar · 15 m²</div>
-            <div style="font-size:10px;color:#64748B;margin-top:2px;">Massa corrida + Tinta látex</div>
-          </div>
-          <div class="screen-total">
-            <div class="screen-total-lbl">Valor Total</div>
-            <div class="screen-total-val">R$ 2.100,00</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:8px;">🏢 Dados da Empresa</span><span style="color:#94A3B8;font-size:12px;">›</span></div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:8px;">💬 Mensagem WhatsApp</span><span style="color:#94A3B8;font-size:12px;">›</span></div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:8px;">📋 Listas Padrão</span><span style="color:#94A3B8;font-size:12px;">›</span></div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:8px;">✍️ Assinatura do Pintor</span><span style="color:#94A3B8;font-size:12px;">›</span></div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;font-weight:700;color:#0F172A;display:flex;align-items:center;gap:8px;">♿ Acessibilidade</span><span style="color:#94A3B8;font-size:12px;">›</span></div>
           </div>
         </div>
       </div>
 
-      <!-- Tela: Recibo -->
+      <!-- Tela: Orçamento Flash -->
       <div class="screen-card">
-        <div class="screen-header" style="background:#10B981;">
-          <div class="screen-header-title">Recibo de Serviço</div>
-          <div class="screen-header-name">Emissão automática</div>
+        <div class="screen-header" style="background:linear-gradient(135deg,#7C3AED,#f97316);padding:16px;">
+          <!-- Progress bar -->
+          <div style="display:flex;gap:4px;margin-bottom:10px;">
+            <div style="flex:1;height:3px;background:#fff;border-radius:2px;opacity:.9;"></div>
+            <div style="flex:1;height:3px;background:rgba(255,255,255,.3);border-radius:2px;"></div>
+            <div style="flex:1;height:3px;background:rgba(255,255,255,.3);border-radius:2px;"></div>
+          </div>
+          <div class="screen-header-name" style="font-size:14px;">Comece agora. Termine depois.</div>
+          <div style="font-size:11px;opacity:.85;margin-top:3px;">Versão rápida para visita técnica</div>
         </div>
         <div class="screen-body">
-          <div class="screen-title">
-            <span style="font-size:16px;">🧾</span> Recibo #2026-042
+          <div style="font-size:14px;font-weight:800;color:#0F172A;margin-bottom:4px;">1. Cliente</div>
+          <div style="font-size:12px;color:#64748B;margin-bottom:14px;">Preencha o essencial para não perder a visita.</div>
+          <div class="screen-field">
+            <div class="screen-field-lbl">Nome do cliente</div>
+            <div class="screen-field-val" style="color:#94A3B8;">Ex.: João da Silva</div>
           </div>
-          <div class="screen-recibo">
-            <div class="screen-recibo-row"><span>Cliente</span><span style="font-weight:600;">João Silva</span></div>
-            <div class="screen-recibo-row"><span>Serviço</span><span style="font-weight:600;">Pintura interna</span></div>
-            <div class="screen-recibo-row"><span>Área total</span><span style="font-weight:600;">84 m²</span></div>
-            <div class="screen-recibo-row"><span>Status</span><span style="color:#10B981;font-weight:700;">Pago ✓</span></div>
-            <div class="screen-recibo-row"><span>Total</span><span>R$ 2.400,00</span></div>
+          <div class="screen-field">
+            <div class="screen-field-lbl">Telefone (WhatsApp)</div>
+            <div class="screen-field-val" style="color:#94A3B8;">(11) 99999-9999</div>
           </div>
-          <div style="background:#ECFDF5;border-radius:10px;padding:10px;text-align:center;margin-top:10px;">
-            <div style="font-size:10px;font-weight:700;color:#059669;margin-bottom:4px;">Assinatura do Pintor</div>
-            <div style="height:30px;border-bottom:1.5px solid #059669;width:80%;margin:0 auto;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tela: Flash -->
-      <div class="screen-card">
-        <div class="screen-header" style="background:linear-gradient(135deg,#f97316,#fb923c);">
-          <div class="screen-header-title">Orçamento Flash ⚡</div>
-          <div class="screen-header-name">Visita técnica rápida</div>
-        </div>
-        <div class="screen-body">
-          <div style="font-size:11px;color:#64748B;margin-bottom:10px;line-height:1.5;">Estimativa rápida por ambiente. Converta em orçamento completo depois.</div>
-          <div class="screen-item" style="border-color:#fed7aa;">
-            <div class="screen-item-name" style="color:#f97316;">Sala / Living</div>
-            <div style="font-size:10px;color:#64748B;margin:3px 0;">12 × 4 m = 48 m²</div>
-            <div style="font-size:11px;font-weight:800;color:#f97316;">R$ 35/m² = R$ 1.680,00</div>
-          </div>
-          <div class="screen-item" style="border-color:#fed7aa;">
-            <div class="screen-item-name" style="color:#f97316;">Quartos (2)</div>
-            <div style="font-size:10px;color:#64748B;margin:3px 0;">10 × 3 m × 2 = 60 m²</div>
-            <div style="font-size:11px;font-weight:800;color:#f97316;">R$ 35/m² = R$ 2.100,00</div>
-          </div>
-          <div style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);border-radius:10px;padding:10px;margin-top:8px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;text-transform:uppercase;color:#ea580c;letter-spacing:.5px;">Total Estimado</div>
-            <div style="font-size:22px;font-weight:900;color:#ea580c;">R$ 3.780,00</div>
+          <!-- Avançar -->
+          <div style="display:flex;gap:8px;margin-top:16px;">
+            <div style="width:40px;height:40px;border-radius:12px;background:#EF4444;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;">↺</div>
+            <div style="flex:1;height:40px;border-radius:100px;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;">Avançar →</div>
           </div>
         </div>
       </div>
