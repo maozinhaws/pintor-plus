@@ -100,7 +100,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#F3F4F6;display:flex
 .chk-item.on{background:var(--bll);border-color:var(--bl);}
 .chk-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--bdr-input);background:var(--bg-input);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:11px;color:#fff;}
 .chk-item.on .chk-box{background:var(--bl);border-color:var(--bl);}
-.chk-item.on .chk-box::after{content:'<svg class="ico" aria-hidden="true"><use href="#ico-check"/></svg>';}
+.chk-item.on .chk-box::after{content:'✓';font-size:13px;font-weight:900;line-height:1;}
 .chk-lbl{font-size:14px;font-weight:600;color:var(--ink);}
 .rcard{background:var(--bg-card-alt);border-radius:14px;border:1.5px solid var(--bdr);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh);}
 .rcard-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg-card);border-bottom:1.5px solid var(--bdr);cursor:pointer;}
@@ -230,47 +230,60 @@ input[type="number"] { font-family: 'Calibri', sans-serif !important; }
 #del-confirm-modal { z-index: 99999999 !important; }
 .fab-add { position: absolute; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); right: 20px; width: 52px; height: 52px; border-radius: 50%; background: var(--am); color: #92400E; border: 2.5px solid #FDE68A; box-shadow: 0 8px 24px rgba(0,0,0,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 50; transition: transform 0.2s; }
 .fab-add:active { transform: scale(0.92); }
-.hm-hdr { background: var(--bg-modal) !important; padding: max(28px, env(safe-area-inset-top, 28px)) 18px 16px !important; }
-.hm-name { font-size: 20px !important; }
+.hm-hdr { background: var(--bg-modal) !important; padding: max(20px, env(safe-area-inset-top, 20px)) 16px 12px !important; }
+.hm-name { font-size: 17px !important; }
 .hoc { background: var(--bg-modal) !important; border-radius: 14px !important; padding: 14px !important; }
 .hon { font-size: 15px !important; }
 .hos { font-size: 12px !important; }
 .hoov { font-size: 15px !important; }
 .hoas { gap: 6px !important; margin-top: 10px !important; }
 .hoa { height: 38px !important; font-size: 12px !important; border-radius: 9px !important; font-weight: 700 !important; }
-/* ── Modo Acessibilidade — fontes e botões maiores ── */
-body.acessivel .finput, body.acessivel .fsel { height: 56px !important; font-size: 16px !important; }
-body.acessivel .fta { font-size: 16px !important; min-height: 110px !important; }
-body.acessivel .flbl { font-size: 13px !important; }
-body.acessivel .sec-title { font-size: 17px !important; }
-body.acessivel .sec { padding: 18px !important; margin-bottom: 16px !important; }
-body.acessivel .fld { margin-bottom: 16px !important; }
-body.acessivel .act-btn { height: 60px !important; font-size: 16px !important; }
-body.acessivel .add-room-btn { height: 56px !important; font-size: 15px !important; }
-body.acessivel .chk-item { padding: 16px 14px !important; }
-body.acessivel .chk-box { width: 26px !important; height: 26px !important; }
-body.acessivel .chk-lbl { font-size: 16px !important; }
-body.acessivel .toggle-row { padding: 16px 14px !important; }
-body.acessivel .toggle-lbl { font-size: 16px !important; }
-body.acessivel .toggle-sw { width: 50px !important; height: 28px !important; }
-body.acessivel .toggle-sw::after { width: 22px !important; height: 22px !important; top: 3px !important; left: 3px !important; }
-body.acessivel .toggle-sw.on::after { left: 25px !important; }
-body.acessivel .rcard { margin-bottom: 14px !important; }
-body.acessivel .rcard-head, body.acessivel .rcard-body { padding: 16px !important; }
-body.acessivel .rcard-name { font-size: 16px !important; }
-body.acessivel .rcard-del { width: 38px !important; height: 38px !important; }
-body.acessivel .mbox { padding: 12px !important; }
-body.acessivel .minp { font-size: 22px !important; }
-body.acessivel .item-card { padding: 16px !important; margin-top: 14px !important; }
-body.acessivel .item-del { width: 34px !important; height: 34px !important; }
-body.acessivel .price-check-row input[type=number], body.acessivel .price-check-row input[type=text] { height: 52px !important; font-size: 18px !important; }
-body.acessivel .hoc { padding: 18px !important; border-radius: 18px !important; }
-body.acessivel .hon { font-size: 17px !important; }
-body.acessivel .hos { font-size: 14px !important; }
-body.acessivel .hoov { font-size: 17px !important; }
-body.acessivel .hoa { height: 44px !important; font-size: 13px !important; }
-body.acessivel .hoas { gap: 8px !important; margin-top: 14px !important; }
-body.acessivel .hm-name { font-size: 26px !important; }
+/* ── Modo Acessibilidade — fontes, botões e contraste aumentados ── */
+body.acessivel { font-size: 17px !important; line-height: 1.7 !important; }
+body.acessivel .finput, body.acessivel .fsel { height: 62px !important; font-size: 18px !important; border-width: 2px !important; border-radius: 14px !important; }
+body.acessivel .fta { font-size: 18px !important; min-height: 130px !important; border-width: 2px !important; line-height: 1.7 !important; }
+body.acessivel .flbl { font-size: 15px !important; font-weight: 700 !important; letter-spacing: .3px !important; }
+body.acessivel .sec-title { font-size: 19px !important; font-weight: 900 !important; }
+body.acessivel .sec { padding: 20px !important; margin-bottom: 20px !important; border-width: 2px !important; }
+body.acessivel .fld { margin-bottom: 20px !important; }
+body.acessivel .act-btn { height: 64px !important; font-size: 18px !important; border-radius: 16px !important; font-weight: 800 !important; }
+body.acessivel .add-room-btn { height: 60px !important; font-size: 17px !important; border-width: 2.5px !important; }
+body.acessivel .chk-item { padding: 18px 16px !important; gap: 14px !important; border-width: 2px !important; }
+body.acessivel .chk-box { width: 30px !important; height: 30px !important; border-width: 2.5px !important; border-radius: 8px !important; }
+body.acessivel .chk-item.on .chk-box::after { font-size: 16px !important; font-weight: 900 !important; }
+body.acessivel .chk-lbl { font-size: 18px !important; font-weight: 600 !important; }
+body.acessivel .toggle-row { padding: 18px 16px !important; border-width: 2px !important; }
+body.acessivel .toggle-lbl { font-size: 18px !important; font-weight: 700 !important; }
+body.acessivel .toggle-sub { font-size: 14px !important; }
+body.acessivel .toggle-sw { width: 56px !important; height: 32px !important; }
+body.acessivel .toggle-sw::after { width: 25px !important; height: 25px !important; top: 3.5px !important; left: 3.5px !important; }
+body.acessivel .toggle-sw.on::after { left: 27.5px !important; }
+body.acessivel .rcard { margin-bottom: 18px !important; border-width: 2px !important; border-radius: 16px !important; }
+body.acessivel .rcard-head, body.acessivel .rcard-body { padding: 18px !important; }
+body.acessivel .rcard-name { font-size: 18px !important; font-weight: 700 !important; }
+body.acessivel .rcard-del { width: 44px !important; height: 44px !important; border-radius: 12px !important; font-size: 16px !important; }
+body.acessivel .mbox { padding: 14px !important; }
+body.acessivel .minp { font-size: 26px !important; font-weight: 800 !important; }
+body.acessivel .item-card { padding: 18px !important; margin-top: 16px !important; border-width: 2px !important; }
+body.acessivel .item-del { width: 42px !important; height: 42px !important; }
+body.acessivel .price-check-row input[type=number], body.acessivel .price-check-row input[type=text] { height: 60px !important; font-size: 20px !important; }
+body.acessivel .hoc { padding: 20px 18px !important; border-radius: 18px !important; border-width: 2px !important; margin-bottom: 12px !important; }
+body.acessivel .hon { font-size: 19px !important; font-weight: 800 !important; }
+body.acessivel .hos { font-size: 15px !important; }
+body.acessivel .hoov { font-size: 20px !important; font-weight: 800 !important; }
+body.acessivel .hoa { height: 50px !important; font-size: 15px !important; font-weight: 700 !important; }
+body.acessivel .hoas { gap: 10px !important; margin-top: 16px !important; }
+body.acessivel .hm-name { font-size: 28px !important; font-weight: 800 !important; }
+body.acessivel .topnav-btn { height: 56px !important; font-size: 12px !important; }
+body.acessivel .topnav-btn svg { width: 24px !important; height: 24px !important; }
+body.acessivel .srch-bar { height: 48px !important; font-size: 16px !important; border-width: 2px !important; }
+body.acessivel .step-num { font-size: 18px !important; }
+body.acessivel .step-title { font-size: 14px !important; }
+body.acessivel .badge-rascunho, body.acessivel .hbadge { font-size: 12px !important; padding: 4px 10px !important; }
+body.acessivel button, body.acessivel [role=button] { min-height: 44px; }
+/* Contraste extra em modo acessível */
+body.acessivel .ink, body.acessivel { color: var(--ink) !important; }
+body.acessivel .finput:focus, body.acessivel .fta:focus, body.acessivel .fsel:focus { border-color: var(--bl) !important; box-shadow: 0 0 0 3px rgba(124,58,237,.2) !important; }
 /* ── Busca ── */
 .srch-wrap{position:relative;margin-top:10px;}
 .srch-bar{width:100%;height:38px;background:var(--bg-input);border:1.5px solid var(--bdr-input);border-radius:100px;padding:0 14px 0 36px;font-family:'Sora',sans-serif;font-size:13px;color:var(--ink);outline:none;-webkit-appearance:none;}
@@ -391,8 +404,10 @@ body.kb-open .title-big { font-size: 14px; }
 #offline-banner.mode-reconnect:hover{opacity:.88;}
 .card-rascunho{background:#fff3e0 !important;}
 .badge-rascunho{font-size:10px;font-weight:800;background:#ffe0bf;color:#a04000;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:middle;}
-:root.dark .card-rascunho{background:#3d2200 !important;}
-:root.dark .badge-rascunho{background:#3d2200;color:#fbbf24;}
+:root.dark .card-rascunho{background:rgba(120,53,15,0.22) !important;border-left:3px solid #FBBF24 !important;}
+:root.dark .badge-rascunho{background:rgba(251,191,36,0.18) !important;color:#FDE68A !important;}
+:root.dark .hbadge.hby{background:rgba(251,191,36,0.18) !important;color:#FDE68A !important;}
+:root.dark .hbadge.hbg{background:rgba(16,185,129,0.18) !important;color:#6EE7B7 !important;}
 @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
 .gd-btn{width:100%;height:42px;border-radius:11px;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;transition:all .15s;}
 .gd-btn-primary{background:var(--bl);color:#fff;}
@@ -512,21 +527,21 @@ body.kb-open .title-big { font-size: 14px; }
     </div>
     <div class="page" id="pg-home">
       <div class="hm-hdr">
-        <div style="display:flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-          <div style="display:flex; align-items: center; gap: 16px;">
+        <div style="display:flex; align-items: center; justify-content: space-between;">
+          <div style="display:flex; align-items: center; gap: 12px;">
             <button onclick="toggleSidebar()" style="background:none; border:none; font-size:24px; cursor:pointer; color:var(--ink); padding:0;"><svg class="ico" aria-hidden="true"><use href="#ico-menu"/></svg></button>
-            <div style="display:flex; align-items:center; gap:12px;">
-              <img id="home-logo-img" style="width:40px; height:40px; border-radius:50%; object-fit:cover; display:none; border:2px solid var(--bdr-input); background-color: #ffffff;">
-              <div>
-                <div class="hm-greet" style="font-size:14px; color:var(--ink2); margin-bottom:4px;">Olá! </div>
-                <div class="hm-name" id="home-saudacao" style="font-size:20px; font-weight:800; color:var(--ink);"></div>
-              </div>
-            </div>
+            <button onclick="homeTab('config')" style="display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:0;" title="Configurações da empresa">
+              <img id="home-logo-img" style="width:32px; height:32px; border-radius:50%; object-fit:cover; display:none; border:1.5px solid var(--bdr-input); background-color:#ffffff;">
+              <div class="hm-name" id="home-saudacao" style="font-size:17px; font-weight:800; color:var(--ink); text-align:left;"></div>
+            </button>
           </div>
-          <div class="theme-sw-wrap">
-            <span class="tsw-ic" onclick="setTheme('light')"><svg class="ico" aria-hidden="true"><use href="#ico-sun"/></svg></span>
-            <div class="theme-sw" onclick="toggleThemeAnim()"></div>
-            <span class="tsw-ic" onclick="setTheme('dark')"><svg class="ico" aria-hidden="true"><use href="#ico-moon"/></svg></span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button id="hdr-sync-btn" onclick="GDrive.scheduleSync && GDrive.scheduleSync()" title="Sincronizar com Drive" style="width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1.5px solid var(--bdr);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);padding:0;flex-shrink:0;transition:color .2s,border-color .2s;"><svg class="ico" aria-hidden="true" style="width:15px;height:15px;" id="hdr-sync-icon"><use href="#ico-refresh"/></svg></button>
+            <div class="theme-sw-wrap">
+              <span class="tsw-ic" onclick="setTheme('light')"><svg class="ico" aria-hidden="true"><use href="#ico-sun"/></svg></span>
+              <div class="theme-sw" onclick="toggleThemeAnim()"></div>
+              <span class="tsw-ic" onclick="setTheme('dark')"><svg class="ico" aria-hidden="true"><use href="#ico-moon"/></svg></span>
+            </div>
           </div>
         </div>
       </div>
@@ -892,16 +907,7 @@ body.kb-open .title-big { font-size: 14px; }
           </div>
         </div>
 
-        <!-- CARD: Preferências -->
-        <div class="cfg-card">
-          <button class="cfg-card-hdr" onclick="toggleCfgCard('cc-pref')">
-            <span><svg class="ico" aria-hidden="true"><use href="#ico-settings"/></svg></span><span>Preferências</span><span class="cfg-chev">›</span>
-          </button>
-          <div class="cfg-card-body" id="cc-pref">
-            <button onclick="restoreDelConfirms()" style="width:100%;height:46px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr-input);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;margin-bottom:8px;"><svg class="ico" aria-hidden="true"><use href="#ico-refresh"/></svg> Restaurar alertas de exclusão</button>
-            <button onclick="restoreDirtyConfirm()" style="width:100%;height:46px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr-input);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;"><svg class="ico" aria-hidden="true"><use href="#ico-refresh"/></svg> Restaurar aviso de saída</button>
-          </div>
-        </div>
+        <!-- CARD: Preferências removido — sem opções de ignorar alertas -->
 
         <!-- CARD: Assinatura do Pintor -->
         <div class="cfg-card">
@@ -909,16 +915,33 @@ body.kb-open .title-big { font-size: 14px; }
             <span><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg></span><span>Assinatura do Pintor</span><span class="cfg-chev">›</span>
           </button>
           <div class="cfg-card-body" id="cc-assinatura">
-            <div style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.55;">Carregue uma imagem da sua assinatura (PNG, JPG ou JPEG). Ela aparecerá automaticamente nos recibos gerados — sem precisar assinar toda vez.</div>
-            <label style="cursor:pointer;display:block;text-align:center;">
-              <div id="cfg-sig-wrap" style="width:100%;max-width:320px;height:110px;border:2px dashed var(--bdr-input);border-radius:12px;background:var(--bg-input);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto;">
-                <span id="cfg-sig-placeholder" style="font-size:12px;color:var(--ink3);padding:8px;text-align:center;">Toque para carregar assinatura<br><span style="font-size:10px;opacity:.7;">PNG, JPG ou JPEG</span></span>
-                <img id="cfg-sig-preview" src="" alt="Assinatura" style="max-width:100%;max-height:100%;object-fit:contain;display:none;">
+            <div style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.55;">Aparece automaticamente nos recibos. Carregue uma imagem ou desenhe diretamente na tela.</div>
+            <!-- Abas -->
+            <div style="display:flex;gap:0;background:var(--bg2);border-radius:10px;padding:3px;margin-bottom:14px;">
+              <button id="sig-tab-upload" onclick="sigTab('upload')" style="flex:1;height:36px;border-radius:8px;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:var(--bl);color:#fff;transition:all .2s;">Carregar</button>
+              <button id="sig-tab-draw" onclick="sigTab('draw')" style="flex:1;height:36px;border-radius:8px;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--ink3);transition:all .2s;">Desenhar</button>
+            </div>
+            <!-- Aba: Carregar -->
+            <div id="sig-panel-upload">
+              <label style="cursor:pointer;display:block;text-align:center;">
+                <div id="cfg-sig-wrap" style="width:100%;max-width:320px;height:110px;border:2px dashed var(--bdr-input);border-radius:12px;background:var(--bg-input);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto;">
+                  <span id="cfg-sig-placeholder" style="font-size:12px;color:var(--ink3);padding:8px;text-align:center;">Toque para carregar assinatura<br><span style="font-size:10px;opacity:.7;">PNG, JPG ou JPEG</span></span>
+                  <img id="cfg-sig-preview" src="" alt="Assinatura" style="max-width:100%;max-height:100%;object-fit:contain;display:none;">
+                </div>
+                <input type="file" id="cfg-sig-file" accept="image/png,image/jpeg,image/jpg" style="display:none;" onchange="loadSigCfg(this);_cfgDirty=true;">
+                <div style="font-size:12px;font-weight:700;color:var(--bl);margin-top:8px;">Alterar Assinatura</div>
+              </label>
+            </div>
+            <!-- Aba: Desenhar -->
+            <div id="sig-panel-draw" style="display:none;">
+              <div style="font-size:12px;color:var(--ink3);margin-bottom:8px;">Assine com o dedo ou mouse. Toque em Salvar quando terminar.</div>
+              <canvas id="sig-canvas" width="320" height="120" style="width:100%;max-width:320px;height:120px;display:block;margin:0 auto;border:2px solid var(--bdr-input);border-radius:12px;background:#fff;touch-action:none;cursor:crosshair;"></canvas>
+              <div style="display:flex;gap:8px;margin-top:10px;">
+                <button onclick="sigCanvasClear()" style="flex:1;height:40px;border-radius:10px;border:1.5px solid var(--bdr-input);background:var(--bg-input);font-family:inherit;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;">Limpar</button>
+                <button onclick="sigCanvasSave()" style="flex:1;height:40px;border-radius:10px;border:none;background:var(--bl);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">Salvar Assinatura</button>
               </div>
-              <input type="file" id="cfg-sig-file" accept="image/png,image/jpeg,image/jpg" style="display:none;" onchange="loadSigCfg(this);_cfgDirty=true;">
-              <div style="font-size:12px;font-weight:700;color:var(--bl);margin-top:8px;">Alterar Assinatura</div>
-            </label>
-            <div style="text-align:center;margin-top:6px;"><button onclick="clearSigCfg();_cfgDirty=true;" style="background:none;border:none;font-size:12px;color:var(--rd);cursor:pointer;padding:4px 8px;">Remover Assinatura</button></div>
+            </div>
+            <div style="text-align:center;margin-top:10px;"><button onclick="clearSigCfg();_cfgDirty=true;" style="background:none;border:none;font-size:12px;color:var(--rd);cursor:pointer;padding:4px 8px;">Remover Assinatura</button></div>
           </div>
         </div>
 
@@ -986,7 +1009,8 @@ body.kb-open .title-big { font-size: 14px; }
           <!-- Estado: Logado -->
           <div id="gd-logged-in" style="display:none;">
             <div class="gd-user">
-              <img id="gd-avatar" class="gd-avatar" src="" alt="Avatar">
+              <img id="gd-avatar" class="gd-avatar" src="" alt="Avatar" style="display:none;" onerror="this.style.display='none';document.getElementById('gd-avatar-fb').style.display='flex';">
+              <div id="gd-avatar-fb" style="display:none;width:40px;height:40px;border-radius:50%;background:var(--bl);color:#fff;font-size:16px;font-weight:800;align-items:center;justify-content:center;flex-shrink:0;"></div>
               <div>
                 <div class="gd-uname" id="gd-uname"></div>
                 <div class="gd-uemail" id="gd-uemail"></div>
@@ -1793,6 +1817,18 @@ body.kb-open .title-big { font-size: 14px; }
 
   <div id="confirm-modal" style="display:none;"></div>
 
+  <!-- MODAL: Visualizar Orçamento -->
+  <div id="view-orc-modal" onclick="if(event.target===this)closeViewOrc()" class="glass-overlay" style="display:none;z-index:9999;">
+    <div class="modal-box" style="max-width:480px;width:100%;padding:0;display:flex;flex-direction:column;max-height:92vh;position:relative;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--bdr);flex-shrink:0;">
+        <div style="font-size:17px;font-weight:800;color:var(--ink);">Visualizar Orçamento</div>
+        <button onclick="closeViewOrc()" style="background:#fee2e2;border:none;width:30px;height:30px;border-radius:50%;font-size:15px;font-weight:800;color:var(--rd);cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <div id="view-orc-body" style="flex:1;overflow-y:auto;padding:18px 20px;"></div>
+      <div id="view-orc-actions" style="display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--bdr);flex-shrink:0;"></div>
+    </div>
+  </div>
+
   <div id="del-confirm-modal" onclick="if(event.target===this) closeDelConfirm(false)" class="glass-overlay">
     <div class="modal-box" style="padding:24px; max-width:320px; position:relative;">
       <button onclick="closeDelConfirm(false)" style="position:absolute;top:10px;right:10px;background:#fee2e2;border:none;width:28px;height:28px;border-radius:50%;font-size:14px;font-weight:800;color:var(--rd);cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>
@@ -2077,7 +2113,7 @@ function getStatusBadgeClass(st) {
 const GMAPS_KEY = '';
 
 // DADOS GLOBAIS
-const defCfg = { empresa:'', tel:'', doc:'', emailEmpresa:'', endEmpresa:'', msg:'Olá {cliente}!\nSegue o resumo do seu orçamento:\n\n{detalhes}\n*Valor Total: {total}*\n\nQualquer dúvida estou à disposição.', servicos:'Lixamento, Pintura, Massa corrida, Selador, Textura, Verniz', pgto:'PIX, Dinheiro, Cartão de Crédito, Cartão de Débito, Boleto, Parcelado', statusList: 'Pendente, Enviado, Aprovado, Concluído, Recusado', skipDelConfirm:false, skipDirtyConfirm:false, logo:'', acessibilidade:false };
+const defCfg = { empresa:'', tel:'', doc:'', emailEmpresa:'', endEmpresa:'', msg:'Olá {cliente}!\nSegue o resumo do seu orçamento:\n\n{detalhes}\n*Valor Total: {total}*\n\nQualquer dúvida estou à disposição.', servicos:'Lixamento, Pintura, Massa corrida, Selador, Textura, Verniz', pgto:'PIX, Dinheiro, Cartão de Crédito, Cartão de Débito, Boleto, Parcelado', statusList: 'Pendente, Enviado, Aprovado, Concluído, Recusado', logo:'', acessibilidade:false };
 const S = {
   orcs: JSON.parse(localStorage.getItem('pp-orcs')||'[]'), 
   clientes: JSON.parse(localStorage.getItem('pp-clientes')||'[]'),
@@ -2261,7 +2297,17 @@ function setTheme(theme) {
   document.documentElement.classList.toggle('dark', theme==='dark');
   localStorage.setItem('pp-theme', theme);
 }
-if(localStorage.getItem('pp-theme') === 'dark') document.documentElement.classList.add('dark');
+(function(){
+  const saved = localStorage.getItem('pp-theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(saved ? saved === 'dark' : prefersDark) document.documentElement.classList.add('dark');
+  // Segue mudança do sistema apenas se usuário não escolheu manualmente
+  if(!saved && window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if(!localStorage.getItem('pp-theme')) document.documentElement.classList.toggle('dark', e.matches);
+    });
+  }
+})();
 
 function _autoSaveRascunho() {
   const orc = collectOrc();
@@ -2270,7 +2316,7 @@ function _autoSaveRascunho() {
   orc.status = 'Rascunho';
   if (S.editId) { const i = S.orcs.findIndex(o => o.id === S.editId); if (i >= 0) S.orcs[i] = orc; else S.orcs.unshift(orc); } else { S.orcs.unshift(orc); S.editId = orc.id; }
   S.isDirty = false; _saveOrcs(); GDrive.scheduleSync();
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-save"/></svg> Rascunho salvo automaticamente');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-save"/></svg> Rascunho salvo — altere o status para gerar PDF');
 }
 function canNavigateAsync(callback) { if (S.isDirty) { _autoSaveRascunho(); } callback(); }
 function closeConfirm(proceed) { if (proceed) canNavigateAsync(() => {}); }
@@ -2278,22 +2324,27 @@ function closeConfirm(proceed) { if (proceed) canNavigateAsync(() => {}); }
 let pendingDelAction = null;
 function askDelete(msg, action) { document.getElementById('del-confirm-msg').textContent = msg; document.getElementById('del-confirm-modal').style.display = 'flex'; pendingDelAction = action; }
 function closeDelConfirm(proceed) { document.getElementById('del-confirm-modal').style.display = 'none'; if (proceed && pendingDelAction) pendingDelAction(); pendingDelAction = null; }
-function restoreDelConfirms() { S.config.skipDelConfirm = false; localStorage.setItem('pp-config', JSON.stringify(S.config)); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Alertas ativados!'); }
-function restoreDirtyConfirm() { S.config.skipDirtyConfirm = false; localStorage.setItem('pp-config', JSON.stringify(S.config)); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Aviso ativado!'); }
 window.addEventListener('beforeunload', () => {
   if (S.isDirty) _autoSaveRascunho();
 });
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     if (S.isDirty) _autoSaveRascunho();
+    GDrive.scheduleSync?.();
   } else if (document.visibilityState === 'visible') {
     // App voltou do background — se sessão existe mas token foi perdido, tenta reconectar silenciosamente
     if (GDrive._sessionLoaded && !GDrive.accessToken && GDrive._gisReady) {
       const savedEmail = localStorage.getItem('pp-gdrive-email');
       if (savedEmail) GDrive.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
     }
+    GDrive.scheduleSync?.();
   }
 });
+window.addEventListener('pagehide', () => {
+  if (S.isDirty) _autoSaveRascunho();
+  GDrive.scheduleSync?.();
+});
+setInterval(() => { GDrive.scheduleSync?.(); }, 3 * 60 * 1000);
 
 // ── CONFIGURAÇÕES: cards colapsáveis + confirmação de saída ────
 let _cfgDirty = false;
@@ -3248,6 +3299,58 @@ function renderSigPreview() {
   }
 }
 
+// ── ASSINATURA: ABAS ──────────────────────────────────────────
+function sigTab(tab) {
+  const isUpload = tab === 'upload';
+  document.getElementById('sig-panel-upload').style.display = isUpload ? 'block' : 'none';
+  document.getElementById('sig-panel-draw').style.display   = isUpload ? 'none' : 'block';
+  const btnU = document.getElementById('sig-tab-upload');
+  const btnD = document.getElementById('sig-tab-draw');
+  if (btnU) { btnU.style.background = isUpload ? 'var(--bl)' : 'transparent'; btnU.style.color = isUpload ? '#fff' : 'var(--ink3)'; }
+  if (btnD) { btnD.style.background = isUpload ? 'transparent' : 'var(--bl)'; btnD.style.color = isUpload ? 'var(--ink3)' : '#fff'; }
+  if (!isUpload) _sigCanvasInit();
+}
+
+// ── ASSINATURA: CANVAS DE DESENHO ─────────────────────────────
+let _sigDrawing = false, _sigLastX = 0, _sigLastY = 0, _sigCtx = null;
+
+function _sigCanvasInit() {
+  const c = document.getElementById('sig-canvas');
+  if (!c || c._sigInited) return;
+  c._sigInited = true;
+  _sigCtx = c.getContext('2d');
+  _sigCtx.strokeStyle = '#1e293b';
+  _sigCtx.lineWidth = 2.2;
+  _sigCtx.lineCap = 'round';
+  _sigCtx.lineJoin = 'round';
+  const pos = (e) => {
+    const r = c.getBoundingClientRect();
+    const sc = c.width / r.width;
+    const src = e.touches ? e.touches[0] : e;
+    return { x: (src.clientX - r.left) * sc, y: (src.clientY - r.top) * sc };
+  };
+  const start = (e) => { e.preventDefault(); _sigDrawing = true; const p = pos(e); _sigLastX = p.x; _sigLastY = p.y; _sigCtx.beginPath(); _sigCtx.moveTo(p.x, p.y); };
+  const move  = (e) => { if (!_sigDrawing) return; e.preventDefault(); const p = pos(e); _sigCtx.lineTo(p.x, p.y); _sigCtx.stroke(); _sigLastX = p.x; _sigLastY = p.y; };
+  const end   = () => { _sigDrawing = false; };
+  c.addEventListener('mousedown', start); c.addEventListener('mousemove', move); c.addEventListener('mouseup', end); c.addEventListener('mouseleave', end);
+  c.addEventListener('touchstart', start, { passive: false }); c.addEventListener('touchmove', move, { passive: false }); c.addEventListener('touchend', end);
+}
+
+function sigCanvasClear() {
+  const c = document.getElementById('sig-canvas');
+  if (c && _sigCtx) _sigCtx.clearRect(0, 0, c.width, c.height);
+}
+
+function sigCanvasSave() {
+  const c = document.getElementById('sig-canvas');
+  if (!c) return;
+  S.config.assinatura = c.toDataURL('image/png');
+  renderSigPreview();
+  sigTab('upload');
+  _cfgDirty = true;
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Assinatura salva!');
+}
+
 function renderLogoPreview() { 
   // Variáveis Padrão Independentes
   const menuDefaultLogo = 'https://lh3.googleusercontent.com/d/1WJXU6NvZ12GeL3GA4NzzGeGeaZvHpkfn';
@@ -3370,7 +3473,7 @@ function renderHomeMini() {
   
   const wrap=document.getElementById('home-orcs-mini');if(!wrap)return;
   if(!S.orcs.length){ wrap.innerHTML='<div style="text-align:center;padding:16px;background:var(--bg-card);border-radius:12px;border:1px solid var(--bdr);font-size:12px;color:var(--ink3);margin-bottom:8px;">Nenhum orçamento registado ainda.</div>'; return; }
-  wrap.innerHTML=S.orcs.slice(0,3).map((o,sliceIdx)=>{ const realIdx=sliceIdx; let tot=calcOrcTotal(o); const isR=(o.status||'').includes('Rascunho'); const rTag=isR?`<span class="badge-rascunho">Rascunho</span>`:''; const badgeHtml=isR?'':(`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`); const menuId=`cm-h-${realIdx}`; return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:9px;"><div class="hot" style="margin-bottom:6px;"><div><div class="hon">${o.nome||'(sem nome)'}${rTag}</div><div class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">${badgeHtml}<div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div></div><div class="hoas" style="justify-content:flex-end;">${_buildCardMenu(menuId,realIdx,o)}</div></div>`; }).join('');
+  wrap.innerHTML=S.orcs.slice(0,3).map((o,sliceIdx)=>{ const realIdx=sliceIdx; let tot=calcOrcTotal(o); const isR=(o.status||'').includes('Rascunho'); const badgeHtml=isR?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`; const menuId=`cm-h-${realIdx}`; return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:8px;cursor:pointer;" onclick="viewOrc(${realIdx})"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;pointer-events:none;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div><div onclick="event.stopPropagation()">${_buildCardMenu(menuId,realIdx,o)}</div></div><div style="display:flex;align-items:center;justify-content:space-between;pointer-events:none;"><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div></div>`; }).join('');
 }
 
 // --- MÓDULO: EVENTOS DA SEMANA NA HOME ---
@@ -3472,9 +3575,8 @@ function renderOrcamentosList() {
   wrap.innerHTML=filtered.map(({o,i})=>{
     let tot=calcOrcTotal(o); const qtdLocais=(o.rooms||[]).length; const infoTxt=qtdLocais===1?`${o.rooms[0].items?.length||0} item(ns)`:`${qtdLocais} local(is)`;
     const isRascunho=(o.status||'')==='Rascunho';
-    const rascunhoTag=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:'';
-    const badgeHtml=isRascunho?'':`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
-    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:12px;"><div class="hot"><div><div class="hon">${o.nome||'(sem nome)'}${rascunhoTag}</div><div class="hos">Edição: ${buildDateLabel(o.tsEdit||o.ts||Date.now())}</div></div>${badgeHtml}</div><div class="hob"><div class="hood"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> ${o.end||'—'} · ${infoTxt}</div><div class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</div></div><div class="hoas" style="justify-content:flex-end;">${_buildCardMenu(menuId,i,o)}</div></div>`;
+    const badgeHtml=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
+    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:10px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div>${_buildCardMenu(menuId,i,o)}</div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;"><span class="hood" style="display:flex;align-items:center;gap:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg>${o.end||'—'} · ${infoTxt}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span></div>`;
   }).join('');
 }
 
@@ -3750,6 +3852,57 @@ function editOrc(i){
   });
 }
 
+function closeViewOrc() { document.getElementById('view-orc-modal').style.display = 'none'; }
+
+function viewOrc(i) {
+  const o = S.orcs[i]; if (!o) return;
+  const tot = calcOrcTotal(o);
+  const fmtVal = v => v ? 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2}) : '—';
+  const fmtDate = ts => { if (!ts) return '—'; const d = new Date(ts); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; };
+  const row = (label, val) => val ? `<div style="display:flex;gap:8px;margin-bottom:6px;font-size:13px;"><span style="color:var(--ink3);min-width:110px;flex-shrink:0;">${label}</span><span style="font-weight:600;color:var(--ink);word-break:break-word;">${val}</span></div>` : '';
+  const sec = (title, content) => `<div style="margin-bottom:16px;"><div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-bottom:8px;">${title}</div>${content}</div>`;
+
+  let roomsHtml = '';
+  (o.rooms || []).forEach((r, ri) => {
+    const meds = getRoomMeds(r);
+    let itemsHtml = (r.items || []).map(it => {
+      const a = ptFloat(it.alt), c = ptFloat(it.comp);
+      const m2 = a && c ? (a * c).toFixed(2) + ' m²' : (a || c) ? (a || c).toFixed(2) + ' ml' : '';
+      const price = it.price ? (it.perMeter ? `R$ ${it.price}/m` : `R$ ${it.price.toLocaleString('pt-BR',{minimumFractionDigits:2})}`) : '';
+      return `<div style="font-size:12px;padding:5px 8px;background:var(--bg2);border-radius:7px;margin-bottom:4px;display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--ink2);">${it.name || it.serv || '—'}${m2 ? ' · ' + m2 : ''}</span><span style="color:var(--bl);font-weight:700;flex-shrink:0;">${price}</span></div>`;
+    }).join('');
+    const rPrice = r.preco ? (r.precoPerM2 ? `R$ ${r.preco}/m² · ${meds.m2.toFixed(2)}m² = ${fmtVal(r.preco * meds.m2)}` : fmtVal(r.preco)) : '';
+    roomsHtml += `<div style="margin-bottom:12px;border:1px solid var(--bdr);border-radius:10px;overflow:hidden;"><div style="padding:8px 12px;background:var(--bg-card);font-size:13px;font-weight:700;color:var(--ink);display:flex;justify-content:space-between;"><span>${r.name || 'Ambiente ' + (ri+1)}</span>${rPrice ? `<span style="color:var(--bl);">${rPrice}</span>` : ''}</div>${itemsHtml ? `<div style="padding:8px;">${itemsHtml}</div>` : ''}</div>`;
+  });
+
+  const addr = [o.logradouro, o.numero, o.comp, o.bairro, o.cidade].filter(Boolean).join(', ');
+  const body = document.getElementById('view-orc-body');
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px;background:var(--bg-card);border-radius:12px;">
+      <div style="flex:1;"><div style="font-size:16px;font-weight:800;color:var(--ink);">${o.nome || '(sem nome)'}</div><div style="font-size:12px;color:var(--ink3);margin-top:2px;">${fmtDate(o.tsEdit || o.ts)}</div></div>
+      <span class="hbadge ${getStatusBadgeClass(o.status)}" style="font-size:11px;">${o.status || 'Pendente'}</span>
+    </div>
+    <div style="background:var(--bg-card);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:22px;font-weight:800;color:var(--bl);text-align:center;">R$ ${tot.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div>
+      <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:2px;">Valor total do orçamento</div>
+    </div>
+    ${sec('Cliente', row('Telefone', o.tel) + row('Email', o.email) + row('CPF', o.cpf) + row('Endereço', addr))}
+    ${o.pagador ? sec('Pagador', row('Nome', o.pagNome) + row('Telefone', o.pagTel) + row('Endereço', o.pagEnd)) : ''}
+    ${roomsHtml ? sec('Ambientes e Serviços', roomsHtml) : ''}
+    ${sec('Detalhes', row('Tipo de Serviço', o.tipoServico) + row('Validade', o.valid ? o.valid + ' dias' : '') + row('Início', o.inicio) + row('Pagamento', [...(o.pgto||[])].join(', ')))}
+    ${o.obs ? sec('Observações', `<div style="font-size:13px;color:var(--ink2);line-height:1.6;background:var(--bg2);border-radius:8px;padding:10px;white-space:pre-wrap;">${o.obs.replace(/</g,'&lt;')}</div>`) : ''}
+  `;
+  const tel = (o.tel || '').replace(/\D/g, '');
+  const waUrl = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(buildWAMsg(o))}` : `https://wa.me/?text=${encodeURIComponent(buildWAMsg(o))}`;
+  const canR = _canRecibo(o);
+  document.getElementById('view-orc-actions').innerHTML = `
+    <button onclick="closeViewOrc();editOrc(${i})" style="flex:1;height:44px;border-radius:12px;background:var(--bl);color:#fff;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</button>
+    <button onclick="window.open('${waUrl}','_blank')" style="height:44px;width:44px;border-radius:12px;background:var(--gnl);border:1.5px solid var(--gn);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gn);flex-shrink:0;" title="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></button>
+    ${canR ? `<button onclick="closeViewOrc();abrirModalRecibo(${i})" style="height:44px;width:44px;border-radius:12px;background:var(--aml);border:1.5px solid var(--am);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--am);flex-shrink:0;" title="Gerar Recibo"><svg class="ico" aria-hidden="true"><use href="#ico-receipt"/></svg></button>` : ''}
+  `;
+  document.getElementById('view-orc-modal').style.display = 'flex';
+}
+
 const FIELD_ORDER = { 's1': ['cli-nome','cli-tel','cli-email','cli-cpf','cli-cep','cli-logradouro','cli-numero','cli-comp','cli-bairro','cli-cidade'], };
 function nextField(currentId, pageKey) { const order = FIELD_ORDER[pageKey]; if (!order) return; const idx = order.indexOf(currentId); if (idx === -1) return; for (let i = idx + 1; i < order.length; i++) { const el = document.getElementById(order[i]); if (el && !el.disabled && el.offsetParent !== null) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; } } }
 function attachEnterNav() { Object.entries(FIELD_ORDER).forEach(([pageKey, ids]) => { ids.forEach((id, i) => { const el = document.getElementById(id); if (!el) return; el.addEventListener('input', () => { S.isDirty = true; }); el.setAttribute('enterkeyhint', i === ids.length - 1 ? 'done' : 'next'); el.addEventListener('keydown', (e) => { if (e.key === 'Enter' && el.tagName !== 'TEXTAREA') { e.preventDefault(); nextField(id, pageKey); } }); }); }); }
@@ -3773,6 +3926,7 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
     'backup-confirm-modal': () => closeBackupModal(false),
     'cfg-save-modal': () => { document.getElementById('cfg-save-modal').style.display='none'; _cfgDirty=false; },
     'del-confirm-modal': () => closeDelConfirm(false),
+    'view-orc-modal': () => closeViewOrc(),
     'modal-edit-client': () => { document.getElementById('modal-edit-client').style.display='none'; },
     'modal-edit-fornecedor': () => { document.getElementById('modal-edit-fornecedor').style.display='none'; },
     'services-modal': () => closeServicesModal(),
@@ -4396,7 +4550,7 @@ const GDrive = {
     const el = document.getElementById('offline-banner');
     if (!el) return;
     el.className = 'show mode-' + mode;
-    el.textContent = mode === 'offline'
+    el.innerHTML = mode === 'offline'
       ? '<svg class="ico" aria-hidden="true"><use href="#ico-wifi-off"/></svg> Modo offline · dados salvos localmente'
       : '<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Sem conexão com o Drive · dados salvos localmente';
   },
@@ -4446,9 +4600,20 @@ const GDrive = {
     if (inn) inn.style.display = 'block';
     if (this.user) {
       const av = document.getElementById('gd-avatar');
+      const avFb = document.getElementById('gd-avatar-fb');
       const nm = document.getElementById('gd-uname');
       const em = document.getElementById('gd-uemail');
-      if (av) av.src = this.user.picture || '';
+      const initial = (this.user.name || this.user.email || '?').charAt(0).toUpperCase();
+      if (avFb) { avFb.textContent = initial; avFb.style.display = 'none'; }
+      if (av) {
+        if (this.user.picture) {
+          av.style.display = 'block';
+          av.src = this.user.picture;
+        } else {
+          av.style.display = 'none';
+          if (avFb) avFb.style.display = 'flex';
+        }
+      }
       if (nm) nm.textContent = this.user.name || '';
       if (em) em.textContent = this.user.email || '';
     }
@@ -4519,9 +4684,18 @@ const GDrive = {
     const dot = document.getElementById('gd-dot');
     const txt = document.getElementById('gd-status-text');
     const btn = document.getElementById('gd-reconnect-btn');
+    const syncIcon = document.getElementById('hdr-sync-icon');
+    const syncBtn = document.getElementById('hdr-sync-btn');
     if (dot) dot.className = 'gd-dot ' + state;
     if (txt) txt.textContent = msg || '';
     if (btn) btn.style.display = (state === 'off' || state === 'err') && this._sessionLoaded ? 'inline-block' : 'none';
+    const isSyncing = state === 'sync';
+    if (syncIcon) syncIcon.style.animation = isSyncing ? 'spin 1s linear infinite' : '';
+    if (syncBtn) {
+      syncBtn.style.color = isSyncing ? 'var(--bl)' : '';
+      syncBtn.style.borderColor = isSyncing ? 'var(--bl)' : '';
+      syncBtn.disabled = isSyncing;
+    }
   },
 };
 
@@ -4970,19 +5144,38 @@ document.addEventListener('click', function(e) {
 });
 
 function _canRecibo(o) {
+  if (o.isFlashDraft) return false;
+  const s = (o.status || '').toLowerCase().trim();
+  const allowed = ['em andamento', 'aprovado', 'obra iniciada', 'obra finalizada', 'pagamento iniciado', 'pagamento finalizado'];
+  return allowed.some(x => s === x || s.includes(x));
+}
+function _canPDF(o) {
   const s = (o.status || '').toLowerCase();
-  return !o.isFlashDraft && !['rascunho', 'pendente', 'em andamento'].some(x => s.includes(x));
+  return !o.isFlashDraft && !s.includes('rascunho');
+}
+function genPDFFromIdx(i) {
+  const o = S.orcs[i];
+  if (!o) return;
+  const html = genPDFHtml(o, false);
+  const w = window.open('', '_blank');
+  if (!w) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Popup bloqueado — permita popups e tente novamente'); return; }
+  w.document.write(html); w.document.close(); w.focus();
+  setTimeout(() => { try { w.print(); } catch(e) {} }, 400);
 }
 
 function _buildCardMenu(menuId, realIdx, o) {
   const tel = (o.tel || '').replace(/\D/g, '');
   const waUrl = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(buildWAMsg(o))}` : `https://wa.me/?text=${encodeURIComponent(buildWAMsg(o))}`;
   const canR = _canRecibo(o);
+  const canP = _canPDF(o);
   return `<div class="card-menu-wrap">
     <button class="card-menu-btn" onclick="event.stopPropagation();toggleCardMenu('${menuId}')" title="Ações">⋯</button>
     <div id="${menuId}" class="card-menu-drop">
       <div class="cmd-item" onclick="closeCardMenus();editOrc(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Editar</div>
       <div class="cmd-item" onclick="closeCardMenus();window.open('${waUrl}','_blank')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> WhatsApp</div>
+      ${canP
+        ? `<div class="cmd-item" onclick="closeCardMenus();genPDFFromIdx(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Gerar PDF</div>`
+        : `<div class="cmd-item cmd-disabled"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> PDF indisponível</div>`}
       ${canR
         ? `<div class="cmd-item" onclick="closeCardMenus();abrirModalRecibo(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Gerar Recibo</div>`
         : `<div class="cmd-item cmd-disabled"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Recibo indisponível</div>`}
@@ -5113,7 +5306,7 @@ function enviarSuporte() {
 }
 
 </script>
-<footer style="display:none">
+<footer style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">
   <a href="/privacy-policy.html">Política de Privacidade e Termos de Uso — Pintor Plus</a>
 </footer>
 </body>
