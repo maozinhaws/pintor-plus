@@ -910,7 +910,7 @@ body.kb-open .title-big { font-size: 14px; }
 
         <div class="sec" style="margin-bottom:10px;">
           <div class="fld" style="margin-bottom:0;"><label class="flbl">STATUS</label>
-            <select class="fsel" id="orc-status" onchange="S.isDirty=true;" style="background-color: var(--bll); border-color: var(--bl);">
+            <select class="fsel" id="orc-status" onchange="S.isDirty=true;_onStatusChange(this);" style="background-color: var(--bll); border-color: var(--bl);">
             </select>
           </div>
         </div>
@@ -2811,8 +2811,8 @@ function triggerAction(action) {
     setTimeout(() => homeTab('orcamentos'), 500); 
   } else if (action === 'pdf') { 
     askPdfPhotos(); 
-  } else if (action === 'share') { 
-    shareOrc().then(() => homeTab('orcamentos')); 
+  } else if (action === 'share') {
+    shareOrc().then(ok => { if (ok) homeTab('orcamentos'); });
   }
 }
 
@@ -3141,19 +3141,19 @@ function buildWAMsg(orc){
   let detalhes = '';
   
   if(orc.fmt === 'area') {
-    detalhes += `*Locais e Itens:*\n`; 
-    (orc.rooms||[]).forEach(r => { 
-      detalhes += `[${r.name}] *${r.name}*\n`; 
-      (r.items||[]).forEach(it => { 
-        detalhes += `  - ${it.name}${(it.services&&it.services.length)?` (${it.services.join(', ')})`:''}\n`; 
-        if(it.obs) detalhes += `    *Obs:* ${it.obs}\n`;
-      }); 
+    detalhes += `*Locais e Itens:*\n`;
+    (orc.rooms||[]).forEach(r => {
+      detalhes += `\n📍 *${r.name}*\n`;
+      (r.items||[]).forEach(it => {
+        detalhes += `  - ${it.name}${(it.services&&it.services.length)?` (${it.services.join(', ')})`:''}\n`;
+        if(it.obs) detalhes += `    _Obs: ${it.obs}_\n`;
+      });
     });
     if(m2 > 0) detalhes += `\n*Área total aprox:* ${f1(m2)} m²\n`;
   } else if(orc.fmt === 'completo'){
     detalhes += `*Detalhes:*\n`;
     (orc.rooms||[]).forEach(r=>{
-       detalhes += `\n<svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> *${r.name}*\n`;
+       detalhes += `\n📍 *${r.name}*\n`;
        (r.items||[]).forEach(it=>{
          const a=parseFloat(it.alt)||0, c=parseFloat(it.comp)||0;
          let med = (a&&c) ? f1(a*c)+' m²' : (a||c) ? f1(a||c)+' ml' : '';
@@ -3184,23 +3184,24 @@ function refreshWAPreview(){const orc=collectOrc();const el=document.getElementB
 async function shareOrc(){
   const orc = collectOrc();
   const msg = buildWAMsg(orc);
-  if (!navigator.share) { toast('Compartilhamento não suportado neste navegador.'); return; }
+  if (!navigator.share) { toast('Compartilhamento não suportado neste navegador.'); return false; }
+  const orcId = String(orc.id || Date.now()).slice(-6);
+  const nomeCli = (orc.nome || 'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
   try {
-    // Tenta compartilhar com PDF (como arquivo HTML que pode ser impresso como PDF)
     if (navigator.canShare) {
       const htmlContent = genPDFHtml(orc, false);
-      const nomeCli = (orc.nome || 'Orcamento').replace(/\s+/g,'_');
       const blob = new Blob([htmlContent], { type: 'text/html' });
-      const file = new File([blob], `Orcamento_${nomeCli}.html`, { type: 'text/html' });
+      const file = new File([blob], `OC_${nomeCli}_${orcId}.html`, { type: 'text/html' });
       if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ title: 'Orçamento PintorPlus', text: msg, files: [file] });
-        return;
+        await navigator.share({ title: `Orçamento ${orc.nome||''}`, text: msg, files: [file] });
+        return true;
       }
     }
-    // Fallback: só texto
-    await navigator.share({ title: 'Orçamento PintorPlus', text: msg });
+    await navigator.share({ title: `Orçamento ${orc.nome||''}`, text: msg });
+    return true;
   } catch(e) {
     if (e && e.name !== 'AbortError') toast('Erro ao compartilhar.');
+    return false;
   }
 }
 function sendWA(){ const orc=collectOrc(); const msg=buildWAMsg(orc); const tel=(orc.tel||'').replace(/\D/g,''); const url = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`; window.open(url, '_blank'); toast('<svg class="ico" aria-hidden="true"><use href="#ico-send"/></svg> Abrindo WhatsApp…'); }
@@ -3245,12 +3246,12 @@ function genPDFHtml(orc, withPhotos) {
     return `<div class="avoid-break" style="page-break-inside: avoid; margin-bottom:16px; background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px; display:block;"><div style="font-weight:bold; color:#0f172a; margin-bottom:8px; font-size:14px; border-bottom:2px solid #f1f5f9; padding-bottom:4px; text-transform:uppercase;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg> Local: ${r.name}</div>${items}</div>`;
   }).join('');
   const orcId = String(orc.id || Date.now()).slice(-6);
-  const nomeCli = (orc.nome||'Orcamento').replace(/\s+/g,'_');
+  const nomeCli = (orc.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Orcamento_${nomeCli}</title>
+  <title>OC_${nomeCli}_${orcId}</title>
   <style>
     body { margin: 0; padding: 0; background: #e2e8f0; font-family: Arial, Helvetica, sans-serif; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .print-btn { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; margin: 20px auto; background: #7C3AED; color: #fff; border-radius: 50%; cursor: pointer; border: none; box-shadow: 0 4px 12px rgba(124,58,237,.4); font-size: 26px; }
@@ -3338,23 +3339,23 @@ function maskCep(input){ const digits=input.value.replace(/\D/g,'').slice(0,8); 
 async function fetchCep(cep){
   const cleanCep = cep.replace(/\D/g,'');
   const spin = document.getElementById('cep-spin'); const msg = document.getElementById('cep-msg');
-  spin.style.opacity='1'; msg.style.display='none';
+  if (spin) spin.style.opacity='1'; if (msg) msg.style.display='none';
 
   function fillAddress(d) {
-    spin.style.opacity='0';
+    if (spin) spin.style.opacity='0';
     document.getElementById('cli-logradouro').value = d.street || d.logradouro || '';
     document.getElementById('cli-bairro').value = d.neighborhood || d.bairro || '';
     document.getElementById('cli-cidade').value = (d.city || d.localidade || '') + ' - ' + (d.state || d.uf || '');
     document.getElementById('cli-numero').value = '';
     document.getElementById('end-fields').style.display = 'block';
     document.getElementById('end-manual-toggle').style.display = 'none';
-    msg.style.display='block'; msg.style.color='var(--gn)'; msg.textContent='<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Endereço encontrado!';
+    if (msg) { msg.style.display='block'; msg.style.color='var(--gn)'; msg.innerHTML='<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Endereço encontrado!'; }
     setTimeout(()=>{const el=document.getElementById('cli-numero');if(el){el.focus();el.scrollIntoView({behavior:'smooth',block:'center'});}}, 100);
   }
 
   function showError() {
-    spin.style.opacity='0'; msg.style.display='block'; msg.style.color='var(--rd)';
-    msg.innerHTML='<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Erro ao buscar CEP. Preencha manualmente.';
+    if (spin) spin.style.opacity='0';
+    if (msg) { msg.style.display='block'; msg.style.color='var(--rd)'; msg.innerHTML='<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> CEP não encontrado. Preencha manualmente.'; }
   }
 
   // Tenta fetch normal (funciona no deploy real)
@@ -3697,7 +3698,7 @@ function renderOrcamentosList() {
     let tot=calcOrcTotal(o); const qtdLocais=(o.rooms||[]).length; const infoTxt=qtdLocais===1?`${o.rooms[0].items?.length||0} item(ns)`:`${qtdLocais} local(is)`;
     const isRascunho=(o.status||'')==='Rascunho';
     const badgeHtml=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
-    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:10px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div>${_buildCardMenu(menuId,i,o)}</div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;"><span class="hood" style="display:flex;align-items:center;gap:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg>${o.end||'—'} · ${infoTxt}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span></div>`;
+    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:10px;cursor:pointer;" onclick="viewOrc(${i})"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;pointer-events:none;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div><div onclick="event.stopPropagation()">${_buildCardMenu(menuId,i,o)}</div></div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;"><span class="hood" style="display:flex;align-items:center;gap:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg>${o.end||'—'} · ${infoTxt}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span></div>`;
   }).join('');
 }
 
@@ -3974,6 +3975,20 @@ function editOrc(i){
 }
 
 function closeViewOrc() { document.getElementById('view-orc-modal').style.display = 'none'; }
+function _onStatusChange(sel) {
+  const v = (sel.value || '').toLowerCase();
+  const msgs = {
+    'aprovado': '👍 Ótimo! Lembre de salvar e de combinar data de início.',
+    'em andamento': '🎨 Obra em andamento! Não esqueça de salvar.',
+    'obra iniciada': '🏗️ Obra iniciada! Atualize quando concluir.',
+    'obra finalizada': '✅ Obra finalizada! Que tal emitir o recibo?',
+    'pagamento iniciado': '💰 Pagamento iniciado. Salve para registrar.',
+    'pagamento finalizado': '🎉 Pagamento recebido! Salve o orçamento.',
+  };
+  const tip = Object.entries(msgs).find(([k]) => v.includes(k));
+  if (tip) toast(tip[1]);
+  else toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Status alterado. Não esqueça de salvar.');
+}
 
 function viewOrc(i) {
   const o = S.orcs[i]; if (!o) return;
@@ -4128,7 +4143,7 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
 
       const rooms = [{
         id: String(now),
-        name: 'Geral (Flash)',
+        name: 'Geral',
         items: (draft.items || []).map(it => ({
           name: it.nome || 'Item',
           alt: String(it.altura || ''),
@@ -4159,7 +4174,7 @@ function showFaq() { document.getElementById('info-modal-title').textContent = '
         status: '<svg class="ico" aria-hidden="true"><use href="#ico-zap"/></svg> Rascunho Flash',
         valid: '15',
         tipoServico: 'Somente Mão de Obra (M.O)',
-        inicio: '', obs: 'Capturado via App Flash. Complete os detalhes.',
+        inicio: '', obs: '',
         date: new Date().toLocaleDateString('pt-BR'),
         ts: now, tsEdit: now,
         isFlashDraft: true
@@ -5354,10 +5369,27 @@ function _canPDF(o) {
   const s = (o.status || '').toLowerCase();
   return !o.isFlashDraft && !s.includes('rascunho');
 }
-function genPDFFromIdx(i) {
+async function genPDFFromIdx(i) {
   const o = S.orcs[i];
   if (!o) return;
   const html = genPDFHtml(o, false);
+  const orcId = String(o.id || Date.now()).slice(-6);
+  const nomeCli = (o.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
+  const fileName = `OC_${nomeCli}_${orcId}.html`;
+  // Tenta compartilhar via Web Share API (mobile/Android)
+  if (navigator.share && navigator.canShare) {
+    try {
+      const blob = new Blob([html], { type: 'text/html' });
+      const file = new File([blob], fileName, { type: 'text/html' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ title: `Orçamento ${o.nome||''}`, files: [file] });
+        return;
+      }
+    } catch(e) {
+      if (e && e.name === 'AbortError') return; // usuário cancelou
+    }
+  }
+  // Fallback: abre janela de impressão
   const w = window.open('', '_blank');
   if (!w) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Popup bloqueado — permita popups e tente novamente'); return; }
   w.document.write(html); w.document.close(); w.focus();
@@ -5549,7 +5581,14 @@ window.pwaShowInstallUI = async function() {
     return;
   }
   if (PWA.isIOS()) { PWA.showIOSModal(); return; }
-  // Fallback: instrução genérica para outros navegadores
+  // Android/PC sem prompt disponível: orienta o usuário
+  document.getElementById('pwa-ios-sheet').innerHTML = `
+    <div class="ios-title">Instalar Pintor Plus</div>
+    <div class="ios-sub">Para instalar, siga os passos no seu navegador:</div>
+    <div class="ios-step"><div class="ios-step-num">1</div><div class="ios-step-text">Abra o site no <b>Chrome</b> ou <b>Edge</b></div></div>
+    <div class="ios-step"><div class="ios-step-num">2</div><div class="ios-step-text">Clique no menu <b>⋮</b> (três pontos) no canto superior direito</div></div>
+    <div class="ios-step"><div class="ios-step-num">3</div><div class="ios-step-text">Toque em <b>"Adicionar à tela inicial"</b> ou <b>"Instalar app"</b></div></div>
+    <button id="pwa-ios-close" onclick="document.getElementById('pwa-ios-modal').classList.remove('open')">Entendi</button>`;
   PWA.showIOSModal();
 };
 
