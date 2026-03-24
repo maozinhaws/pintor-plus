@@ -1673,7 +1673,11 @@ body.kb-open .title-big { font-size: 14px; }
       <a href="/privacy-policy.html" class="sidebar-link" style="font-weight:400; font-size:13px; color:var(--ink3); text-decoration:none;"><svg class="ico" aria-hidden="true"><use href="#ico-file"/></svg> Política de Privacidade</a>
       <div class="sidebar-link" onclick="toggleSidebar(); showTutorial()" style="margin-top:auto; font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-book"/></svg> Tutorial</div>
       <div class="sidebar-link" onclick="toggleSidebar(); showFaq()" style="font-weight:400; font-size:13px; color:var(--ink3);"><svg class="ico" aria-hidden="true"><use href="#ico-help"/></svg> FAQ</div>
-      <div class="sidebar-link" onclick="toggleSidebar(); abrirModalSuporte()" style="font-weight:700; font-size:13px; color:var(--bl);"><svg class="ico" aria-hidden="true"><use href="#ico-headphones"/></svg> Suporte / Reportar Bug</div>
+      <div class="sidebar-link" onclick="toggleSidebar(); abrirModalSuporte()" style="font-weight:700; font-size:13px; color:var(--ink);"><svg class="ico" aria-hidden="true"><use href="#ico-headphones"/></svg> Suporte / Reportar Bug</div>
+      <div class="sidebar-link" onclick="toggleSidebar(); pwaShowInstallUI()" style="font-weight:800; font-size:13px; color:#fff; background:linear-gradient(135deg,var(--bl),var(--bld)); border-radius:12px; margin:4px 10px; padding:13px 14px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2v13m0 0-4-4m4 4 4-4"/><rect x="2" y="17" width="20" height="5" rx="2"/></svg>
+        Instalar App
+      </div>
       <div class="sidebar-link" onclick="toggleSidebar(); GDrive.signOut()" style="font-weight:700; font-size:13px; color:var(--rd); margin-top:8px; border-top:1px solid var(--bdr); padding-top:16px;"><svg class="ico" aria-hidden="true"><use href="#ico-logout"/></svg> Sair da conta</div>
     </div>
   </div>
@@ -5489,62 +5493,72 @@ function _removeSupportImage(idx) {
 }
 
 // ── PWA Install Prompt ──────────────────────────────────────────────────
-(function _initPWAInstall() {
-  const DISMISSED_KEY = 'pwa_install_dismissed';
-  let _deferredPrompt = null;
+const PWA = {
+  _prompt: null,
+  _DISMISSED_KEY: 'pwa_install_dismissed',
 
-  function _isIOS() {
-    return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-  }
-  function _isInStandalone() {
-    return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
-  }
-  function _wasDismissed() {
-    try { return !!localStorage.getItem(DISMISSED_KEY); } catch(e) { return false; }
-  }
+  isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream; },
+  isStandalone() { return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches; },
+  wasDismissed() { try { return !!localStorage.getItem(this._DISMISSED_KEY); } catch(e) { return false; } },
 
-  // Captura o evento do Chrome/Edge/Android
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    _deferredPrompt = e;
-    if (_isInStandalone() || _wasDismissed()) return;
-    // Espera 4s para não incomodar no carregamento
-    setTimeout(() => {
-      const bar = document.getElementById('pwa-install-bar');
-      if (bar) bar.classList.add('show');
-    }, 4000);
-  });
-
-  // Detecta quando o app foi instalado
-  window.addEventListener('appinstalled', () => {
+  showBar() {
+    const bar = document.getElementById('pwa-install-bar');
+    if (bar) bar.classList.add('show');
+  },
+  hideBar() {
     const bar = document.getElementById('pwa-install-bar');
     if (bar) bar.classList.remove('show');
-    _deferredPrompt = null;
-  });
+  },
+  showIOSModal() {
+    document.getElementById('pwa-ios-modal')?.classList.add('open');
+  },
+};
 
-  // iOS Safari: sem beforeinstallprompt — mostra botão manual
-  if (_isIOS() && !_isInStandalone() && !_wasDismissed()) {
-    setTimeout(() => {
-      document.getElementById('pwa-ios-modal')?.classList.add('open');
-    }, 4000);
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  PWA._prompt = e;
+  if (!PWA.isStandalone() && !PWA.wasDismissed()) {
+    setTimeout(() => PWA.showBar(), 5000);
   }
+});
 
-  window.pwaTriggerInstall = async function() {
-    if (!_deferredPrompt) return;
-    _deferredPrompt.prompt();
-    const { outcome } = await _deferredPrompt.userChoice;
-    _deferredPrompt = null;
-    document.getElementById('pwa-install-bar')?.classList.remove('show');
+window.addEventListener('appinstalled', () => {
+  PWA.hideBar();
+  PWA._prompt = null;
+});
+
+// Mostra banner/modal automaticamente no iOS após 5s
+if (PWA.isIOS() && !PWA.isStandalone() && !PWA.wasDismissed()) {
+  setTimeout(() => PWA.showIOSModal(), 5000);
+}
+
+// Chamado pelo botão "Instalar" no banner e no menu lateral
+window.pwaShowInstallUI = async function() {
+  if (PWA.isStandalone()) {
+    toast('✓ App já está instalado neste dispositivo.');
+    return;
+  }
+  if (PWA._prompt) {
+    PWA.hideBar();
+    PWA._prompt.prompt();
+    const { outcome } = await PWA._prompt.userChoice;
+    PWA._prompt = null;
     if (outcome === 'dismissed') {
-      try { localStorage.setItem(DISMISSED_KEY, '1'); } catch(e) {}
+      try { localStorage.setItem(PWA._DISMISSED_KEY, '1'); } catch(e) {}
     }
-  };
+    return;
+  }
+  if (PWA.isIOS()) { PWA.showIOSModal(); return; }
+  // Fallback: instrução genérica para outros navegadores
+  PWA.showIOSModal();
+};
 
-  window.pwaDismiss = function() {
-    document.getElementById('pwa-install-bar')?.classList.remove('show');
-    try { localStorage.setItem(DISMISSED_KEY, '1'); } catch(e) {}
-  };
-})();
+window.pwaTriggerInstall = window.pwaShowInstallUI;
+
+window.pwaDismiss = function() {
+  PWA.hideBar();
+  try { localStorage.setItem(PWA._DISMISSED_KEY, '1'); } catch(e) {}
+};
 
 function enviarSuporte() {
   const msg = (document.getElementById('sp-msg')?.value || '').trim();
