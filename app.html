@@ -402,6 +402,13 @@ body.kb-open .title-big { font-size: 14px; }
 #offline-banner.mode-drive-err{background:var(--rdl);color:var(--rd);border-bottom:1.5px solid var(--rd);}
 #offline-banner.mode-reconnect{background:var(--bll);color:var(--bl);border-bottom:1.5px solid var(--bl);cursor:pointer;}
 #offline-banner.mode-reconnect:hover{opacity:.88;}
+/* ── Modo Teste (Convidado) ── */
+#guest-banner{display:none;background:var(--aml);border-bottom:1.5px solid var(--am);padding:8px 16px 8px;font-size:12px;font-weight:600;flex-shrink:0;z-index:50;}
+:root.dark #guest-banner{background:rgba(120,53,15,0.28);}
+#guest-banner .gb-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+#guest-banner .gb-text{display:flex;align-items:center;gap:6px;flex:1;min-width:0;color:#92400E;line-height:1.4;}
+:root.dark #guest-banner .gb-text{color:var(--am);}
+#guest-banner .gb-btn{background:var(--am);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .card-rascunho{background:#fff3e0 !important;}
 .badge-rascunho{font-size:10px;font-weight:800;background:#ffe0bf;color:#a04000;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:middle;}
 :root.dark .card-rascunho{background:rgba(120,53,15,0.22) !important;border-left:3px solid #FBBF24 !important;}
@@ -498,7 +505,17 @@ body.kb-open .title-big { font-size: 14px; }
 <input type="file" id="file-gallery" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;left:-9999px;" onchange="handlePhotoFile(this, false)">
 
 <div id="app">
-  
+
+  <!-- Banner Modo Teste -->
+  <div id="guest-banner">
+    <div class="gb-row">
+      <div class="gb-text">
+        <svg class="ico" aria-hidden="true" style="flex-shrink:0;"><use href="#ico-alert"/></svg>
+        <span>Modo Teste — sem conta Google, seus dados podem ser perdidos.</span>
+      </div>
+      <button class="gb-btn" onclick="exitGuestMode()">Vincular conta</button>
+    </div>
+  </div>
 
   <div id="pages">
     <!-- TELA DE LOGIN -->
@@ -522,6 +539,16 @@ body.kb-open .title-big { font-size: 14px; }
           <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:4px;">
             <a href="/privacy-policy.html" target="_blank" rel="noopener" style="color:var(--bl);text-decoration:underline;cursor:pointer;">Política de Privacidade e Termos de Uso</a>
           </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <div style="flex:1;height:1px;background:var(--bdr);"></div>
+            <span style="font-size:11px;color:var(--ink3);">ou</span>
+            <div style="flex:1;height:1px;background:var(--bdr);"></div>
+          </div>
+          <button onclick="enterGuestMode()" id="login-guest-btn" style="width:100%;height:48px;border-radius:14px;background:var(--bg-card);border:1.5px solid var(--bdr);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <svg class="ico" aria-hidden="true"><use href="#ico-help"/></svg>
+            Explorar sem conta (Modo Teste)
+          </button>
+          <div style="font-size:10px;color:var(--ink3);text-align:center;line-height:1.5;margin-top:2px;">Dados ficam somente neste dispositivo e podem ser<br>perdidos ao limpar o navegador.</div>
         </div>
       </div>
     </div>
@@ -1030,6 +1057,8 @@ body.kb-open .title-big { font-size: 14px; }
               <button class="gd-btn gd-btn-outline" onclick="GDrive.restoreFromDrive()">⬇️ Restaurar do Drive</button>
               <button class="gd-btn gd-btn-danger" onclick="GDrive.signOut()">Sair</button>
             </div>
+            <!-- Armazenamento Google Drive -->
+            <div id="gd-storage-info"></div>
             <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bdr);display:flex;flex-direction:column;gap:8px;">
               <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:4px;">Ferramentas Google</div>
               <button class="gd-btn gd-btn-outline" onclick="GPhotos.exportAll()"><svg class="ico" aria-hidden="true"><use href="#ico-cloud"/></svg><svg class="ico" aria-hidden="true"><use href="#ico-camera"/></svg> Enviar todas as fotos ao Drive</button>
@@ -2267,6 +2296,34 @@ function checkAlarms() {
   }
 }
 
+// ── MODO TESTE (CONVIDADO) ────────────────────────────────────
+function enterGuestMode() {
+  localStorage.setItem('pp-guest-mode', '1');
+  GDrive.guestMode = true;
+  // Aceita termos automaticamente para modo convidado
+  if (!_hasAcceptedTerms('guest')) {
+    localStorage.setItem(TERMS_KEY, JSON.stringify({ version: TERMS_VERSION, accepted: true, ts: Date.now(), email: 'guest', ua: navigator.userAgent }));
+  }
+  _showGuestBanner();
+  showPage('pg-home');
+  renderHomeMini(); renderHomeEvents(); renderHomeNews();
+}
+function exitGuestMode() {
+  localStorage.removeItem('pp-guest-mode');
+  GDrive.guestMode = false;
+  _hideGuestBanner();
+  GDrive._showLoginBtn();
+}
+function _showGuestBanner() {
+  const el = document.getElementById('guest-banner');
+  if (el) el.style.display = 'block';
+}
+function _hideGuestBanner() {
+  const el = document.getElementById('guest-banner');
+  if (el) el.style.display = 'none';
+}
+// ─────────────────────────────────────────────────────────────
+
 // NAVEGAÇÃO & UI (HISTORY API PWA)
 function showPage(id, skipHistory = false) { 
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); 
@@ -2285,7 +2342,7 @@ window.addEventListener('popstate', (e) => {
     document.getElementById('cfg-save-modal').style.display = 'flex';
     return;
   }
-  if (!GDrive.accessToken && !GDrive._sessionLoaded && page !== 'pg-login') {
+  if (!GDrive.accessToken && !GDrive._sessionLoaded && !GDrive.guestMode && page !== 'pg-login') {
     showPage('pg-login', true);
     return;
   }
@@ -3408,7 +3465,7 @@ function homeTab(tab){
     document.getElementById('cfg-save-modal').style.display = 'flex';
     return;
   }
-  if(tab === 'config') { openConfig(); return; } if(tab === 'flash') { canNavigateAsync(() => { S.isDirty = false; openFlash(); }); return; } canNavigateAsync(() => { S.isDirty = false; ['orc-search','cli-search','forn-search'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); if(tab === 'home') { showPage('pg-home'); renderHomeMini(); renderHomeEvents(); renderHomeNews(); } else if(tab === 'orcamentos') { showPage('pg-orcamentos'); renderOrcamentosList(); } else if(tab === 'clientes') { showPage('pg-clientes'); renderClientes(); } else if(tab === 'fornecedores') { showPage('pg-fornecedores'); renderFornecedores(); } else if(tab === 'agenda') { showPage('pg-agenda'); renderAgenda(); } else if(tab === 'backup') { showPage('pg-backup'); } else if(tab === 'termos') { showPage('pg-termos'); } }); }
+  if(tab === 'config') { openConfig(); return; } if(tab === 'flash') { canNavigateAsync(() => { S.isDirty = false; openFlash(); }); return; } canNavigateAsync(() => { S.isDirty = false; ['orc-search','cli-search','forn-search'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); if(tab === 'home') { showPage('pg-home'); renderHomeMini(); renderHomeEvents(); renderHomeNews(); } else if(tab === 'orcamentos') { showPage('pg-orcamentos'); renderOrcamentosList(); } else if(tab === 'clientes') { showPage('pg-clientes'); renderClientes(); } else if(tab === 'fornecedores') { showPage('pg-fornecedores'); renderFornecedores(); } else if(tab === 'agenda') { showPage('pg-agenda'); renderAgenda(); } else if(tab === 'backup') { showPage('pg-backup'); GDrive._renderStorageInfo?.(); if(GDrive.accessToken && !GDrive._storageQuota) GDrive.checkStorageQuota?.(); } else if(tab === 'termos') { showPage('pg-termos'); } }); }
 
 // ── TERMOS & PRIVACIDADE — LGPD ──────────────────────────────
 const TERMS_VERSION = '1';
@@ -4086,6 +4143,7 @@ const GDrive = {
   pendingSync: false,
   user: null,
   accessToken: null,
+  guestMode: false,
 
   // ── INICIALIZAÇÃO ─────────────────────────────────────────
   init() {
@@ -4122,7 +4180,16 @@ const GDrive = {
   _loadLocalSession() {
     try {
       const raw = localStorage.getItem('pp-session');
-      if (!raw) return;
+      if (!raw) {
+        // Verifica modo convidado
+        if (localStorage.getItem('pp-guest-mode') === '1') {
+          this.guestMode = true;
+          _showGuestBanner();
+          showPage('pg-home');
+          renderHomeMini(); renderHomeEvents(); renderHomeNews();
+        }
+        return;
+      }
       const s = JSON.parse(raw);
       if (!s || !s.email) return;
       this.user = s;
@@ -4198,7 +4265,7 @@ const GDrive = {
         // Sem email salvo — status silencioso, usuário reconecta pelo backup
         this._setStatus('off', 'Drive desconectado');
       }
-    } else {
+    } else if (!this.guestMode) {
       // Primeira vez: mostra botão de login
       this._showLoginBtn();
     }
@@ -4242,10 +4309,13 @@ const GDrive = {
     this.accessToken = null;
     this.user = null;
     this.fileId = null;
+    this.guestMode = false;
     localStorage.removeItem('pp-gdrive-email');
     localStorage.removeItem('pp-gdrive-lastSync');
     localStorage.removeItem('pp-session');
+    localStorage.removeItem('pp-guest-mode');
     this._sessionLoaded = false;
+    _hideGuestBanner();
     this._showLoggedOut();
     this._showLoginBtn();
     toast(' Desconectado do Google');
@@ -4262,6 +4332,12 @@ const GDrive = {
       this.user = { name: data.name, email: data.email, picture: data.picture };
       localStorage.setItem('pp-gdrive-email', data.email);
       localStorage.setItem('pp-session', JSON.stringify({ name: data.name, email: data.email, picture: data.picture }));
+      // Limpa modo convidado ao fazer login real com Google
+      if (this.guestMode) {
+        this.guestMode = false;
+        localStorage.removeItem('pp-guest-mode');
+        _hideGuestBanner();
+      }
       this._sessionLoaded = true;
       this._showLoggedIn();
       if (_hasAcceptedTerms(data.email)) {
@@ -4317,6 +4393,7 @@ const GDrive = {
 
       const lastSync = localStorage.getItem('pp-gdrive-lastSync');
       this._setStatus('ok', 'Conectado' + (lastSync ? ' · Último sync: ' + lastSync : ''));
+      this.checkStorageQuota(); // Verifica espaço disponível
     } catch(e) {
       console.error('GDrive: findFile falhou', e);
       this._setStatus('err', 'Erro ao conectar ao Drive');
@@ -4396,6 +4473,7 @@ const GDrive = {
       localStorage.setItem('pp-gdrive-lastSyncIso', nowIso);
       localStorage.setItem('pp-gdrive-lastSync', nowFmt);
       this._setStatus('ok', 'Sincronizado · ' + nowFmt);
+      this.checkStorageQuota();
     } catch(e) {
       console.error('GDrive: autoImport falhou', e);
       const lastSync = localStorage.getItem('pp-gdrive-lastSync');
@@ -4645,6 +4723,7 @@ const GDrive = {
   },
 
   _showLoginBtn() {
+    if (this.guestMode) return; // Modo convidado: não redireciona para login
     const loading = document.getElementById('login-loading');
     const btnWrap = document.getElementById('login-btn-wrap');
     if (loading) loading.style.display = 'none';
@@ -4696,6 +4775,64 @@ const GDrive = {
       syncBtn.style.borderColor = isSyncing ? 'var(--bl)' : '';
       syncBtn.disabled = isSyncing;
     }
+  },
+
+  // ── COTA DE ARMAZENAMENTO DO GOOGLE DRIVE ─────────────────
+  async checkStorageQuota() {
+    if (!this.accessToken) return;
+    try {
+      const r = await fetch('https://www.googleapis.com/drive/v3/about?fields=storageQuota', {
+        headers: { Authorization: 'Bearer ' + this.accessToken }
+      });
+      if (!r.ok) return;
+      const data = await r.json();
+      const q = data.storageQuota;
+      if (!q) return;
+      const limit = q.limit ? parseInt(q.limit) : 0;
+      const used = q.usage ? parseInt(q.usage) : 0;
+      this._storageQuota = { limit, used };
+      this._renderStorageInfo();
+      // Aviso crítico se < 200 MB livres ou > 95% usado
+      if (limit > 0) {
+        const free = limit - used;
+        const pct = (used / limit) * 100;
+        if (free < 200 * 1024 * 1024 || pct > 95) {
+          toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Armazenamento Google quase cheio! O backup pode falhar.');
+        }
+      }
+    } catch(e) { console.warn('GDrive: quota check falhou', e); }
+  },
+
+  _renderStorageInfo() {
+    const el = document.getElementById('gd-storage-info');
+    if (!el || !this._storageQuota) return;
+    const { limit, used } = this._storageQuota;
+    if (!limit) {
+      el.innerHTML = '<div style="margin-top:10px;padding:10px 12px;background:var(--bg-card);border-radius:10px;border:1.5px solid var(--bdr);font-size:12px;color:var(--ink3);">✅ Armazenamento ilimitado (Google One)</div>';
+      return;
+    }
+    const free = limit - used;
+    const pct = Math.round((used / limit) * 100);
+    const freeGB = (free / (1024 ** 3)).toFixed(2);
+    const usedGB = (used / (1024 ** 3)).toFixed(2);
+    const totalGB = (limit / (1024 ** 3)).toFixed(1);
+    const isLow = free < 200 * 1024 * 1024 || pct > 95;
+    const isWarn = free < 1024 * 1024 * 1024 || pct > 80;
+    const barColor = isLow ? 'var(--rd)' : isWarn ? 'var(--am)' : 'var(--gn)';
+    const icon = isLow ? '⚠️' : isWarn ? '⚡' : '✅';
+    const alertMsg = isLow
+      ? '<div style="font-size:11px;color:var(--rd);margin-top:6px;font-weight:700;">Armazenamento quase cheio! O backup pode falhar. Libere espaço no Google Drive.</div>'
+      : isWarn ? '<div style="font-size:11px;color:var(--am);margin-top:6px;">Armazenamento ficando cheio. Considere liberar espaço.</div>' : '';
+    el.innerHTML = `<div style="margin-top:12px;padding:10px 12px;background:var(--bg-card);border-radius:10px;border:1.5px solid var(--bdr);">
+      <div style="font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:6px;">${icon} Armazenamento Google Drive</div>
+      <div style="background:var(--bg2);border-radius:6px;height:6px;margin-bottom:6px;overflow:hidden;">
+        <div style="height:100%;width:${Math.min(pct,100)}%;background:${barColor};border-radius:6px;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);">
+        <span>${usedGB} GB usados de ${totalGB} GB</span>
+        <span style="color:${barColor};font-weight:700;">${100 - pct}% livre (${freeGB} GB)</span>
+      </div>${alertMsg}
+    </div>`;
   },
 };
 
