@@ -31,7 +31,14 @@
   window.addEventListener('load', () => { baseH = window.visualViewport ? window.visualViewport.height : window.innerHeight; });
 })();
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      // Periodic Background Sync — notificações mesmo com app fechado (Chrome/Android)
+      if ('periodicSync' in reg) {
+        reg.periodicSync.register('pp-check-alarms', { minInterval: 15 * 60 * 1000 }).catch(() => {});
+      }
+    }).catch(() => {});
+  });
 }
 </script>
 <style>
@@ -1682,6 +1689,15 @@ body.kb-open .title-big { font-size: 14px; }
     </div>
   </div>
 
+  <!-- MODAL: MUDAR STATUS -->
+  <div id="status-picker-modal" class="glass-overlay" style="display:none;align-items:flex-end;">
+    <div class="modal-box" style="max-width:430px;padding:20px;border-radius:22px 22px 16px 16px;margin:0;">
+      <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:8px;"><svg class="ico" aria-hidden="true"><use href="#ico-zap"/></svg> Mudar Status do Orçamento</div>
+      <div id="status-picker-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <button onclick="document.getElementById('status-picker-modal').style.display='none';" style="width:100%;height:44px;border-radius:12px;background:var(--bg-card);border:1.5px solid var(--bdr);font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;margin-top:14px;">Cancelar</button>
+    </div>
+  </div>
+
   <!-- MODAL: RECIBO -->
   <div id="modal-recibo" class="glass-overlay" style="display:none;align-items:flex-start;overflow-y:auto;padding:max(20px,env(safe-area-inset-top,20px)) 16px max(20px,env(safe-area-inset-bottom,20px));">
     <div class="modal-box" style="max-width:420px;padding:20px;">
@@ -1783,10 +1799,7 @@ body.kb-open .title-big { font-size: 14px; }
           <select id="ev-antes-unid" class="fsel" style="width:60%"><option value="m">Minutos</option><option value="h">Horas</option><option value="d">Dias</option></select>
         </div>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div class="fld"><label class="flbl">Repetir Alarme</label><select id="ev-repete" class="fsel"><option value="0">Não repete</option><option value="1">Diariamente</option><option value="7">Semanalmente</option></select></div>
-        <div class="fld"><label class="flbl">Toque</label><select id="ev-toque" class="fsel"><option value="1">Sino Suave</option><option value="2">Bipe Rápido</option><option value="3">Alerta Digital</option></select></div>
-      </div>
+      <div class="fld"><label class="flbl">Repetir</label><select id="ev-repete" class="fsel"><option value="0">Não repete</option><option value="1">Diariamente</option><option value="7">Semanalmente</option></select></div>
       <div style="display:flex; gap:12px; margin-top:16px;">
         <button onclick="document.getElementById('modal-evento').style.display='none';" style="flex:1;height:48px;border-radius:12px;background:var(--bg-input);border:1.5px solid var(--bdr-input);color:var(--ink2);font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;">Cancelar</button>
         <button onclick="salvarEvento()" style="flex:1;height:48px;border-radius:12px;background:var(--bl);border:none;color:#fff;font-weight:800;font-family:'Sora',sans-serif;cursor:pointer;">Salvar</button>
@@ -2330,6 +2343,35 @@ function playAlarmSynth(typeCode) {
   } catch(e) { console.warn('Audio synth error', e); }
 }
 
+// ── Notificações do Sistema ────────────────────────────────────────────
+async function _requestNotifPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+function _fireNotification(title, body) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  // Usa SW para notificação (funciona quando app está em background no celular)
+  if (navigator.serviceWorker?.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: 'show-notification', title, body });
+  } else {
+    try { new Notification(title, { body, icon: '/android-chrome-192x192.png', badge: '/favicon-96x96.png', tag: 'pp-alarm', renotify: true }); } catch(e) {}
+  }
+}
+
+// Sincroniza alarms pendentes com o SW para notificações em background
+function _syncAlarmsToSW() {
+  if (!navigator.serviceWorker?.controller) return;
+  const pending = (S.eventos || []).filter(e => !e.alarmado && e.dat && e.hora).map(e => ({
+    id: e.id, tit: e.tit, dat: e.dat, hora: e.hora,
+    avisoVal: e.avisoVal, avisoUnid: e.avisoUnid
+  }));
+  navigator.serviceWorker.controller.postMessage({ type: 'sync-alarms', alarms: pending });
+}
+
 setInterval(checkAlarms, 30000);
 function checkAlarms() {
   if(!S.eventos.length) return;
@@ -2345,7 +2387,9 @@ function checkAlarms() {
       else if(ev.avisoUnid === 'd') alertTime.setDate(alertTime.getDate() - val);
     }
     if (now >= alertTime) {
-      playAlarmSynth(ev.toque); toast(`<svg class="ico" aria-hidden="true"><use href="#ico-bell"/></svg> LEMBRETE: ${ev.tit}`); ev.alarmado = true; modified = true;
+      toast(`<svg class="ico" aria-hidden="true"><use href="#ico-bell"/></svg> LEMBRETE: ${ev.tit}`);
+      _fireNotification('🔔 Pintor Plus — Lembrete', ev.tit);
+      ev.alarmado = true; modified = true;
       const rep = parseInt(ev.repete) || 0;
       if (rep > 0) {
         let nData = new Date(evDate.getTime()); nData.setDate(nData.getDate() + rep);
@@ -3121,16 +3165,28 @@ function editOrcByObjId(id) {
 }
 
 function openEventModal() { document.getElementById('ev-titulo').value = ''; document.getElementById('ev-data').value = calSelDate; document.getElementById('ev-hora').value = ''; document.getElementById('modal-evento').style.display='flex'; }
-function salvarEvento() {
+async function salvarEvento() {
   const tit = document.getElementById('ev-titulo').value; const dat = document.getElementById('ev-data').value; const hora = document.getElementById('ev-hora').value;
   const avisoVal = document.getElementById('ev-antes-val').value; const avisoUnid = document.getElementById('ev-antes-unid').value;
-  const repete = document.getElementById('ev-repete').value; const toque = document.getElementById('ev-toque').value;
+  const repete = document.getElementById('ev-repete').value;
   if(!tit || !dat || !hora) return toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Preencha título, data e hora corretamente.');
-  S.eventos.push({tit, dat, hora, avisoVal, avisoUnid, repete, toque, alarmado:false, id:Date.now()});
+  // Pede permissão de notificação ao salvar primeiro lembrete
+  await _requestNotifPermission();
+  const newEv = {tit, dat, hora, avisoVal, avisoUnid, repete, alarmado:false, id:Date.now()};
+  S.eventos.push(newEv);
   S.eventos.sort((a,b)=>new Date(a.dat+'T'+a.hora) - new Date(b.dat+'T'+b.hora));
-  localStorage.setItem('pp-eventos', JSON.stringify(S.eventos)); document.getElementById('modal-evento').style.display='none'; 
+  localStorage.setItem('pp-eventos', JSON.stringify(S.eventos));
+  document.getElementById('modal-evento').style.display='none';
   calSelDate = dat; [calYear, calMonth] = dat.split('-').map(Number); calMonth--;
-  renderAgenda(); toast('<svg class="ico" aria-hidden="true"><use href="#ico-calendar"/></svg> Evento salvo!');
+  renderAgenda();
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-calendar"/></svg> Lembrete salvo!');
+  // Sincroniza com SW para background notifications
+  _syncAlarmsToSW();
+  // Auto-sincroniza com Google Calendar se estiver logado
+  if (typeof GCalendar !== 'undefined' && GDrive?.accessToken) {
+    GCalendar.exportEvent(newEv.id).catch(()=>{});
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Sincronizando com Google Agenda…');
+  }
 }
 function exportICS(id) { const e = S.eventos.find(x=>x.id==id); if(!e) return; const dt = e.dat.replace(/-/g,''); const hr = (e.hora||'09:00').replace(':','')+'00'; const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${e.tit}\nDTSTART:${dt}T${hr}\nDTEND:${dt}T${hr}\nEND:VEVENT\nEND:VCALENDAR`; const blob = new Blob([ics], {type: 'text/calendar'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Lembrete_${e.tit.replace(/\s+/g,'_')}.ics`; a.click(); URL.revokeObjectURL(url); }
 
@@ -3595,7 +3651,7 @@ function renderHomeMini() {
   
   const wrap=document.getElementById('home-orcs-mini');if(!wrap)return;
   if(!S.orcs.length){ wrap.innerHTML='<div style="text-align:center;padding:16px;background:var(--bg-card);border-radius:12px;border:1px solid var(--bdr);font-size:12px;color:var(--ink3);margin-bottom:8px;">Nenhum orçamento registado ainda.</div>'; return; }
-  wrap.innerHTML=S.orcs.slice(0,3).map((o,sliceIdx)=>{ const realIdx=sliceIdx; let tot=calcOrcTotal(o); const isR=(o.status||'').includes('Rascunho'); const badgeHtml=isR?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`; const menuId=`cm-h-${realIdx}`; return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:8px;cursor:pointer;" onclick="viewOrc(${realIdx})"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;pointer-events:none;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div><div onclick="event.stopPropagation()">${_buildCardMenu(menuId,realIdx,o)}</div></div><div style="display:flex;align-items:center;justify-content:space-between;pointer-events:none;"><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div></div>`; }).join('');
+  wrap.innerHTML=S.orcs.slice(0,3).map((o,sliceIdx)=>{ const realIdx=sliceIdx; let tot=calcOrcTotal(o); const isR=(o.status||'').includes('Rascunho'); const badgeHtml=isR?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`; const menuId=`cm-h-${realIdx}`; const orcShortId=String(o.id||'').slice(-6); return `<div class="hoc${isR?' card-rascunho':''}" style="margin-bottom:8px;cursor:pointer;" onclick="viewOrc(${realIdx})"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;pointer-events:none;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span><span style="font-size:10px;color:var(--ink3);font-weight:400;flex-shrink:0;">#${orcShortId}</span>${badgeHtml}</div><div onclick="event.stopPropagation()">${_buildCardMenu(menuId,realIdx,o)}</div></div><div style="display:flex;align-items:center;justify-content:space-between;pointer-events:none;"><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div></div>`; }).join('');
 }
 
 // --- MÓDULO: EVENTOS DA SEMANA NA HOME ---
@@ -3698,7 +3754,8 @@ function renderOrcamentosList() {
     let tot=calcOrcTotal(o); const qtdLocais=(o.rooms||[]).length; const infoTxt=qtdLocais===1?`${o.rooms[0].items?.length||0} item(ns)`:`${qtdLocais} local(is)`;
     const isRascunho=(o.status||'')==='Rascunho';
     const badgeHtml=isRascunho?`<span class="badge-rascunho">Rascunho</span>`:`<span class="hbadge ${getStatusBadgeClass(o.status)}">${o.status||'Pendente'}</span>`;
-    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:10px;cursor:pointer;" onclick="viewOrc(${i})"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;pointer-events:none;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span>${badgeHtml}</div><div onclick="event.stopPropagation()">${_buildCardMenu(menuId,i,o)}</div></div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;"><span class="hood" style="display:flex;align-items:center;gap:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg>${o.end||'—'} · ${infoTxt}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span></div>`;
+    const orcShortId=String(o.id||'').slice(-6);
+    const menuId=`cm-l-${i}`; return `<div class="hoc${isRascunho?' card-rascunho':''}" style="margin-bottom:10px;cursor:pointer;" onclick="viewOrc(${i})"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden;pointer-events:none;"><span class="hon" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.nome||'(sem nome)'}</span><span style="font-size:10px;color:var(--ink3);font-weight:400;flex-shrink:0;">#${orcShortId}</span>${badgeHtml}</div><div onclick="event.stopPropagation()">${_buildCardMenu(menuId,i,o)}</div></div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;"><span class="hood" style="display:flex;align-items:center;gap:4px;"><svg class="ico" aria-hidden="true"><use href="#ico-pin"/></svg>${o.end||'—'} · ${infoTxt}</span><span class="hoov">${tot>0?'R$ '+tot.toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'}</span></div><span class="hos">${buildDateLabel(o.tsEdit||o.ts||Date.now())}</span></div>`;
   }).join('');
 }
 
@@ -3975,6 +4032,30 @@ function editOrc(i){
 }
 
 function closeViewOrc() { document.getElementById('view-orc-modal').style.display = 'none'; }
+function _showStatusPicker(i) {
+  const o = S.orcs[i];
+  if (!o) return;
+  const list = document.getElementById('status-picker-list');
+  list.innerHTML = S.statusArr.map(s => {
+    const isCur = (o.status || '') === s;
+    return `<div onclick="_applyStatus(${i},'${s.replace(/'/g,"\\'")}');document.getElementById('status-picker-modal').style.display='none';"
+      style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;cursor:pointer;
+      background:${isCur?'var(--bll)':'var(--bg-card)'};border:1.5px solid ${isCur?'var(--bl)':'var(--bdr)'};">
+      <span style="flex:1;font-size:13px;font-weight:${isCur?'800':'600'};color:${isCur?'var(--bl)':'var(--ink)'};">${s}</span>
+      ${isCur?'<svg class="ico" aria-hidden="true" style="color:var(--bl);"><use href="#ico-check-circle"/></svg>':''}
+    </div>`;
+  }).join('');
+  document.getElementById('status-picker-modal').style.display = 'flex';
+}
+function _applyStatus(i, newStatus) {
+  const o = S.orcs[i];
+  if (!o) return;
+  o.status = newStatus;
+  o.tsEdit = Date.now();
+  _saveOrcs();
+  renderOrcamentosList(); renderHomeMini();
+  _onStatusChange({ value: newStatus });
+}
 function _onStatusChange(sel) {
   const v = (sel.value || '').toLowerCase();
   const msgs = {
@@ -4043,10 +4124,11 @@ const FIELD_ORDER = { 's1': ['cli-nome','cli-tel','cli-email','cli-cpf','cli-cep
 function nextField(currentId, pageKey) { const order = FIELD_ORDER[pageKey]; if (!order) return; const idx = order.indexOf(currentId); if (idx === -1) return; for (let i = idx + 1; i < order.length; i++) { const el = document.getElementById(order[i]); if (el && !el.disabled && el.offsetParent !== null) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; } } }
 function attachEnterNav() { Object.entries(FIELD_ORDER).forEach(([pageKey, ids]) => { ids.forEach((id, i) => { const el = document.getElementById(id); if (!el) return; el.addEventListener('input', () => { S.isDirty = true; }); el.setAttribute('enterkeyhint', i === ids.length - 1 ? 'done' : 'next'); el.addEventListener('keydown', (e) => { if (e.key === 'Enter' && el.tagName !== 'TEXTAREA') { e.preventDefault(); nextField(id, pageKey); } }); }); }); }
 
-window.addEventListener('load', () => { 
+window.addEventListener('load', () => {
   try { history.replaceState({ page: 'pg-home' }, '', '#pg-home'); } catch(e) {}
   renderHomeMini(); renderHomeEvents(); renderHomeNews(); buildSteps(1); attachEnterNav(); populateStatusSelect(); loadGoogleMaps();
-
+  // Sincroniza lembretes com SW ao abrir o app (para notificações em background)
+  navigator.serviceWorker?.ready.then(() => _syncAlarmsToSW()).catch(()=>{});
 });
 
 function showTutorial() { document.getElementById('info-modal-title').textContent = '<svg class="ico" aria-hidden="true"><use href="#ico-book"/></svg> Tutorial'; document.getElementById('info-modal-body').innerHTML = `<div style="margin-bottom: 16px;"><b>Bem-vindo ao Pintor Plus!</b></div><ul style="margin-left: 18px; display: flex; flex-direction: column; gap: 12px;"><li><b>1. Criação de Orçamento:</b> Na página inicial, toque em "Criar Novo Orçamento". Preencha os dados e avance.</li><li><b>2. Inserindo Medidas:</b> Clique no grande botão laranja "+ Adicionar Novo Item" para abrir o formulário.</li><li><b>3. CRM e Lembretes:</b> Seus clientes são salvos automaticamente. Utilize a aba "Agenda" para gerenciar retornos.</li></ul>`; document.getElementById('info-modal').style.display = 'flex'; }
@@ -5412,6 +5494,7 @@ function _buildCardMenu(menuId, realIdx, o) {
       ${canR
         ? `<div class="cmd-item" onclick="closeCardMenus();abrirModalRecibo(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Gerar Recibo</div>`
         : `<div class="cmd-item cmd-disabled"><svg class="ico" aria-hidden="true"><use href="#ico-file-text"/></svg> Recibo indisponível</div>`}
+      <div class="cmd-item" onclick="closeCardMenus();_showStatusPicker(${realIdx})"><svg class="ico" aria-hidden="true"><use href="#ico-zap"/></svg> Mudar Status</div>
       <div class="cmd-item cmd-danger" onclick="closeCardMenus();askDelete('Excluir este orçamento?',()=>delOrc(${realIdx}))"><svg class="ico" aria-hidden="true"><use href="#ico-trash"/></svg> Excluir</div>
     </div>
   </div>`;
