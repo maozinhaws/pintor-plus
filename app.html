@@ -5008,11 +5008,18 @@ if (document.readyState === 'loading') {
 // ║  GOOGLE CALENDAR – Enviar eventos para Google Agenda     ║
 // ╚══════════════════════════════════════════════════════════╝
 
+// Autenticação Google unificada — Drive + Calendar + Contacts usam o mesmo token
+function _ensureGoogleAuth() {
+  if (GDrive.accessToken) return true;
+  if (GDrive._sessionLoaded) { GDrive.reconnectDrive(); }
+  else { GDrive.signIn(); }
+  return false;
+}
+
 const GCalendar = {
   async _ensureAuth() {
     if (GDrive.accessToken) return true;
-    if (GDrive._sessionLoaded) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-link"/></svg> Reconectando ao Drive...'); GDrive.reconnectDrive(); }
-    else { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Faça login com Google na tela de Backup.'); }
+    _ensureGoogleAuth();
     return false;
   },
 
@@ -5021,54 +5028,44 @@ const GCalendar = {
     const ev = S.eventos.find(x => x.id == evId);
     if (!ev) return toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Evento não encontrado.');
 
-    toast('<svg class="ico" aria-hidden="true"><use href="#ico-calendar"/></svg> Enviando para Google Agenda...');
     try {
-      const startDate = ev.dat;
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const startTime = ev.hora || '09:00';
-      const dtStart = startDate + 'T' + startTime + ':00';
-      // Duração padrão: 1 hora
       const [h, m] = startTime.split(':').map(Number);
-      const endH = String(h + 1).padStart(2, '0');
-      const dtEnd = startDate + 'T' + endH + ':' + String(m).padStart(2, '0') + ':00';
-
-      const reminder = [];
-      if (ev.avisoVal && parseInt(ev.avisoVal) > 0) {
-        let mins = parseInt(ev.avisoVal);
-        if (ev.avisoUnid === 'h') mins *= 60;
-        if (ev.avisoUnid === 'd') mins *= 1440;
-        reminder.push({ method: 'popup', minutes: mins });
-      }
-
-      const event = {
+      const endH = String(h + 1 > 23 ? 23 : h + 1).padStart(2, '0');
+      const body = {
         summary: ev.tit,
-        start: { dateTime: dtStart, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
-        end: { dateTime: dtEnd, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
-        reminders: reminder.length ? { useDefault: false, overrides: reminder } : { useDefault: true },
+        start: { dateTime: ev.dat + 'T' + startTime + ':00', timeZone: tz },
+        end:   { dateTime: ev.dat + 'T' + endH + ':' + String(m).padStart(2,'0') + ':00', timeZone: tz },
+        reminders: (() => {
+          if (!ev.avisoVal || parseInt(ev.avisoVal) <= 0) return { useDefault: true };
+          let mins = parseInt(ev.avisoVal);
+          if (ev.avisoUnid === 'h') mins *= 60;
+          if (ev.avisoUnid === 'd') mins *= 1440;
+          return { useDefault: false, overrides: [{ method: 'popup', minutes: mins }] };
+        })(),
       };
-
-      // Recorrência
-      if (ev.repete && ev.repete !== 'nao') {
-        const freqMap = { diario: 'DAILY', semanal: 'WEEKLY', mensal: 'MONTHLY' };
-        if (freqMap[ev.repete]) event.recurrence = ['RRULE:FREQ=' + freqMap[ev.repete]];
+      if (ev.repete && ev.repete !== '0') {
+        const freqMap = { '1': 'DAILY', '7': 'WEEKLY' };
+        if (freqMap[ev.repete]) body.recurrence = ['RRULE:FREQ=' + freqMap[ev.repete]];
       }
-
-      const resp = await gapi.client.calendar.events.insert({
-        calendarId: 'primary',
-        resource: event,
+      // Fetch direto — sem dependência de gapi.client.calendar (discovery doc)
+      const r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + GDrive.accessToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       });
-
+      if (r.status === 401) {
+        GDrive.accessToken = null; GDrive.pendingSync = true; GDrive._showReconnectBanner();
+        toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Sessão expirada. Reconecte a conta Google.');
+        return;
+      }
+      if (!r.ok) { const err = await r.json().catch(()=>{}); throw new Error(err?.error?.message || ('HTTP ' + r.status)); }
       toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Adicionado ao Google Agenda!');
-      return resp.result;
+      return await r.json();
     } catch (e) {
       console.error('GCalendar: erro', e);
-      if (e.status === 401) {
-        GDrive.accessToken = null;
-        GDrive.pendingSync = true;
-        GDrive._showReconnectBanner();
-        toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Sessão expirada. Toque no banner para reconectar.');
-      } else {
-        toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Erro ao enviar: ' + (e.result?.error?.message || e.message || 'desconhecido'));
-      }
+      toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Erro ao enviar para Google Agenda: ' + (e.message || 'desconhecido'));
     }
   },
 
@@ -5101,8 +5098,7 @@ const GContacts = {
 
   async _ensureAuth() {
     if (GDrive.accessToken) return true;
-    if (GDrive._sessionLoaded) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-link"/></svg> Reconectando ao Drive...'); GDrive.reconnectDrive(); }
-    else { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Faça login com Google na tela de Backup.'); }
+    _ensureGoogleAuth();
     return false;
   },
 
@@ -5283,8 +5279,7 @@ const GPhotos = {
 
   async _ensureAuth() {
     if (GDrive.accessToken) return true;
-    if (GDrive._sessionLoaded) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-link"/></svg> Reconectando ao Drive...'); GDrive.reconnectDrive(); }
-    else { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Faça login com Google na tela de Backup.'); }
+    _ensureGoogleAuth();
     return false;
   },
 
