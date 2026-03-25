@@ -3237,26 +3237,93 @@ function buildWAMsg(orc){
 }
 
 function refreshWAPreview(){const orc=collectOrc();const el=document.getElementById('wa-preview-inline');if(el)el.textContent=buildWAMsg(orc);}
-async function shareOrc(){
-  const orc = collectOrc();
-  const msg = buildWAMsg(orc);
-  if (!navigator.share) { toast('Compartilhamento não suportado neste navegador.'); return false; }
+
+// ── Geração de PDF real em segundo plano (html2pdf.js) ─────────────────────
+function _loadHtml2PDF() {
+  if (window.html2pdf) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function _generatePDFBlob(orc, withPhotos) {
+  await _loadHtml2PDF();
   const orcId = String(orc.id || Date.now()).slice(-6);
-  const nomeCli = (orc.nome || 'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
+  const nomeCli = (orc.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
+  const fileName = `OC_${nomeCli}_${orcId}.pdf`;
+
+  // Gera o HTML e remove os elementos que não devem aparecer no PDF gerado
+  let src = genPDFHtml(orc, withPhotos)
+    .replace(/<script[\s\S]*?<\/script>/gi, '')         // remove scripts
+    .replace(/<button class="print-btn"[\s\S]*?<\/button>/g, ''); // remove botão de impressão
+
+  const parser = new DOMParser();
+  const parsed = parser.parseFromString(src, 'text/html');
+  const pageEl = parsed.querySelector('.page');
+  const styleEl = parsed.querySelector('style');
+
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#000;';
+
+  if (styleEl) {
+    const st = document.createElement('style');
+    st.textContent = styleEl.textContent;
+    container.appendChild(st);
+  }
+  if (pageEl) {
+    pageEl.style.cssText = 'box-shadow:none;border-radius:0;margin:0;padding:32px 40px;max-width:100%;background:#fff;position:relative;';
+    container.appendChild(document.importNode(pageEl, true));
+  }
+  document.body.appendChild(container);
+
   try {
-    if (navigator.canShare) {
-      const htmlContent = genPDFHtml(orc, false);
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const file = new File([blob], `OC_${nomeCli}_${orcId}.html`, { type: 'text/html' });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ title: `Orçamento ${orc.nome||''}`, text: msg, files: [file] });
-        return true;
-      }
+    const blob = await html2pdf().set({
+      margin: 0,
+      filename: fileName,
+      image: { type: 'jpeg', quality: 0.92 },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(container).outputPdf('blob');
+    return { blob, fileName };
+  } finally {
+    if (container.parentNode) document.body.removeChild(container);
+  }
+}
+
+function _downloadBlob(blob, fileName) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = fileName; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 8000);
+}
+
+async function shareOrc() {
+  const orc = collectOrc();
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  try {
+    const { blob, fileName } = await _generatePDFBlob(orc, false);
+    const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
+
+    // Compartilha o PDF diretamente
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      await navigator.share({ title: `Orçamento — ${orc.nome||''}`, files: [pdfFile] });
+      return true;
     }
-    await navigator.share({ title: `Orçamento ${orc.nome||''}`, text: msg });
+    // Fallback: compartilha só texto se não suportar arquivo
+    if (navigator.share) {
+      await navigator.share({ title: `Orçamento — ${orc.nome||''}`, text: buildWAMsg(orc) });
+      return true;
+    }
+    // Fallback final: baixa o PDF
+    _downloadBlob(blob, fileName);
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> PDF salvo!');
     return true;
   } catch(e) {
-    if (e && e.name !== 'AbortError') toast('Erro ao compartilhar.');
+    if (e?.name === 'AbortError') return false;
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Erro ao gerar PDF.');
     return false;
   }
 }
@@ -5449,28 +5516,25 @@ function _canPDF(o) {
 async function genPDFFromIdx(i) {
   const o = S.orcs[i];
   if (!o) return;
-  const html = genPDFHtml(o, false);
-  const orcId = String(o.id || Date.now()).slice(-6);
-  const nomeCli = (o.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
-  const fileName = `OC_${nomeCli}_${orcId}.html`;
-  // Tenta compartilhar via Web Share API (mobile/Android)
-  if (navigator.share && navigator.canShare) {
-    try {
-      const blob = new Blob([html], { type: 'text/html' });
-      const file = new File([blob], fileName, { type: 'text/html' });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ title: `Orçamento ${o.nome||''}`, files: [file] });
-        return;
-      }
-    } catch(e) {
-      if (e && e.name === 'AbortError') return; // usuário cancelou
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  try {
+    const { blob, fileName } = await _generatePDFBlob(o, false);
+    const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      await navigator.share({ title: `Orçamento — ${o.nome||''}`, files: [pdfFile] });
+      return;
     }
+    _downloadBlob(blob, fileName);
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> PDF salvo!');
+  } catch(e) {
+    if (e?.name === 'AbortError') return;
+    // Fallback: janela de impressão
+    const html = genPDFHtml(o, false);
+    const w = window.open('', '_blank');
+    if (!w) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Popup bloqueado.'); return; }
+    w.document.write(html); w.document.close(); w.focus();
+    setTimeout(() => { try { w.print(); } catch(e) {} }, 400);
   }
-  // Fallback: abre janela de impressão
-  const w = window.open('', '_blank');
-  if (!w) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Popup bloqueado — permita popups e tente novamente'); return; }
-  w.document.write(html); w.document.close(); w.focus();
-  setTimeout(() => { try { w.print(); } catch(e) {} }, 400);
 }
 
 function _buildCardMenu(menuId, realIdx, o) {
