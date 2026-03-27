@@ -96,6 +96,9 @@ self.addEventListener('periodicsync', (event) => {
 });
 
 self.addEventListener('fetch', (evt) => {
+  // Aproveita cada requisição de rede para verificar alarmes pendentes
+  if (_pendingAlarms.length > 0) _checkSWAlarms();
+
   const url = evt.request.url;
 
   // Nunca cachear chamadas a APIs externas (Google, OAuth, Drive etc.)
