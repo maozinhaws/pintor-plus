@@ -4824,6 +4824,7 @@ const GDrive = {
   accessToken: null,
   guestMode: false,
   _restoringSession: false, // bloqueia redirecionamento enquanto GIS ainda inicializa
+  _tokenRefreshTimer: null,
 
   // ── INICIALIZAÇÃO ─────────────────────────────────────────
   init() {
@@ -4980,6 +4981,16 @@ const GDrive = {
     }
     this.accessToken = resp.access_token;
     this._restoringSession = false; // token confirmado pelo GIS — libera navegação normal
+
+    // ── Agenda renovação silenciosa antes do token expirar ────
+    clearTimeout(this._tokenRefreshTimer);
+    const expiresIn = (parseInt(resp.expires_in) || 3600) - 120; // renova 2 min antes
+    this._tokenRefreshTimer = setTimeout(() => {
+      if (!this.accessToken || !this.tokenClient) return;
+      const hint = localStorage.getItem('pp-gdrive-email');
+      this.tokenClient.requestAccessToken({ prompt: '', ...(hint ? { login_hint: hint } : {}) });
+    }, expiresIn * 1000);
+
     if (this._sessionLoaded) {
       // Já está em pg-home: apenas reconecta Drive
       this._hideOfflineBanner();
@@ -5000,6 +5011,7 @@ const GDrive = {
   },
 
   signOut() {
+    clearTimeout(this._tokenRefreshTimer);
     if (this.accessToken) google.accounts.oauth2.revoke(this.accessToken, () => {});
     this.accessToken = null;
     this.user = null;
