@@ -410,12 +410,13 @@ body.kb-open .title-big { font-size: 14px; }
 .gd-dot.err{background:var(--rd);}
 .gd-dot.off{background:var(--ink3);opacity:.4;}
 .gd-dot.offline{background:var(--am);}
-#offline-banner{position:fixed;top:0;left:0;right:0;z-index:9999;padding:max(9px,calc(env(safe-area-inset-top,0px) + 9px)) 16px 9px;font-size:13px;font-weight:600;text-align:center;display:none;transition:transform .3s;}
+#offline-banner{position:fixed;top:0;left:0;right:0;z-index:999999;padding:max(14px,calc(env(safe-area-inset-top,0px) + 12px)) 16px 14px;font-size:13px;font-weight:700;text-align:center;display:none;transition:transform .3s;line-height:1.45;}
 #offline-banner.show{display:block;}
-#offline-banner.mode-offline{background:var(--aml);color:var(--am);border-bottom:1.5px solid var(--am);}
-#offline-banner.mode-drive-err{background:var(--rdl);color:var(--rd);border-bottom:1.5px solid var(--rd);}
-#offline-banner.mode-reconnect{background:var(--bll);color:var(--bl);border-bottom:1.5px solid var(--bl);cursor:pointer;}
-#offline-banner.mode-reconnect:hover{opacity:.88;}
+#offline-banner.mode-offline{background:#D97706;color:#fff;box-shadow:0 3px 12px rgba(217,119,6,0.4);}
+#offline-banner.mode-drive-err{background:#DC2626;color:#fff;box-shadow:0 3px 16px rgba(220,38,38,0.55);animation:pp-alert-pulse 1.6s ease-in-out infinite;}
+#offline-banner.mode-reconnect{background:#DC2626;color:#fff;box-shadow:0 3px 16px rgba(220,38,38,0.55);cursor:pointer;animation:pp-alert-pulse 1.6s ease-in-out infinite;}
+#offline-banner.mode-reconnect:hover{opacity:.9;}
+@keyframes pp-alert-pulse{0%,100%{box-shadow:0 3px 16px rgba(220,38,38,0.55);}50%{box-shadow:0 3px 28px rgba(220,38,38,0.9);}}
 /* ── Modo Teste (Convidado) ── */
 #guest-banner{display:none;background:var(--aml);border-bottom:1.5px solid var(--am);padding:8px 16px 8px;font-size:12px;font-weight:600;flex-shrink:0;z-index:50;}
 /* ── Banner Instalar PWA ── */
@@ -5306,8 +5307,8 @@ const GDrive = {
     if (!el) return;
     el.className = 'show mode-' + mode;
     el.innerHTML = mode === 'offline'
-      ? '<svg class="ico" aria-hidden="true"><use href="#ico-wifi-off"/></svg> Modo offline · dados salvos localmente'
-      : '<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Sem conexão com o Drive · dados salvos localmente';
+      ? '⚠️ Modo offline — dados sendo salvos localmente'
+      : '🚨 Drive desconectado! Dados em risco. <strong>Exporte um backup agora!</strong>';
   },
 
   _hideOfflineBanner() {
@@ -5415,7 +5416,7 @@ const GDrive = {
     if (!el) return;
     el.className = 'show mode-reconnect';
     el.style.display = '';
-    el.innerHTML = '<svg class="ico" aria-hidden="true"><use href="#ico-link"/></svg> Drive desconectado &nbsp;·&nbsp; <u>Toque aqui para reconectar</u>';
+    el.innerHTML = '🚨 Drive desconectado — <u style="text-underline-offset:3px;">Toque AQUI para reconectar</u>';
     el.onclick = () => GDrive.reconnectDrive();
   },
 
