@@ -3588,31 +3588,39 @@ async function _generatePDFBlob(orc, withPhotos) {
 
   const fullHtml = genPDFHtml(orc, withPhotos);
 
-  // html2pdf.from('string') espera um fragmento HTML, não um documento completo.
-  // Extrai <style> e o conteúdo de <body> separadamente.
+  // Extrai CSS e corpo do documento gerado
   const styleMatch = fullHtml.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-  const styles = styleMatch ? `<style>${styleMatch[1]}</style>` : '';
+  const cssText = styleMatch ? styleMatch[1] : '';
   const bodyMatch = fullHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
   let bodyContent = bodyMatch ? bodyMatch[1] : fullHtml;
 
-  // Remove script, botão de impressão e referências SVG ao sprite sheet
-  // (html2canvas roda em contexto isolado e não resolve <use href="#ico-*">)
+  // Remove script, botão de impressão e SVG com <use> (sprite do app não existe aqui)
   bodyContent = bodyContent
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/<button class="print-btn"[\s\S]*?<\/button>/g, '')
     .replace(/<svg[^>]*>\s*<use[^>]*href="#[^"]*"[^>]*\/?>\s*<\/svg>/gi, '');
 
-  const fragment = styles + bodyContent;
+  // Renderiza via elemento DOM real — mais confiável que from('string') no mobile
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;background:#fff;z-index:-1;';
+  const styleEl = document.createElement('style');
+  styleEl.textContent = cssText;
+  wrapper.appendChild(styleEl);
+  wrapper.insertAdjacentHTML('beforeend', bodyContent);
+  document.body.appendChild(wrapper);
 
-  const blob = await html2pdf().set({
-    margin: [10, 10, 10, 10],
-    filename: fileName,
-    image: { type: 'jpeg', quality: 0.92 },
-    html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }).from(fragment, 'string').outputPdf('blob');
-
-  return { blob, fileName };
+  try {
+    const blob = await html2pdf().set({
+      margin: [10, 10, 10, 10],
+      filename: fileName,
+      image: { type: 'jpeg', quality: 0.92 },
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(wrapper).outputPdf('blob');
+    return { blob, fileName };
+  } finally {
+    document.body.removeChild(wrapper);
+  }
 }
 
 function _downloadBlob(blob, fileName) {
@@ -4924,13 +4932,13 @@ const GDrive = {
         error_callback: (err) => {
           console.warn('[PP-AUTH] error_callback | type=', err?.type, '| sessionLoaded=', self._sessionLoaded, '| restoringSession=', self._restoringSession, '| err=', err);
           if (err && (err.type === 'popup_blocked_by_browser' || err.type === 'popup_failed_to_open')) {
-            // Pop-up bloqueado não afeta o fluxo principal — app continua na página atual.
-            // Se há sessão, mostra apenas o banner de reconexão; nunca redireciona pro login.
             self._restoringSession = false;
             if (self._sessionLoaded) {
+              // Já está logado: mostra banner de reconexão
               self._showReconnectBanner();
             } else {
-              self._showPopupBlockedMsg();
+              // No login: popup bloqueado → usa redirect automaticamente (sem popup, sem clique extra)
+              self._authViaRedirect();
             }
             return;
           }
@@ -5449,10 +5457,12 @@ const GDrive = {
   // Redirect OAuth (implicit flow) — nunca bloqueado pelo navegador
   _authViaRedirect() {
     const savedEmail = localStorage.getItem('pp-gdrive-email');
+    // redirect_uri deve apontar para app.html (onde o token é lido no hash da URL)
+    const redirectUri = window.location.origin + '/app.html';
     const params = new URLSearchParams({
       client_id: this.CLIENT_ID,
       response_type: 'token',
-      redirect_uri: 'https://pintorplus.com.br/',
+      redirect_uri: redirectUri,
       scope: this.SCOPES,
       prompt: 'select_account',
     });
