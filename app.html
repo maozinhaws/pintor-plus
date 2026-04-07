@@ -6090,7 +6090,7 @@ function _canRecibo(o) {
 }
 function _canPDF(o) {
   const s = (o.status || '').toLowerCase();
-  return !o.isFlashDraft && !s.includes('rascunho');
+  return !o.isFlashDraft && !!s && s !== 'draft' && !s.includes('rascunho');
 }
 async function genPDFFromIdx(i) {
   const o = S.orcs[i];
@@ -6178,23 +6178,72 @@ async function _doSendWA() {
   }
   o.fmt = prev;
 }
+async function _uploadPDFtoDrive(blob, fileName) {
+  if (!GDrive?.accessToken) return null;
+  try {
+    const metadata = { name: fileName, mimeType: 'application/pdf' };
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', blob, fileName);
+    const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + GDrive.accessToken },
+      body: form
+    });
+    if (!r.ok) return null;
+    return await r.json(); // { id, webViewLink }
+  } catch(e) { return null; }
+}
+
 async function _doSendPDF() {
   document.getElementById('send-opts-modal').style.display = 'none';
   const o = S.orcs[_sendOptIdx]; if (!o) return;
+
+  // Bloqueia rascunho
+  const stLow = (o.status || '').toLowerCase();
+  if (!stLow || stLow === 'rascunho' || stLow === 'draft' || stLow.includes('rascunho')) {
+    document.getElementById('rascunho-block-modal').style.display = 'flex';
+    return;
+  }
+
   const withPhotos = document.getElementById('send-with-photos')?.checked || false;
   const prev = o.fmt; o.fmt = _sendFmt;
   toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
   try {
     const { blob, fileName } = await _generatePDFBlob(o, withPhotos);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
+
+    // Faz upload para o Drive em paralelo
+    const drivePromise = _uploadPDFtoDrive(blob, fileName);
+
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      // Compartilha direto via sheet nativa (WhatsApp, email, etc.)
       await navigator.share({ title: `Orçamento — ${o.nome||''}`, files: [pdfFile] });
+      drivePromise.then(d => {
+        if (d) toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> PDF salvo no Google Drive!');
+      });
     } else {
-      window._shareBlob = blob; window._shareFileName = fileName; window._shareOrc = o;
-      document.getElementById('share-opts-modal').style.display = 'flex';
+      // Aguarda upload no Drive para compartilhar o link
+      const driveData = await drivePromise;
+      if (driveData?.webViewLink) {
+        if (navigator.share) {
+          await navigator.share({ title: `Orçamento — ${o.nome||''}`, url: driveData.webViewLink });
+        } else {
+          window.open(driveData.webViewLink, '_blank');
+        }
+        toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> PDF salvo no Drive e link copiado!');
+      } else {
+        // Último recurso: download local
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = fileName; a.click();
+        URL.revokeObjectURL(url);
+        toast('<svg class="ico" aria-hidden="true"><use href="#ico-download"/></svg> PDF baixado para o dispositivo.');
+      }
     }
   } catch(e) {
-    if (e?.name !== 'AbortError') { const html = genPDFHtml(o, withPhotos); const w = window.open('','_blank'); if(w){w.document.write(html);w.document.close();w.focus();setTimeout(()=>{try{w.print();}catch(e){}},400);} }
+    if (e?.name !== 'AbortError') {
+      toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Erro ao gerar PDF.');
+    }
   }
   o.fmt = prev;
 }
