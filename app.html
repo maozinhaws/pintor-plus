@@ -3499,14 +3499,32 @@ async function salvarEvento() {
   document.getElementById('modal-evento').style.display='none';
   calSelDate = dat; [calYear, calMonth] = dat.split('-').map(Number); calMonth--;
   renderAgenda();
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-calendar"/></svg> Lembrete salvo!');
-  // Sincroniza com SW para background notifications
   _syncAlarmsToSW();
-  // Auto-sincroniza com Google Calendar se estiver logado
+  // Também sincroniza via API se estiver logado
   if (typeof GCalendar !== 'undefined' && GDrive?.accessToken) {
     GCalendar.exportEvent(newEv.id).catch(()=>{});
-    toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Sincronizando com Google Agenda…');
   }
+  // Abre Google Calendar com o evento pré-preenchido para garantir o lembrete
+  _openGCalendarUrl(newEv);
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-calendar"/></svg> Lembrete salvo! Abrindo Google Agenda…');
+}
+
+function _openGCalendarUrl(ev) {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const [year, month, day] = ev.dat.split('-');
+  const [h, m] = (ev.hora || '09:00').split(':').map(Number);
+  const endH = h + 1 > 23 ? 23 : h + 1;
+  const pad = n => String(n).padStart(2, '0');
+  const startStr = `${year}${month}${day}T${pad(h)}${pad(m)}00`;
+  const endStr   = `${year}${month}${day}T${pad(endH)}${pad(m)}00`;
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: ev.tit,
+    dates: `${startStr}/${endStr}`,
+    details: 'Lembrete criado pelo Pintor Plus',
+    ctz: tz
+  });
+  window.open('https://calendar.google.com/calendar/render?' + params.toString(), '_blank');
 }
 function exportICS(id) { const e = S.eventos.find(x=>x.id==id); if(!e) return; const dt = e.dat.replace(/-/g,''); const hr = (e.hora||'09:00').replace(':','')+'00'; const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${e.tit}\nDTSTART:${dt}T${hr}\nDTEND:${dt}T${hr}\nEND:VEVENT\nEND:VCALENDAR`; const blob = new Blob([ics], {type: 'text/calendar'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Lembrete_${e.tit.replace(/\s+/g,'_')}.ics`; a.click(); URL.revokeObjectURL(url); }
 
