@@ -4825,6 +4825,7 @@ const GDrive = {
   guestMode: false,
   _restoringSession: false, // bloqueia redirecionamento enquanto GIS ainda inicializa
   _tokenRefreshTimer: null,
+  _userInitiatedAuth: false,
 
   // ── INICIALIZAÇÃO ─────────────────────────────────────────
   init() {
@@ -4968,19 +4969,27 @@ const GDrive = {
       // immediate_failed = renovação silenciosa não disponível — app continua normalmente em background
       if (resp.error === 'immediate_failed') {
         this._restoringSession = false;
+        if (this._userInitiatedAuth) {
+          // Usuário clicou em reconectar → escalona direto para seletor de conta (sem 2º clique)
+          this._userInitiatedAuth = false;
+          const hint = localStorage.getItem('pp-gdrive-email');
+          this.tokenClient.requestAccessToken({ prompt: 'select_account', ...(hint ? { login_hint: hint } : {}) });
+          return;
+        }
         if (this._sessionLoaded) this._setStatus('off', 'Drive desconectado');
         else this._showLoginBtn();
         return;
       }
-      // Qualquer outro erro: com sessão → banner de reconexão (sem redirect pro login)
-      // sem sessão → mostra botão de login
+      // Qualquer outro erro: com sessão → banner de reconexão, sem sessão → botão de login
       this._restoringSession = false;
+      this._userInitiatedAuth = false;
       if (this._sessionLoaded) this._showReconnectBanner();
       else this._showLoginBtn();
       return;
     }
     this.accessToken = resp.access_token;
-    this._restoringSession = false; // token confirmado pelo GIS — libera navegação normal
+    this._restoringSession = false;
+    this._userInitiatedAuth = false;
 
     // ── Agenda renovação silenciosa antes do token expirar ────
     clearTimeout(this._tokenRefreshTimer);
@@ -5467,8 +5476,11 @@ const GDrive = {
   },
 
   reconnectDrive() {
-    // Usa redirect em vez de popup — nunca é bloqueado pelo navegador
-    this._authViaRedirect();
+    if (!this.tokenClient) { this._authViaRedirect(); return; }
+    // Tenta silencioso; se falhar com immediate_failed, _onToken escala para select_account
+    this._userInitiatedAuth = true;
+    const savedEmail = localStorage.getItem('pp-gdrive-email');
+    this.tokenClient.requestAccessToken({ prompt: '', ...(savedEmail ? { login_hint: savedEmail } : {}) });
   },
 
   _setStatus(state, msg) {
