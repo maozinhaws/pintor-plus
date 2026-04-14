@@ -11,6 +11,14 @@ recibo-teste.html
 # Pasta de deploy Netlify (arquivos temporários)
 DEPLOY NETLIFY/
 
+# Native App Project — node_modules
+Native_App_Project/node_modules/
+
+# Capacitor generated platforms (generated via npx cap add)
+Native_App_Project/android/
+Native_App_Project/ios/
+Native_App_Project/dist/
+
 # Misc
 *.log
 .DS_Store
