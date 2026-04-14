@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#7C3AED">
+<meta name="application-name" content="Pintor+">
+<meta name="description" content="Gerencie orçamentos, clientes e agenda. O app profissional para pintores — funciona offline e sincroniza com Google Drive.">
 <title>App Pintor Plus</title>
 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -15,6 +17,21 @@
 <meta name="apple-mobile-web-app-title" content="Pintor+" />
 <link rel="manifest" href="/site.webmanifest" />
 <link rel="privacy-policy" href="/privacy-policy.html">
+<!-- iOS Splash Screens -->
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
 (function() {
@@ -479,6 +496,22 @@ body.kb-open .title-big { font-size: 14px; }
 .gc-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
 .gc-item.selected .gc-check{background:var(--bl);border-color:var(--bl);color:#fff;}
 .gc-search{width:100%;height:42px;border-radius:10px;border:1.5px solid var(--bdr);background:var(--bg-input);padding:0 12px;font-family:'Sora',sans-serif;font-size:13px;color:var(--ink);margin-bottom:12px;box-sizing:border-box;}
+/* ── Premium Install Card ── */
+#pwa-premium-card{display:none;background:linear-gradient(135deg,#7C3AED 0%,#4F46E5 100%);border-radius:20px;padding:18px 16px;margin-bottom:20px;box-shadow:0 8px 24px rgba(124,58,237,.28);position:relative;overflow:hidden;}
+#pwa-premium-card::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none;}
+#pwa-premium-card::after{content:'';position:absolute;bottom:-30px;left:-10px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;}
+#pwa-premium-card.show{display:block;animation:pgIn .3s ease;}
+.ppc-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.18);border-radius:100px;padding:3px 10px;font-size:10px;font-weight:800;color:#fff;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.ppc-title{font-size:17px;font-weight:800;color:#fff;line-height:1.25;margin-bottom:4px;letter-spacing:-.2px;}
+.ppc-sub{font-size:12px;color:rgba(255,255,255,.8);line-height:1.5;margin-bottom:14px;}
+.ppc-features{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.ppc-feat{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(255,255,255,.9);}
+.ppc-feat svg{opacity:.8;}
+.ppc-actions{display:flex;gap:8px;}
+.ppc-btn-install{flex:1;height:42px;border-radius:12px;border:none;background:#fff;color:#7C3AED;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.ppc-btn-install:active{opacity:.85;}
+.ppc-btn-dismiss{height:42px;padding:0 14px;border-radius:12px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.85);font-family:'Sora',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.ppc-btn-dismiss:active{background:rgba(255,255,255,.1);}
 
 </style>
 </head>
@@ -649,6 +682,28 @@ body.kb-open .title-big { font-size: 14px; }
         </div>
       </div>
       <div class="scr">
+        <!-- Premium PWA Install Card -->
+        <div id="pwa-premium-card">
+          <div class="ppc-badge">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Experiência Premium
+          </div>
+          <div class="ppc-title">Instale o Pintor Plus</div>
+          <div class="ppc-sub">Acesso instantâneo, notificações de agenda e funciona mesmo sem internet.</div>
+          <div class="ppc-features">
+            <div class="ppc-feat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 20 7"/></svg>Offline</div>
+            <div class="ppc-feat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 20 7"/></svg>Notificações</div>
+            <div class="ppc-feat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 20 7"/></svg>Atalhos rápidos</div>
+          </div>
+          <div class="ppc-actions">
+            <button class="ppc-btn-install" onclick="pwaTriggerInstall()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13m0 0-4-4m4 4 4-4"/><rect x="2" y="17" width="20" height="5" rx="2"/></svg>
+              Instalar Agora
+            </button>
+            <button class="ppc-btn-dismiss" onclick="pwaPremiumDismiss()">Agora não</button>
+          </div>
+        </div>
+
         <div style="display:flex;gap:10px;margin-bottom:24px;align-items:center;">
           <button onclick="homeTab('flash')" title="Orçamento Rápido Flash" style="width:88px;height:88px;border-radius:27px;background:linear-gradient(135deg,#f97316,#fb923c);color:#fff;border:4px solid #fed7aa;font-size:38px;cursor:pointer;box-shadow:0 12px 28px rgba(249,115,22,.52),0 4px 8px rgba(249,115,22,.28);flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='scale(1.07)';this.style.boxShadow='0 16px 36px rgba(249,115,22,.6),0 6px 12px rgba(249,115,22,.3)'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 12px 28px rgba(249,115,22,.52),0 4px 8px rgba(249,115,22,.28)'"><svg class="ico" aria-hidden="true"><use href="#ico-zap"/></svg><span style="font-size:10px;font-weight:800;letter-spacing:1px;line-height:1;">FLASH</span></button>
           <button onclick="newOrc()" style="flex:1;height:64px;border-radius:16px;background:var(--bl);color:#fff;border:none;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 8px 16px rgba(79,70,229,0.2);display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -2616,6 +2671,7 @@ function _hideGuestBanner() {
 // ─────────────────────────────────────────────────────────────
 
 // NAVEGAÇÃO & UI (HISTORY API PWA)
+let _ppReadyDispatched = false;
 function showPage(id, skipHistory = false) { 
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); 
   const el = document.getElementById(id); 
@@ -2623,6 +2679,10 @@ function showPage(id, skipHistory = false) {
     el.classList.add('active'); 
     if(!skipHistory) try { history.pushState({ page: id }, '', '#' + id); } catch(e) {}
     setTimeout(() => { const scr = el.querySelector('.scr'); if(scr) scr.scrollTop = 0; }, 10); 
+    if (id === 'pg-home' && !_ppReadyDispatched) {
+      _ppReadyDispatched = true;
+      window.dispatchEvent(new CustomEvent('pp-ready'));
+    }
   } 
 }
 window.addEventListener('popstate', (e) => {
@@ -6401,6 +6461,7 @@ function _removeSupportImage(idx) {
 const PWA = {
   _prompt: null,
   _DISMISSED_KEY: 'pwa_install_dismissed',
+  _PREMIUM_DISMISSED_KEY: 'pwa_premium_dismissed',
 
   isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream; },
   isStandalone() { return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches; },
@@ -6410,6 +6471,17 @@ const PWA = {
       if (!t) return false;
       if (Date.now() - parseInt(t) > 30 * 24 * 60 * 60 * 1000) {
         localStorage.removeItem(this._DISMISSED_KEY);
+        return false;
+      }
+      return true;
+    } catch(e) { return false; }
+  },
+  wasPremiumDismissed() {
+    try {
+      const t = localStorage.getItem(this._PREMIUM_DISMISSED_KEY);
+      if (!t) return false;
+      if (Date.now() - parseInt(t) > 7 * 24 * 60 * 60 * 1000) {
+        localStorage.removeItem(this._PREMIUM_DISMISSED_KEY);
         return false;
       }
       return true;
@@ -6427,6 +6499,15 @@ const PWA = {
   showIOSModal() {
     document.getElementById('pwa-ios-modal')?.classList.add('open');
   },
+  showPremiumCard() {
+    if (this.isStandalone() || this.wasPremiumDismissed()) return;
+    const card = document.getElementById('pwa-premium-card');
+    if (card) card.classList.add('show');
+  },
+  hidePremiumCard() {
+    const card = document.getElementById('pwa-premium-card');
+    if (card) card.classList.remove('show');
+  },
 };
 
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -6435,17 +6516,50 @@ window.addEventListener('beforeinstallprompt', (e) => {
   if (!PWA.isStandalone() && !PWA.wasDismissed()) {
     setTimeout(() => PWA.showBar(), 5000);
   }
+  if (!PWA.isStandalone() && !PWA.wasPremiumDismissed()) {
+    setTimeout(() => PWA.showPremiumCard(), 2000);
+  }
 });
 
 window.addEventListener('appinstalled', () => {
   PWA.hideBar();
+  PWA.hidePremiumCard();
   PWA._prompt = null;
+  toast('🎉 Pintor Plus instalado com sucesso!');
 });
 
 // Mostra banner/modal automaticamente no iOS após 5s
 if (PWA.isIOS() && !PWA.isStandalone() && !PWA.wasDismissed()) {
   setTimeout(() => PWA.showIOSModal(), 5000);
 }
+// Mostra premium card no iOS também
+if (PWA.isIOS() && !PWA.isStandalone() && !PWA.wasPremiumDismissed()) {
+  setTimeout(() => PWA.showPremiumCard(), 2000);
+}
+
+// ── Deep Link: URL parameter routing ────────────────────────────────────
+(function _handleStartupParams() {
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  const proto = params.get('proto');
+  if (!action && !proto) return;
+  window.addEventListener('pp-ready', () => {
+    if (action === 'new-orc') { try { newOrc(); } catch(e) {} }
+    else if (action === 'flash') { try { homeTab('flash'); } catch(e) {} }
+    else if (action === 'agenda') { try { homeTab('agenda'); } catch(e) {} }
+    else if (action === 'sync') { try { GDrive.scheduleSync && GDrive.scheduleSync(); } catch(e) {} }
+    else if (proto) {
+      const decoded = decodeURIComponent(proto);
+      const match = decoded.match(/^web\+pintorplus:\/\/(.+)/);
+      if (match) {
+        const cmd = match[1].split('/')[0];
+        if (cmd === 'orcamento') { try { newOrc(); } catch(e) {} }
+        else if (cmd === 'agenda') { try { homeTab('agenda'); } catch(e) {} }
+        else if (cmd === 'flash') { try { homeTab('flash'); } catch(e) {} }
+      }
+    }
+  }, { once: true });
+})();
 
 // Chamado pelo botão "Instalar" no banner e no menu lateral
 window.pwaShowInstallUI = async function() {
@@ -6455,6 +6569,7 @@ window.pwaShowInstallUI = async function() {
   }
   if (PWA._prompt) {
     PWA.hideBar();
+    PWA.hidePremiumCard();
     PWA._prompt.prompt();
     const { outcome } = await PWA._prompt.userChoice;
     PWA._prompt = null;
@@ -6464,7 +6579,6 @@ window.pwaShowInstallUI = async function() {
     return;
   }
   if (PWA.isIOS()) { PWA.showIOSModal(); return; }
-  // Android/PC sem prompt disponível: orienta o usuário
   document.getElementById('pwa-ios-sheet').innerHTML = `
     <div class="ios-title">Instalar Pintor Plus</div>
     <div class="ios-sub">Para instalar, siga os passos no seu navegador:</div>
@@ -6480,6 +6594,11 @@ window.pwaTriggerInstall = window.pwaShowInstallUI;
 window.pwaDismiss = function() {
   PWA.hideBar();
   try { localStorage.setItem(PWA._DISMISSED_KEY, Date.now().toString()); } catch(e) {}
+};
+
+window.pwaPremiumDismiss = function() {
+  PWA.hidePremiumCard();
+  try { localStorage.setItem(PWA._PREMIUM_DISMISSED_KEY, Date.now().toString()); } catch(e) {}
 };
 
 function enviarSuporte() {
