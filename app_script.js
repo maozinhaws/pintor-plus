@@ -1234,104 +1234,77 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function _generatePDFBlob(orc, withPhotos) {
-  const orcId = String(orc.id || Date.now()).slice(-6);
-  const nomeCli = (orc.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
-  const fileName = `OC_${nomeCli}_${orcId}.pdf`;
+function _generatePDFBlob(orc, withPhotos) {
+  return new Promise((resolve, reject) => {
+    try {
+      const fullHtml = genPDFHtml(orc, withPhotos);
 
-  const fullHtml = genPDFHtml(orc, withPhotos);
+      // Abre uma nova janela com o conteúdo do PDF
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(fullHtml);
+      printWindow.document.close();
 
-  // Extrai CSS e corpo do documento gerado
-  const styleMatch = fullHtml.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-  const cssText = styleMatch ? styleMatch[1] : '';
-  const bodyMatch = fullHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  let bodyContent = bodyMatch ? bodyMatch[1] : fullHtml;
+      // Quando a janela terminar de carregar, resolve a promessa
+      printWindow.onload = function() {
+        // Aguarda um pequeno tempo para garantir que todo o conteúdo foi renderizado
+        setTimeout(() => {
+          // Fecha a janela de impressão e resolve a promessa com informações necessárias
+          printWindow.close();
 
-  // Remove script, botão de impressão e SVG com <use> (sprite do app não existe aqui)
-  bodyContent = bodyContent
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<button class="print-btn"[\s\S]*?<\/button>/g, '')
-    .replace(/<svg[^>]*>\s*<use[^>]*href="#[^"]*"[^>]*\/?>\s*<\/svg>/gi, '');
+          // Retorna um objeto com o conteúdo HTML para possível uso futuro
+          resolve({
+            html: fullHtml,
+            fileName: `OC_${(orc.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_')}_${String(orc.id || Date.now()).slice(-6)}.pdf`
+          });
+        }, 1000); // Aguarda 1 segundo para renderização completa
+      };
 
-  // Renderiza via elemento DOM real — mais confiável que from('string') no mobile
-  const wrapper = document.createElement('div');
-  // Melhora a estabilidade do wrapper oculto
-  wrapper.style.cssText = 'position:absolute;top:0;left:0;width:794px;background:#fff;z-index:-1;visibility:hidden;pointer-events:none;overflow:visible;height:auto !important;min-height:100vh;';
-  const styleEl = document.createElement('style');
-  styleEl.textContent = cssText;
-  wrapper.appendChild(styleEl);
-  wrapper.insertAdjacentHTML('beforeend', bodyContent);
-  document.body.appendChild(wrapper);
-
-  // Aguarda um pouco para o wrapper ser adicionado ao DOM
-  await new Promise(r => setTimeout(r, 100));
-
-  // Aguarda imagens carregarem para evitar PDF em branco
-  const images = wrapper.querySelectorAll('img');
-  const imgPromises = Array.from(images).map(img => {
-    if (img.complete) return Promise.resolve();
-    return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
+      printWindow.onerror = function(error) {
+        console.error('Erro ao abrir a janela de impressão:', error);
+        reject(error);
+      };
+    } catch (error) {
+      console.error('Erro na geração do PDF:', error);
+      reject(error);
+    }
   });
+}
 
-  // Aguarda todas as imagens carregarem ou timeout de 2 segundos
-  await Promise.race([
-    Promise.all(imgPromises),
-    new Promise(resolve => setTimeout(resolve, 2000))
-  ]);
-
-  // Garante que o layout esteja completo
-  await new Promise(resolve => setTimeout(resolve, 200));
-
-  // Força reflow para garantir renderização
-  void wrapper.offsetHeight;
-
-  // Nova tentativa de garantir renderização completa
-  await new Promise(resolve => requestAnimationFrame(() => resolve()));
-  await new Promise(resolve => requestAnimationFrame(() => resolve())); // Segunda chamada
-
-  // Pequeno delay adicional
-  await new Promise(r => setTimeout(r, 200));
-
+// Função para abrir a janela de impressão com botão de compartilhar
+function openPrintWindow(orc, withPhotos) {
   try {
-    // Verifica se há conteúdo para renderizar
-    if (wrapper.children.length === 0 && !wrapper.textContent.trim()) {
-      console.error('Wrapper está vazio - não há conteúdo para gerar PDF');
-      throw new Error('Nenhum conteúdo disponível para geração do PDF');
-    }
+    const fullHtml = genPDFHtml(orc, withPhotos);
 
-    const options = {
-      margin: [10, 10, 10, 10],
-      filename: fileName,
-      image: { type: 'jpeg', quality: 0.95 }, // Aumentei a qualidade para melhor renderização
-      html2canvas: {
-        scale: 3, // Aumentei a escala para melhor qualidade e renderização
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: Math.max(wrapper.scrollWidth, 794), // Garante largura mínima
-        height: Math.max(wrapper.scrollHeight, 1123), // Garante altura mínima (A4)
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 794, // Define largura explícita da janela
-        windowHeight: 1123, // Define altura explícita da janela
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+    // Modifica o HTML para remover o script de impressão automático e adicionar botão de compartilhar
+    let modifiedHtml = fullHtml
+      .replace(/<script>window\.onload[^<]*<\/script>/, '') // Remove o script de impressão automática
+      .replace(/<button class="print-btn"[^>]*>.*?<\/button>/, '') // Remove botão de impressão antigo
+      .replace('</body>', `
+        <div style="position: fixed; top: 20px; right: 20px; z-index: 10000;">
+          <button onclick="sharePDF()" style="background: #7C3AED; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 5px;">
+            📤 Compartilhar
+          </button>
+          <button onclick="window.print()" style="background: #334155; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 5px;">
+            🖨️ Imprimir
+          </button>
+          <button onclick="window.close()" style="background: #64748b; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 5px;">
+            ✕ Fechar
+          </button>
+        </div>
+        <script>
+          function sharePDF() {
+            alert('Para compartilhar, clique em "Imprimir" e escolha "Salvar como PDF"');
+          }
+        </script>
+      </body>`);
 
-    // Gera o PDF
-    const pdfWorker = html2pdf().set(options).from(wrapper);
-    const blob = await pdfWorker.outputPdf('blob');
-
-    return { blob, fileName };
+    // Abre a nova janela
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(modifiedHtml);
+    printWindow.document.close();
   } catch (error) {
-    console.error('Erro na geração do PDF:', error);
-    throw error;
-  } finally {
-    // Garante a remoção do wrapper mesmo em caso de erro
-    if (wrapper.parentNode) {
-      wrapper.parentNode.removeChild(wrapper);
-    }
+    console.error('Erro ao abrir a janela de impressão:', error);
+    toast('Erro ao gerar documento: ' + error.message);
   }
 }
 
@@ -1344,25 +1317,33 @@ function _downloadBlob(blob, fileName) {
 
 async function shareOrc() {
   const orc = collectOrc();
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Abrindo documento…');
   try {
-    const { blob, fileName } = await _generatePDFBlob(orc, false);
-    const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
-    // Tenta share nativo com arquivo
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-      await navigator.share({ title: `Orçamento — ${orc.nome||''}`, files: [pdfFile] });
-      return true;
-    }
-    // Share nativo não suporta arquivo — mostra opções
-    window._shareBlob = blob; window._shareFileName = fileName; window._shareOrc = orc;
-    document.getElementById('share-opts-modal').style.display = 'flex';
+    // Abre a janela de impressão com botões de compartilhar e imprimir
+    openPrintWindow(orc, false);
+    toast('Documento aberto. Use "Compartilhar" ou "Imprimir" conforme necessário.');
     return true;
   } catch(e) {
     if (e?.name === 'AbortError') return false;
-    // Mesmo sem PDF mostra opções de texto
-    window._shareBlob = null; window._shareFileName = null; window._shareOrc = collectOrc();
-    document.getElementById('share-opts-modal').style.display = 'flex';
-    return false;
+    // Se falhar, volta para a abordagem original
+    try {
+      const { blob, fileName } = await _generatePDFBlob(orc, false);
+      const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
+      // Tenta share nativo com arquivo
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+        await navigator.share({ title: `Orçamento — ${orc.nome||''}`, files: [pdfFile] });
+        return true;
+      }
+      // Share nativo não suporta arquivo — mostra opções
+      window._shareBlob = blob; window._shareFileName = fileName; window._shareOrc = orc;
+      document.getElementById('share-opts-modal').style.display = 'flex';
+      return true;
+    } catch(e2) {
+      // Mesmo sem PDF mostra opções de texto
+      window._shareBlob = null; window._shareFileName = null; window._shareOrc = collectOrc();
+      document.getElementById('share-opts-modal').style.display = 'flex';
+      return false;
+    }
   }
 }
 async function _shareDoNative() {
