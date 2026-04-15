@@ -1229,6 +1229,11 @@ function buildPDFShareMsg(orc) {
 }
 
 // ── Geração de PDF real em segundo plano (html2pdf.js) ─────────────────────
+// Delay function to ensure proper rendering before PDF generation
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function _generatePDFBlob(orc, withPhotos) {
   const orcId = String(orc.id || Date.now()).slice(-6);
   const nomeCli = (orc.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_');
@@ -1251,12 +1256,15 @@ async function _generatePDFBlob(orc, withPhotos) {
   // Renderiza via elemento DOM real — mais confiável que from('string') no mobile
   const wrapper = document.createElement('div');
   // Melhora a estabilidade do wrapper oculto
-  wrapper.style.cssText = 'position:absolute;top:0;left:0;width:794px;background:#fff;z-index:-1;visibility:hidden;pointer-events:none;';
+  wrapper.style.cssText = 'position:absolute;top:0;left:0;width:794px;background:#fff;z-index:-1;visibility:hidden;pointer-events:none;overflow:visible;height:auto !important;min-height:100vh;';
   const styleEl = document.createElement('style');
   styleEl.textContent = cssText;
   wrapper.appendChild(styleEl);
   wrapper.insertAdjacentHTML('beforeend', bodyContent);
   document.body.appendChild(wrapper);
+
+  // Aguarda um pouco para o wrapper ser adicionado ao DOM
+  await new Promise(r => setTimeout(r, 100));
 
   // Aguarda imagens carregarem para evitar PDF em branco
   const images = wrapper.querySelectorAll('img');
@@ -1264,21 +1272,66 @@ async function _generatePDFBlob(orc, withPhotos) {
     if (img.complete) return Promise.resolve();
     return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
   });
-  await Promise.all(imgPromises);
-  // Pequeno delay adicional para garantir renderização de estilos
-  await new Promise(r => setTimeout(r, 100));
+
+  // Aguarda todas as imagens carregarem ou timeout de 2 segundos
+  await Promise.race([
+    Promise.all(imgPromises),
+    new Promise(resolve => setTimeout(resolve, 2000))
+  ]);
+
+  // Garante que o layout esteja completo
+  await new Promise(resolve => setTimeout(resolve, 200));
+
+  // Força reflow para garantir renderização
+  void wrapper.offsetHeight;
+
+  // Nova tentativa de garantir renderização completa
+  await new Promise(resolve => requestAnimationFrame(() => resolve()));
+  await new Promise(resolve => requestAnimationFrame(() => resolve())); // Segunda chamada
+
+  // Pequeno delay adicional
+  await new Promise(r => setTimeout(r, 200));
 
   try {
-    const blob = await html2pdf().set({
+    // Verifica se há conteúdo para renderizar
+    if (wrapper.children.length === 0 && !wrapper.textContent.trim()) {
+      console.error('Wrapper está vazio - não há conteúdo para gerar PDF');
+      throw new Error('Nenhum conteúdo disponível para geração do PDF');
+    }
+
+    const options = {
       margin: [10, 10, 10, 10],
       filename: fileName,
-      image: { type: 'jpeg', quality: 0.92 },
-      html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
+      image: { type: 'jpeg', quality: 0.95 }, // Aumentei a qualidade para melhor renderização
+      html2canvas: {
+        scale: 3, // Aumentei a escala para melhor qualidade e renderização
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: Math.max(wrapper.scrollWidth, 794), // Garante largura mínima
+        height: Math.max(wrapper.scrollHeight, 1123), // Garante altura mínima (A4)
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 794, // Define largura explícita da janela
+        windowHeight: 1123, // Define altura explícita da janela
+      },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(wrapper).outputPdf('blob');
+    };
+
+    // Gera o PDF
+    const pdfWorker = html2pdf().set(options).from(wrapper);
+    const blob = await pdfWorker.outputPdf('blob');
+
     return { blob, fileName };
+  } catch (error) {
+    console.error('Erro na geração do PDF:', error);
+    throw error;
   } finally {
-    document.body.removeChild(wrapper);
+    // Garante a remoção do wrapper mesmo em caso de erro
+    if (wrapper.parentNode) {
+      wrapper.parentNode.removeChild(wrapper);
+    }
   }
 }
 
