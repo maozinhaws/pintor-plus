@@ -2779,6 +2779,13 @@ document.addEventListener('visibilitychange', () => {
     GDrive.scheduleSync?.();
   }
 });
+window.addEventListener('focus', () => {
+  if (GDrive._sessionLoaded && !GDrive.accessToken && GDrive._gisReady) {
+    const savedEmail = localStorage.getItem('pp-gdrive-email');
+    if (savedEmail) GDrive.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
+  }
+  GDrive.scheduleSync?.();
+});
 window.addEventListener('pagehide', () => {
   if (S.isDirty) _autoSaveRascunho();
   GDrive.scheduleSync?.();
@@ -3305,7 +3312,7 @@ function saveEditClient() {
     tel: document.getElementById('edit-cli-tel').value,
     email: document.getElementById('edit-cli-email').value,
     end: document.getElementById('edit-cli-end').value,
-    cpf: document.getElementById('edit-cli-cpf').value
+    cpf: document.getElementById('edit-cli-cpf').value , tsEdit: Date.now()
   };
   
   if(!data.nome) return toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> O nome é obrigatório');
@@ -3763,36 +3770,35 @@ function sendWA(){ const orc=collectOrc(); const msg=buildWAMsg(orc); const tel=
 // MOTOR DE IMPRESSÃO NATIVA / PDF
 async function generateAndProcessPDF(withPhotos) {
   try {
-    toast('Gerando PDF...');
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...');
     const orc = collectOrc();
-    const htmlString = genPDFHtml(orc, withPhotos);
-    const opt = {
-      margin: 10,
-      filename: `Orcamento_${(orc.nome||'Orc').replace(/\s+/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    const blob = await html2pdf().from(htmlString).set(opt).output('blob');
-    const file = new File([blob], opt.filename, { type: 'application/pdf' });
-    if (navigator.share) {
-      await navigator.share({ files: [file], title: 'Orçamento - ' + orc.nome, text: 'Segue o orçamento solicitado.' }).catch(err => console.log('Erro share:', err));
+    const { blob, fileName } = await _generatePDFBlob(orc, withPhotos);
+    const file = new File([blob], fileName, { type: 'application/pdf' });
+    
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ 
+        files: [file], 
+        title: 'Orçamento - ' + (orc.nome||'PintorPlus'), 
+        text: 'Segue o orçamento solicitado.' 
+      }).catch(err => { if(err.name !== 'AbortError') console.error('Erro share:', err); });
     } else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = opt.filename; a.click(); URL.revokeObjectURL(url);
+      _downloadBlob(blob, fileName);
     }
+
     if (GDrive.accessToken) {
       (async () => {
         try {
           const folderId = await GDrive.getOrCreateFolder('Orçamentos');
           if (folderId) await GDrive.uploadFile(file, folderId);
-        } catch (e) { console.error('Erro upload PDF:', e); }
+        } catch (e) { console.error('Erro upload PDF automático:', e); }
       })();
     }
     homeTab('orcamentos');
-  } catch (e) { console.error('Erro PDF:', e); toast('Erro ao gerar PDF.'); }
+  } catch (e) { 
+    console.error('Erro PDF:', e); 
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Erro ao gerar PDF.'); 
+  }
 }
-
 function askPdfPhotos() {
   const orc = collectOrc();
   let photoCount = 0;
@@ -3805,7 +3811,6 @@ function askPdfPhotos() {
 function closePdfPhotosModal(withPhotos) {
   document.getElementById('pdf-photos-modal').style.display = 'none';
   generateAndProcessPDF(withPhotos);
-}
 }
 
 function genPDFHtml(orc, withPhotos) {
@@ -3887,7 +3892,7 @@ function genPDFHtml(orc, withPhotos) {
         <div style="margin-bottom:6px;"><strong>ÁREA TOTAL APROX.:</strong> ${totalM2.toFixed(2)} m²</div>
         ${orc.tipoServico ? `<div style="margin-bottom:6px;"><strong>ESCOPO:</strong> ${_esc(orc.tipoServico)}</div>` : ''}
         <div style="margin-bottom:6px;"><strong>VALIDADE:</strong> ${_esc(String(orc.valid))} dias</div>
-        ${(() => { const pgtoArr = Array.isArray(orc.pgto) ? orc.pgto : (typeof orc.pgto === "string" ? [orc.pgto] : []); return pgtoArr.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${pgtoArr.map(_esc).join(", ")}</div>` : ""; })()}
+        ${(() => { const rawP = orc.pgto; const pgtoArr = Array.isArray(rawP) ? rawP : (typeof rawP === 'string' ? [rawP] : []); return pgtoArr.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${pgtoArr.map(_esc).join(", ")}</div>` : ""; })()}
         ${orc.obs ? `<div style="margin-top:16px; padding:12px; border:1px solid #fde68a; background:#fffbeb; border-radius:8px; color:#000;"><strong>Observações:</strong><br>${_esc(orc.obs)}</div>` : ''}
       </div>
       <div style="text-align:right;">
@@ -4993,6 +4998,13 @@ const GDrive = {
         callback: (resp) => self._onToken(resp),
         error_callback: (err) => {
           console.warn('[PP-AUTH] error_callback | type=', err?.type, '| sessionLoaded=', self._sessionLoaded, '| restoringSession=', self._restoringSession, '| err=', err);
+          const now = Date.now();
+          const lastRedirect = parseInt(sessionStorage.getItem('pp-last-auth-redirect') || '0');
+          if (now - lastRedirect < 5000) {
+            console.error('[PP-AUTH] Loop de redirecionamento detectado. Abortando.');
+            self._setStatus('err', 'Erro de autenticação (Loop)');
+            return;
+          }
           if (err && (err.type === 'popup_blocked_by_browser' || err.type === 'popup_failed_to_open')) {
             self._restoringSession = false;
             if (self._sessionLoaded) {
@@ -5000,6 +5012,7 @@ const GDrive = {
               self._showReconnectBanner();
             } else {
               // No login: popup bloqueado → usa redirect automaticamente (sem popup, sem clique extra)
+            sessionStorage.setItem('pp-last-auth-redirect', now.toString());
               self._authViaRedirect();
             }
             return;
@@ -5090,7 +5103,7 @@ const GDrive = {
     if (!this._gisReady) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Aguarde o carregamento...'); return; }
     // prompt:'' = usa sessão salva sem forçar consent; login_hint acelera seleção de conta
     const savedEmail = localStorage.getItem('pp-gdrive-email');
-    const opts = { prompt: '' };
+    const opts = { prompt: 'select_account' };
     if (savedEmail) opts.login_hint = savedEmail;
     this.tokenClient.requestAccessToken(opts);
   },
