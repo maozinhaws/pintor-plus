@@ -33,6 +33,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
 <link rel="apple-touch-startup-image" media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 (function() {
   const THRESHOLD = 0.75; 
@@ -3154,8 +3155,8 @@ function collectOrc(){
 function extractClient(orc) {
   const tStr = (orc.tel||'').replace(/\D/g,''); if(!orc.nome || !tStr) return;
   const idx = S.clientes.findIndex(c => c.tel.replace(/\D/g,'') === tStr);
-  if(idx >= 0) { S.clientes[idx].nome = orc.nome; S.clientes[idx].apelido = orc.apelido||''; S.clientes[idx].email = orc.email; S.clientes[idx].end = orc.end; S.clientes[idx].cpf = orc.cpf; if(orc.apelido) S.clientes[idx].notas = '[ref: '+orc.apelido+']'; }
-  else { S.clientes.push({nome: orc.nome, apelido: orc.apelido||'', tel: orc.tel, email: orc.email, end: orc.end, cpf: orc.cpf, notas: orc.apelido ? '[ref: '+orc.apelido+']' : ''}); }
+  if(idx >= 0) { S.clientes[idx].nome = orc.nome; S.clientes[idx].apelido = orc.apelido||''; S.clientes[idx].email = orc.email; S.clientes[idx].end = orc.end; S.clientes[idx].cpf = orc.cpf; S.clientes[idx].tsEdit = Date.now(); if(orc.apelido) S.clientes[idx].notas = '[ref: '+orc.apelido+']'; }
+  else { S.clientes.push({nome: orc.nome, apelido: orc.apelido||'', tel: orc.tel, email: orc.email, end: orc.end, cpf: orc.cpf, tsEdit: Date.now(), notas: orc.apelido ? '[ref: '+orc.apelido+']' : ''}); }
   _Vault.save('pp-clientes', JSON.stringify(S.clientes));
 }
 
@@ -3374,7 +3375,7 @@ function saveEditFornecedor() {
   const data = {
     nome: document.getElementById('edit-forn-nome').value,
     tel: document.getElementById('edit-forn-tel').value,
-    cat: document.getElementById('edit-forn-cat').value
+    cat: document.getElementById('edit-forn-cat').value , tsEdit: Date.now()
   };
   
   if(!data.nome) return toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> O nome é obrigatório');
@@ -3552,7 +3553,7 @@ async function salvarEvento() {
   if(!tit || !dat || !hora) return toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Preencha título, data e hora corretamente.');
   // Pede permissão de notificação ao salvar primeiro lembrete
   await _requestNotifPermission();
-  const newEv = {tit, dat, hora, avisoVal, avisoUnid, repete, alarmado:false, id:Date.now()};
+  const newEv = {tit, dat, hora, avisoVal, avisoUnid, repete, alarmado:false, id:Date.now(), tsEdit: Date.now()};
   S.eventos.push(newEv);
   S.eventos.sort((a,b)=>new Date(a.dat+'T'+a.hora) - new Date(b.dat+'T'+b.hora));
   _Vault.save('pp-eventos', JSON.stringify(S.eventos));
@@ -3760,23 +3761,51 @@ function _shareDoSave() {
 function sendWA(){ const orc=collectOrc(); const msg=buildWAMsg(orc); const tel=(orc.tel||'').replace(/\D/g,''); const url = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`; window.open(url, '_blank'); toast('<svg class="ico" aria-hidden="true"><use href="#ico-send"/></svg> Abrindo WhatsApp…'); }
 
 // MOTOR DE IMPRESSÃO NATIVA / PDF
+async function generateAndProcessPDF(withPhotos) {
+  try {
+    toast('Gerando PDF...');
+    const orc = collectOrc();
+    const htmlString = genPDFHtml(orc, withPhotos);
+    const opt = {
+      margin: 10,
+      filename: `Orcamento_${(orc.nome||'Orc').replace(/\s+/g, '_')}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    const blob = await html2pdf().from(htmlString).set(opt).output('blob');
+    const file = new File([blob], opt.filename, { type: 'application/pdf' });
+    if (navigator.share) {
+      await navigator.share({ files: [file], title: 'Orçamento - ' + orc.nome, text: 'Segue o orçamento solicitado.' }).catch(err => console.log('Erro share:', err));
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = opt.filename; a.click(); URL.revokeObjectURL(url);
+    }
+    if (GDrive.accessToken) {
+      (async () => {
+        try {
+          const folderId = await GDrive.getOrCreateFolder('Orçamentos');
+          if (folderId) await GDrive.uploadFile(file, folderId);
+        } catch (e) { console.error('Erro upload PDF:', e); }
+      })();
+    }
+    homeTab('orcamentos');
+  } catch (e) { console.error('Erro PDF:', e); toast('Erro ao gerar PDF.'); }
+}
+
 function askPdfPhotos() {
   const orc = collectOrc();
   let photoCount = 0;
   (orc.rooms || []).forEach(r => (r.items || []).forEach(it => { photoCount += (it.photos || []).length; }));
-  if (photoCount === 0) {
-    genPDF(false);
-    setTimeout(() => homeTab('orcamentos'), 500);
-    return;
-  }
+  if (photoCount === 0) { generateAndProcessPDF(false); return; }
   const countEl = document.getElementById('pdf-photos-count');
   if (countEl) countEl.textContent = photoCount + ' foto' + (photoCount > 1 ? 's' : '') + ' encontrada' + (photoCount > 1 ? 's' : '') + ' neste orçamento.';
   document.getElementById('pdf-photos-modal').style.display = 'flex';
 }
 function closePdfPhotosModal(withPhotos) {
   document.getElementById('pdf-photos-modal').style.display = 'none';
-  genPDF(withPhotos);
-  setTimeout(() => homeTab('orcamentos'), 500);
+  generateAndProcessPDF(withPhotos);
+}
 }
 
 function genPDFHtml(orc, withPhotos) {
@@ -3858,7 +3887,7 @@ function genPDFHtml(orc, withPhotos) {
         <div style="margin-bottom:6px;"><strong>ÁREA TOTAL APROX.:</strong> ${totalM2.toFixed(2)} m²</div>
         ${orc.tipoServico ? `<div style="margin-bottom:6px;"><strong>ESCOPO:</strong> ${_esc(orc.tipoServico)}</div>` : ''}
         <div style="margin-bottom:6px;"><strong>VALIDADE:</strong> ${_esc(String(orc.valid))} dias</div>
-        ${orc.pgto?.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${orc.pgto.map(_esc).join(', ')}</div>` : ''}
+        ${(() => { const pgtoArr = Array.isArray(orc.pgto) ? orc.pgto : (typeof orc.pgto === "string" ? [orc.pgto] : []); return pgtoArr.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${pgtoArr.map(_esc).join(", ")}</div>` : ""; })()}
         ${orc.obs ? `<div style="margin-top:16px; padding:12px; border:1px solid #fde68a; background:#fffbeb; border-radius:8px; color:#000;"><strong>Observações:</strong><br>${_esc(orc.obs)}</div>` : ''}
       </div>
       <div style="text-align:right;">
@@ -3870,21 +3899,6 @@ function genPDFHtml(orc, withPhotos) {
   <script>window.onload = () => setTimeout(() => window.print(), 500);<\/script>
 </body>
 </html>`;
-}
-
-function genPDF(withPhotos){
-  try {
-    const orc = collectOrc();
-    const htmlString = genPDFHtml(orc, withPhotos);
-    const pWin = window.open('', '_blank');
-    if(!pWin) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Popup bloqueado. Permita a abertura de novas abas.'); return; }
-    pWin.document.open();
-    pWin.document.write(htmlString);
-    pWin.document.close();
-  } catch(err) {
-    console.error(err);
-    toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Erro inesperado ao processar impressão.');
-  }
 }
 
 // CEP
@@ -4915,6 +4929,8 @@ const GDrive = {
     // Se voltou de redirect OAuth: confirma token e reconecta Drive
     if (_redirectToken) {
       this._fetchUserInfo();
+    window.addEventListener("focus", () => { if (this.accessToken && !this.isSyncing) this._findFile(); });
+    this.periodicCheck();
     }
   },
 
@@ -5217,27 +5233,35 @@ const GDrive = {
         });
         if (changed) { S.orcs = localOrcs.sort((a, b) => (b.ts || 0) - (a.ts || 0)); _saveOrcs(); }
 
-        // Clientes: adiciona os que não existem localmente (por nome)
+        // Clientes: mescla usando tsEdit e tel ou nome
         const localCl = S.clientes || [];
-        (data.clientes || []).forEach(c => {
-          if (!localCl.some(lc => lc.nome === c.nome)) { localCl.push(c); changed = true; }
+        (data.clientes || []).forEach(imp => {
+          const idx = localCl.findIndex(c => (c.tel && imp.tel && c.tel.replace(/\D/g,'') === imp.tel.replace(/\D/g,'')) || c.nome === imp.nome);
+          if (idx >= 0) {
+            if ((imp.tsEdit || 0) > (localCl[idx].tsEdit || 0)) { localCl[idx] = imp; changed = true; }
+          } else { localCl.push(imp); changed = true; }
         });
         if (changed) { S.clientes = localCl; _Vault.save('pp-clientes', JSON.stringify(S.clientes)); }
 
-        // Fornecedores: idem
+        // Fornecedores: mescla usando tsEdit e nome
         const localForn = S.fornecedores || [];
-        (data.fornecedores || []).forEach(f => {
-          if (!localForn.some(lf => lf.nome === f.nome)) { localForn.push(f); changed = true; }
+        (data.fornecedores || []).forEach(imp => {
+          const idx = localForn.findIndex(f => f.nome === imp.nome);
+          if (idx >= 0) {
+            if ((imp.tsEdit || 0) > (localForn[idx].tsEdit || 0)) { localForn[idx] = imp; changed = true; }
+          } else { localForn.push(imp); changed = true; }
         });
         if (changed) { S.fornecedores = localForn; _Vault.save('pp-fornecedores', JSON.stringify(S.fornecedores)); }
 
-        // Eventos: adiciona os que não existem localmente (por id)
+        // Eventos: mescla usando tsEdit e id
         const localEvts = S.eventos || [];
-        (data.eventos || []).forEach(ev => {
-          if (!localEvts.some(le => le.id === ev.id)) { localEvts.push(ev); changed = true; }
+        (data.eventos || []).forEach(imp => {
+          const idx = localEvts.findIndex(ev => ev.id === imp.id);
+          if (idx >= 0) {
+            if ((imp.tsEdit || 0) > (localEvts[idx].tsEdit || 0)) { localEvts[idx] = imp; changed = true; }
+          } else { localEvts.push(imp); changed = true; }
         });
         if (changed) { S.eventos = localEvts; _Vault.save('pp-eventos', JSON.stringify(S.eventos)); }
-
         if (changed) toast('<svg class="ico" aria-hidden="true"><use href="#ico-cloud"/></svg> Dados sincronizados do Drive');
       }
 
@@ -5345,6 +5369,61 @@ const GDrive = {
       console.error('GDrive: readFromDrive falhou', e);
       return null;
     }
+
+  periodicCheck() {
+    setInterval(() => {
+      if (this.accessToken && !this.isSyncing) {
+        this._findFile();
+      }
+    }, 5 * 60 * 1000); // 5 min
+  },
+
+  async getOrCreateFolder(name) {
+    if (!this.accessToken) return null;
+    try {
+      const query = encodeURIComponent("name = '" + name + "' and mimeType = 'application/vnd.google-apps.folder' and trashed = false");
+      const r = await fetch("https://www.googleapis.com/drive/v3/files?q=" + query, {
+        headers: { Authorization: 'Bearer ' + this.accessToken }
+      });
+      const data = await r.json();
+      if (data.files && data.files.length > 0) return data.files[0].id;
+      const cr = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + this.accessToken,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: name, mimeType: 'application/vnd.google-apps.folder' })
+      });
+      const folder = await cr.json();
+      return folder.id;
+    } catch(e) {
+      console.error('GDrive: getOrCreateFolder falhou', e);
+      return null;
+    }
+  },
+
+  async uploadFile(file, folderId) {
+    if (!this.accessToken) return null;
+    try {
+      const metadata = { name: file.name, parents: [folderId] };
+      const boundary = '-------314159265358979323846';
+      const delimiter = "\r\n--" + boundary + "\r\n";
+      const close_delim = "\r\n--" + boundary + "--";
+      const arrayBuffer = await file.arrayBuffer();
+      const base64Data = btoa(Array.from(new Uint8Array(arrayBuffer)).map(b => String.fromCharCode(b)).join(''));
+      const body = delimiter + 'Content-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: ' + file.type + '\r\nContent-Transfer-Encoding: base64\r\n\r\n' + base64Data + close_delim;
+      const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + this.accessToken, 'Content-Type': 'multipart/related; boundary=' + boundary },
+        body: body
+      });
+      return await r.json();
+    } catch(e) {
+      console.error('GDrive: uploadFile falhou', e);
+      return null;
+    }
+  },
   },
 
   // ── AÇÕES DO USUÁRIO ──────────────────────────────────────
@@ -5717,6 +5796,11 @@ const _Vault = {
         this.save(k, raw);
       }
     }
+    const nowTs = Date.now();
+    (S.orcs || []).forEach(o => { if(!o.tsEdit) o.tsEdit = o.ts || nowTs; });
+    (S.clientes || []).forEach(c => { if(!c.tsEdit) c.tsEdit = nowTs; });
+    (S.fornecedores || []).forEach(f => { if(!f.tsEdit) f.tsEdit = nowTs; });
+    (S.eventos || []).forEach(e => { if(!e.tsEdit) e.tsEdit = nowTs; });
     // Re-processa dependências do config após possivelmente ter atualizado S.config
     S.DEFAULT_SERVICES = (S.config.servicos || defCfg.servicos).split(',').map(s=>s.trim()).filter(Boolean);
     S.statusArr = (S.config.statusList || defCfg.statusList).split(',').map(s=>s.trim()).filter(Boolean);
