@@ -33,7 +33,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
 <link rel="apple-touch-startup-image" media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <script>
 (function() {
   const THRESHOLD = 0.75; 
@@ -3630,7 +3630,8 @@ function buildWAMsg(orc){
   }
   
   if(orc.tipoServico) detalhes+=`\n*Escopo:* ${orc.tipoServico}\n`;
-  if(orc.pgto?.length) detalhes+=`*Pagamento:* ${orc.pgto.join(', ')}\n`;
+  const pgtoArr = Array.isArray(orc.pgto) ? orc.pgto : (typeof orc.pgto === "string" ? [orc.pgto] : []);
+  if(pgtoArr.length) detalhes+=`*Pagamento:* ${pgtoArr.join(", ")}\n`;
   if(orc.valid) detalhes+=`*Validade:* ${orc.valid} dias\n`;
   if(orc.obs) detalhes+=`*Obs Gerais:* ${orc.obs}\n`;
   
@@ -3663,7 +3664,7 @@ function _loadHtml2PDF() {
   if (window.html2pdf) return Promise.resolve();
   return new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    s.src = 'https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js';
     s.onload = resolve; s.onerror = reject;
     document.head.appendChild(s);
   });
@@ -3798,6 +3799,24 @@ async function generateAndProcessPDF(withPhotos) {
     console.error('Erro PDF:', e); 
     toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Erro ao gerar PDF.'); 
   }
+}
+
+async function generateSilentPDF(orc, withPhotos) {
+  try {
+    const { blob, fileName } = await _generatePDFBlob(orc, withPhotos);
+    const file = new File([blob], fileName, { type: "application/pdf" });
+    if (GDrive.accessToken) {
+      try {
+        const folderId = await GDrive.getOrCreateFolder("Orçamentos");
+        if (folderId) await GDrive.uploadFile(file, folderId);
+      } catch (e) { console.error("Silent upload fail", e); }
+    }
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "Orçamento - " + (orc.nome||""), text: "Segue o orçamento solicitado." });
+    } else {
+      _downloadBlob(blob, fileName);
+    }
+  } catch (e) { console.error("Silent PDF fail", e); }
 }
 function askPdfPhotos() {
   const orc = collectOrc();
@@ -4934,9 +4953,9 @@ const GDrive = {
     // Se voltou de redirect OAuth: confirma token e reconecta Drive
     if (_redirectToken) {
       this._fetchUserInfo();
+    }
     window.addEventListener("focus", () => { if (this.accessToken && !this.isSyncing) this._findFile(); });
     this.periodicCheck();
-    }
   },
 
   // ── SESSÃO LOCAL ──────────────────────────────────────────
@@ -4999,10 +5018,10 @@ const GDrive = {
         error_callback: (err) => {
           console.warn('[PP-AUTH] error_callback | type=', err?.type, '| sessionLoaded=', self._sessionLoaded, '| restoringSession=', self._restoringSession, '| err=', err);
           const now = Date.now();
-          const lastRedirect = parseInt(sessionStorage.getItem('pp-last-auth-redirect') || '0');
-          if (now - lastRedirect < 5000) {
-            console.error('[PP-AUTH] Loop de redirecionamento detectado. Abortando.');
-            self._setStatus('err', 'Erro de autenticação (Loop)');
+          const redirectDone = sessionStorage.getItem("pp-auth-redirect-done");
+          if (redirectDone) {
+            console.error("[PP-AUTH] Loop de redirecionamento evitado.");
+            self._setStatus("err", "Erro de autenticação");
             return;
           }
           if (err && (err.type === 'popup_blocked_by_browser' || err.type === 'popup_failed_to_open')) {
@@ -5012,7 +5031,7 @@ const GDrive = {
               self._showReconnectBanner();
             } else {
               // No login: popup bloqueado → usa redirect automaticamente (sem popup, sem clique extra)
-            sessionStorage.setItem('pp-last-auth-redirect', now.toString());
+            sessionStorage.setItem('pp-auth-redirect-done', '1');
               self._authViaRedirect();
             }
             return;
@@ -5382,7 +5401,7 @@ const GDrive = {
       console.error('GDrive: readFromDrive falhou', e);
       return null;
     }
-
+  },
   periodicCheck() {
     setInterval(() => {
       if (this.accessToken && !this.isSyncing) {
@@ -5436,7 +5455,6 @@ const GDrive = {
       console.error('GDrive: uploadFile falhou', e);
       return null;
     }
-  },
   },
 
   // ── AÇÕES DO USUÁRIO ──────────────────────────────────────
@@ -5632,7 +5650,7 @@ const GDrive = {
     // Tenta silencioso; se falhar com immediate_failed, _onToken escala para select_account
     this._userInitiatedAuth = true;
     const savedEmail = localStorage.getItem('pp-gdrive-email');
-    this.tokenClient.requestAccessToken({ prompt: '', ...(savedEmail ? { login_hint: savedEmail } : {}) });
+    this.tokenClient.requestAccessToken({ prompt: 'select_account', ...(savedEmail ? { login_hint: savedEmail } : {}) });
   },
 
   _setStatus(state, msg) {
@@ -5822,8 +5840,12 @@ const _Vault = {
 
 // Inicializa quando DOM pronto — Vault primeiro, depois GDrive
 async function _startApp() {
-  await _Vault.init();
-  GDrive.init();
+  try {
+    await _Vault.init();
+    GDrive.init();
+  } catch (e) {
+    console.error("[PP] Erro crítica na inicialização:", e);
+  }
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _startApp);
