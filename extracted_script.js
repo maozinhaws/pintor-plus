@@ -2,7 +2,7 @@
 // FUNÇÕES UTILITÁRIAS
 let _tt;
 function _ico(n){return '<svg class="ico" aria-hidden="true"><use href="#ico-'+n+'"/></svg>';}
-function toast(msg){ const el=document.getElementById('toast');if(!el)return; el.innerHTML=msg; el.classList.add('on'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('on'), 2600); }
+function toast(msg, ms=2600){ const el=document.getElementById('toast');if(!el)return; el.innerHTML=msg; el.classList.add('on'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('on'), ms); }
 function f1(n){ return(Math.round((n||0)*10)/10).toFixed(1); }
 function ptFloat(v){if(typeof v==='number')return v||0;let s=String(v).trim();if(s.includes('.')&&s.includes(','))s=s.replace(/\./g,'').replace(',','.');else if(s.includes(',')&&!s.includes('.'))s=s.replace(',','.');return parseFloat(s)||0;}
 function getRoomMeds(r){ let m2=0,ml=0; (r.items||[]).forEach(it=>{const a=ptFloat(it.alt),c=ptFloat(it.comp); if(a&&c)m2+=a*c; else if(a||c)ml+=(a||c);}); return{m2,ml}; }
@@ -299,7 +299,7 @@ function _autoSaveRascunho() {
   toast('<svg class="ico" aria-hidden="true"><use href="#ico-save"/></svg> Rascunho salvo — altere o status para gerar PDF');
 }
 let _navCallback = null;
-function openDraftConfirmModal(cb) { _navCallback = cb; document.getElementById('draft-confirm-modal').style.display = 'flex'; }
+function openDraftConfirmModal(cb) { document.activeElement?.blur(); _navCallback = cb; document.getElementById('draft-confirm-modal').style.display = 'flex'; }
 function closeDraftConfirmModal() { _navCallback = null; document.getElementById('draft-confirm-modal').style.display = 'none'; }
 function saveAsDraftAndExit() {
   const orc = collectOrc();
@@ -816,7 +816,7 @@ async function pickPhoneContactToSave() {
   } catch(e) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Falha na importação.'); }
 }
 
-function openClientPicker() { document.getElementById('client-picker-list').innerHTML = S.clientes.map((c,i) => `<div style="padding:16px; border-bottom:1px solid var(--bdr); cursor:pointer;" onclick="selectClientPicker(${i})"><div style="font-weight:700; font-size:15px; color:var(--ink);">${c.nome}</div><div style="font-size:13px; color:var(--ink3);">${c.tel || ''}</div></div>`).join('') || '<div style="padding:16px; font-size:13px; color:var(--ink3);">Nenhum contato salvo.</div>'; document.getElementById('modal-client-picker').style.display='flex'; }
+function openClientPicker() { document.activeElement?.blur(); document.getElementById('client-picker-list').innerHTML = S.clientes.map((c,i) => `<div style="padding:16px; border-bottom:1px solid var(--bdr); cursor:pointer;" onclick="selectClientPicker(${i})"><div style="font-weight:700; font-size:15px; color:var(--ink);">${c.nome}</div><div style="font-size:13px; color:var(--ink3);">${c.tel || ''}</div></div>`).join('') || '<div style="padding:16px; font-size:13px; color:var(--ink3);">Nenhum contato salvo.</div>'; document.getElementById('modal-client-picker').style.display='flex'; }
 function selectClientPicker(i) { const c = S.clientes[i]; document.getElementById('cli-nome').value = c.nome || ''; document.getElementById('cli-tel').value = c.tel || ''; document.getElementById('cli-email').value = c.email || ''; document.getElementById('cli-cpf').value = c.cpf || ''; document.getElementById('cli-logradouro').value = c.end || ''; document.getElementById('modal-client-picker').style.display='none'; toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Contato selecionado!'); }
 
 function _cliMatch(c, q) {
@@ -930,7 +930,7 @@ function renderFornecedores() {
   `).join('');
 }
 
-function openEditFornecedor(i) {
+function openEditFornecedor(i) { document.activeElement?.blur();
   document.getElementById('edit-forn-idx').value = i;
   if(i === -1) {
     document.getElementById('edit-forn-title').innerText = 'Novo Fornecedor';
@@ -998,7 +998,7 @@ async function _doQuoteForn(orcIdx) {
   const o = S.orcs[orcIdx]; if (!o) return;
   const tel = f.tel.replace(/\D/g,'');
   // Tenta enviar PDF com fotos via native share
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, true);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -1122,7 +1122,7 @@ function editOrcByObjId(id) {
   if (i >= 0) editOrc(i);
 }
 
-function openEventModal() { document.getElementById('ev-titulo').value = ''; document.getElementById('ev-data').value = calSelDate; document.getElementById('ev-hora').value = ''; document.getElementById('modal-evento').style.display='flex'; }
+function openEventModal() { document.activeElement?.blur(); document.getElementById('ev-titulo').value = ''; document.getElementById('ev-data').value = calSelDate; document.getElementById('ev-hora').value = ''; document.getElementById('modal-evento').style.display='flex'; }
 async function salvarEvento() {
   const tit = document.getElementById('ev-titulo').value; const dat = document.getElementById('ev-data').value; const hora = document.getElementById('ev-hora').value;
   const avisoVal = document.getElementById('ev-antes-val').value; const avisoUnid = document.getElementById('ev-antes-unid').value;
@@ -1252,7 +1252,7 @@ async function _generatePDFBlob(orc, withPhotos) {
   // Renderiza via elemento DOM real — mais confiável que from('string') no mobile
   const wrapper = document.createElement('div');
   // Melhora a estabilidade do wrapper oculto
-  wrapper.style.cssText = 'position:absolute;top:0;left:0;width:794px;background:#fff;z-index:-1;visibility:hidden;pointer-events:none;';
+  wrapper.style.cssText = 'position:absolute;top:0;left:0;width:794px;background:#fff;z-index:-1;opacity:0.01;visibility:visible;pointer-events:none;';
   const styleEl = document.createElement('style');
   styleEl.textContent = cssText;
   wrapper.appendChild(styleEl);
@@ -1269,7 +1269,7 @@ async function _generatePDFBlob(orc, withPhotos) {
   await Promise.all(imgPromises);
 
   // Delay adicional para garantir renderização completa (especialmente em mobile)
-  await new Promise(r => setTimeout(r, 450));
+  wrapper.offsetHeight; await new Promise(r => setTimeout(r, 1500));
 
   try {
     const blob = await html2pdf().set({
@@ -1294,7 +1294,7 @@ function _downloadBlob(blob, fileName) {
 
 async function shareOrc() {
   const orc = collectOrc();
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(orc, false);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -1343,7 +1343,7 @@ function sendWA(){ const orc=collectOrc(); const msg=buildWAMsg(orc); const tel=
 // MOTOR DE IMPRESSÃO NATIVA / PDF
 async function generateAndProcessPDF(withPhotos) {
   try {
-    toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...');
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
     const orc = collectOrc();
     const { blob, fileName } = await _generatePDFBlob(orc, withPhotos);
     const file = new File([blob], fileName, { type: 'application/pdf' });
@@ -1483,7 +1483,7 @@ function genPDFHtml(orc, withPhotos) {
         <div style="margin-bottom:6px;"><strong>ÁREA TOTAL APROX.:</strong> ${totalM2.toFixed(2)} m²</div>
         ${orc.tipoServico ? `<div style="margin-bottom:6px;"><strong>ESCOPO:</strong> ${_esc(orc.tipoServico)}</div>` : ''}
         <div style="margin-bottom:6px;"><strong>VALIDADE:</strong> ${_esc(String(orc.valid))} dias</div>
-        ${(() => { const rawP = orc.pgto; const pgtoArr = Array.isArray(rawP) ? rawP : (typeof rawP === 'string' ? [rawP] : []); return pgtoArr.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${pgtoArr.map(_esc).join(", ")}</div>` : ""; })()}
+        ${(() => { const rawP = orc.pgto; const pgtoArr = Array.isArray(rawP) ? rawP : (typeof rawP === 'string' ? rawP.split(',').map(s => s.trim()) : []); return pgtoArr.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${pgtoArr.map(_esc).join(", ")}</div>` : ""; })()}
         ${orc.obs ? `<div style="margin-top:16px; padding:12px; border:1px solid #fde68a; background:#fffbeb; border-radius:8px; color:#000;"><strong>Observações:</strong><br>${_esc(orc.obs)}</div>` : ''}
       </div>
       <div style="text-align:right;">
@@ -1667,7 +1667,7 @@ function renderLogoPreview() {
   }
 }
 
-function openConfig() { canNavigateAsync(() => { S.isDirty = false; document.getElementById('cfg-empresa').value = S.config.empresa || ''; document.getElementById('cfg-tel').value = S.config.tel || ''; document.getElementById('cfg-email-empresa').value = S.config.emailEmpresa || ''; document.getElementById('cfg-end-empresa').value = S.config.endEmpresa || ''; document.getElementById('cfg-doc').value = S.config.doc || ''; document.getElementById('cfg-msg').value = S.config.msg || defCfg.msg; document.getElementById('cfg-servicos').value = S.config.servicos || defCfg.servicos; document.getElementById('cfg-pgto').value = S.config.pgto || defCfg.pgto; document.getElementById('cfg-status').value = S.config.statusList || defCfg.statusList; const fn=document.getElementById('cfg-flash-nomes'); if(fn) fn.value=S.config.flashNomes||defCfg.flashNomes; const fs=document.getElementById('cfg-flash-servicos'); if(fs) fs.value=S.config.flashServicos||defCfg.flashServicos; const fm=document.getElementById('cfg-flash-materiais'); if(fm) fm.value=S.config.flashMateriais||defCfg.flashMateriais; renderLogoPreview(); renderSigPreview(); const accSw = document.getElementById('cfg-acessibilidade-sw'); if(accSw) accSw.classList.toggle('on', !!S.config.acessibilidade); _cfgDirty = false; showPage('pg-config'); }); }
+function openConfig() { document.activeElement?.blur(); canNavigateAsync(() => { S.isDirty = false; document.getElementById('cfg-empresa').value = S.config.empresa || ''; document.getElementById('cfg-tel').value = S.config.tel || ''; document.getElementById('cfg-email-empresa').value = S.config.emailEmpresa || ''; document.getElementById('cfg-end-empresa').value = S.config.endEmpresa || ''; document.getElementById('cfg-doc').value = S.config.doc || ''; document.getElementById('cfg-msg').value = S.config.msg || defCfg.msg; document.getElementById('cfg-servicos').value = S.config.servicos || defCfg.servicos; document.getElementById('cfg-pgto').value = S.config.pgto || defCfg.pgto; document.getElementById('cfg-status').value = S.config.statusList || defCfg.statusList; const fn=document.getElementById('cfg-flash-nomes'); if(fn) fn.value=S.config.flashNomes||defCfg.flashNomes; const fs=document.getElementById('cfg-flash-servicos'); if(fs) fs.value=S.config.flashServicos||defCfg.flashServicos; const fm=document.getElementById('cfg-flash-materiais'); if(fm) fm.value=S.config.flashMateriais||defCfg.flashMateriais; renderLogoPreview(); renderSigPreview(); const accSw = document.getElementById('cfg-acessibilidade-sw'); if(accSw) accSw.classList.toggle('on', !!S.config.acessibilidade); _cfgDirty = false; showPage('pg-config'); }); }
 function saveConfig() {
   S.config = { empresa: document.getElementById('cfg-empresa').value, tel: document.getElementById('cfg-tel').value, emailEmpresa: document.getElementById('cfg-email-empresa').value, endEmpresa: document.getElementById('cfg-end-empresa').value, doc: document.getElementById('cfg-doc').value, msg: document.getElementById('cfg-msg').value, servicos: document.getElementById('cfg-servicos').value, pgto: document.getElementById('cfg-pgto').value, statusList: document.getElementById('cfg-status').value, skipDelConfirm: S.config.skipDelConfirm || false, skipDirtyConfirm: S.config.skipDirtyConfirm || false, logo: S.config.logo || '', assinatura: S.config.assinatura || '', acessibilidade: S.config.acessibilidade || false, flashNomes: (document.getElementById('cfg-flash-nomes')||{}).value||defCfg.flashNomes, flashServicos: (document.getElementById('cfg-flash-servicos')||{}).value||defCfg.flashServicos, flashMateriais: (document.getElementById('cfg-flash-materiais')||{}).value||defCfg.flashMateriais };
   document.body.classList.toggle('acessivel', !!S.config.acessibilidade);
@@ -1689,7 +1689,7 @@ function saveConfig() {
 let backupTimerHandle; let pendingBackupData = null;
 function exportBackup() { const data = { versao: 1, dataGeracao: new Date().toISOString(), config: S.config, orcs: S.orcs, clientes: S.clientes, fornecedores: S.fornecedores, eventos: S.eventos }; const json = JSON.stringify(data); const blob = new Blob([json], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `PintorPlus_Backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`; a.click(); URL.revokeObjectURL(url); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Backup Exportado!'); }
 function handleBackupFile(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = e => { try { const data = JSON.parse(e.target.result); if(!data.orcs || !data.config) throw new Error("Formato inválido"); pendingBackupData = data; openBackupModal(); } catch(err) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Erro no backup'); } }; reader.readAsText(file); input.value = ''; }
-function openBackupModal() { document.getElementById('backup-confirm-modal').style.display = 'flex'; const btn = document.getElementById('btn-force-replace'); btn.classList.add('btn-disabled'); let secs = 3; btn.textContent = `Substituir Tudo (${secs}s)`; clearInterval(backupTimerHandle); backupTimerHandle = setInterval(() => { secs--; if(secs <= 0) { clearInterval(backupTimerHandle); btn.classList.remove('btn-disabled'); btn.textContent = 'Substituir Tudo'; } else { btn.textContent = `Substituir Tudo (${secs}s)`; } }, 1000); }
+function openBackupModal() { document.activeElement?.blur(); document.getElementById('backup-confirm-modal').style.display = 'flex'; const btn = document.getElementById('btn-force-replace'); btn.classList.add('btn-disabled'); let secs = 3; btn.textContent = `Substituir Tudo (${secs}s)`; clearInterval(backupTimerHandle); backupTimerHandle = setInterval(() => { secs--; if(secs <= 0) { clearInterval(backupTimerHandle); btn.classList.remove('btn-disabled'); btn.textContent = 'Substituir Tudo'; } else { btn.textContent = `Substituir Tudo (${secs}s)`; } }, 1000); }
 function closeBackupModal(proceed) { clearInterval(backupTimerHandle); document.getElementById('backup-confirm-modal').style.display = 'none'; if(!proceed) pendingBackupData = null; }
 function executeBackupImport(mode) { if(!pendingBackupData) return; if(mode === 'replace') { S.config = pendingBackupData.config; S.orcs = pendingBackupData.orcs; S.clientes = pendingBackupData.clientes || []; S.fornecedores = pendingBackupData.fornecedores || []; S.eventos = pendingBackupData.eventos || []; _Vault.save('pp-config', JSON.stringify(S.config)); _saveOrcs(); _Vault.save('pp-clientes', JSON.stringify(S.clientes)); _Vault.save('pp-fornecedores', JSON.stringify(S.fornecedores)); _Vault.save('pp-eventos', JSON.stringify(S.eventos)); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Backup Restaurado!'); } else if(mode === 'merge') { const importedOrcs = pendingBackupData.orcs || []; let updatedCount = 0; let addedCount = 0; importedOrcs.forEach(impOrc => { const idx = S.orcs.findIndex(o => o.id === impOrc.id); if(idx >= 0) { if((impOrc.tsEdit || 0) > (S.orcs[idx].tsEdit || 0)) { S.orcs[idx] = impOrc; updatedCount++; } } else { S.orcs.push(impOrc); addedCount++; } }); S.orcs.sort((a,b) => (b.ts || 0) - (a.ts || 0)); _saveOrcs(); toast(`<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Mesclado: ${addedCount} novos, ${updatedCount} atu.`); } closeBackupModal(true); S.DEFAULT_SERVICES = (S.config.servicos || defCfg.servicos).split(',').map(s=>s.trim()).filter(Boolean); S.statusArr = (S.config.statusList || defCfg.statusList).split(',').map(s=>s.trim()).filter(Boolean); populateStatusSelect(); loadGoogleMaps(); homeTab('home'); }
 function homeTab(tab){
@@ -3027,7 +3027,7 @@ const GDrive = {
       console.error('GDrive: uploadFile falhou', e);
       return null;
     }
-  },
+  };
 
   // ── AÇÕES DO USUÁRIO ──────────────────────────────────────
   async syncNow() {
@@ -3870,7 +3870,7 @@ function _canPDF(o) {
 async function genPDFFromIdx(i) {
   const o = S.orcs[i];
   if (!o) return;
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, false);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -3929,7 +3929,7 @@ async function _doSendWA() {
   }
   const prev = o.fmt; o.fmt = _sendFmt;
   const withPhotos = document.getElementById('send-with-photos')?.checked || false;
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, withPhotos);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -3983,7 +3983,7 @@ async function _doSendPDF() {
 
   const withPhotos = document.getElementById('send-with-photos')?.checked || false;
   const prev = o.fmt; o.fmt = _sendFmt;
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, withPhotos);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });

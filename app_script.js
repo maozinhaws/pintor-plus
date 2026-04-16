@@ -1199,7 +1199,7 @@ function buildWAMsg(orc){
   }
   
   if(orc.tipoServico) detalhes+=`\n*Escopo:* ${orc.tipoServico}\n`;
-  const pgtoArr = Array.isArray(orc.pgto) ? orc.pgto : (typeof orc.pgto === "string" ? [orc.pgto] : []);
+  const pgtoArr = Array.isArray(orc.pgto) ? orc.pgto : (typeof orc.pgto === "string" ? orc.pgto.split(',').map(s => s.trim()) : []);
   if(pgtoArr.length) detalhes+=`*Pagamento:* ${pgtoArr.join(", ")}\n`;
   if(orc.valid) detalhes+=`*Validade:* ${orc.valid} dias\n`;
   if(orc.obs) detalhes+=`*Obs Gerais:* ${orc.obs}\n`;
@@ -1533,7 +1533,7 @@ function genPDFHtml(orc, withPhotos) {
         <div style="margin-bottom:6px;"><strong>ÁREA TOTAL APROX.:</strong> ${totalM2.toFixed(2)} m²</div>
         ${orc.tipoServico ? `<div style="margin-bottom:6px;"><strong>ESCOPO:</strong> ${_esc(orc.tipoServico)}</div>` : ''}
         <div style="margin-bottom:6px;"><strong>VALIDADE:</strong> ${_esc(String(orc.valid))} dias</div>
-        ${(() => { const rawP = orc.pgto; const pgtoArr = Array.isArray(rawP) ? rawP : (typeof rawP === 'string' ? [rawP] : []); return pgtoArr.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${pgtoArr.map(_esc).join(", ")}</div>` : ""; })()}
+        ${(() => { const rawP = orc.pgto; const pgtoArr = Array.isArray(rawP) ? rawP : (typeof rawP === 'string' ? rawP.split(',').map(s => s.trim()) : []); return pgtoArr.length ? `<div style="margin-bottom:6px;"><strong>PAGAMENTO:</strong> ${pgtoArr.map(_esc).join(", ")}</div>` : ""; })()}
         ${orc.obs ? `<div style="margin-top:16px; padding:12px; border:1px solid #fde68a; background:#fffbeb; border-radius:8px; color:#000;"><strong>Observações:</strong><br>${_esc(orc.obs)}</div>` : ''}
       </div>
       <div style="text-align:right;">
