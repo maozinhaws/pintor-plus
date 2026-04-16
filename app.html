@@ -2432,7 +2432,7 @@ body.kb-open .title-big { font-size: 14px; }
 // FUNÇÕES UTILITÁRIAS
 let _tt;
 function _ico(n){return '<svg class="ico" aria-hidden="true"><use href="#ico-'+n+'"/></svg>';}
-function toast(msg){ const el=document.getElementById('toast');if(!el)return; el.innerHTML=msg; el.classList.add('on'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('on'), 2600); }
+function toast(msg, ms=2600){ const el=document.getElementById('toast');if(!el)return; el.innerHTML=msg; el.classList.add('on'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('on'), ms); }
 function f1(n){ return(Math.round((n||0)*10)/10).toFixed(1); }
 function ptFloat(v){if(typeof v==='number')return v||0;let s=String(v).trim();if(s.includes('.')&&s.includes(','))s=s.replace(/\./g,'').replace(',','.');else if(s.includes(',')&&!s.includes('.'))s=s.replace(',','.');return parseFloat(s)||0;}
 function getRoomMeds(r){ let m2=0,ml=0; (r.items||[]).forEach(it=>{const a=ptFloat(it.alt),c=ptFloat(it.comp); if(a&&c)m2+=a*c; else if(a||c)ml+=(a||c);}); return{m2,ml}; }
@@ -3428,7 +3428,7 @@ async function _doQuoteForn(orcIdx) {
   const o = S.orcs[orcIdx]; if (!o) return;
   const tel = f.tel.replace(/\D/g,'');
   // Tenta enviar PDF com fotos via native share
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, true);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -3682,7 +3682,7 @@ async function _generatePDFBlob(orc, withPhotos) {
   // Renderiza via elemento DOM real — mais confiável que from('string') no mobile
   const wrapper = document.createElement('div');
   // Melhora a estabilidade do wrapper oculto
-  wrapper.style.cssText = 'position:absolute;top:0;left:0;width:794px;background:#fff;z-index:-1;visibility:hidden;pointer-events:none;';
+  wrapper.style.cssText = 'position:absolute;top:0;left:0;width:794px;background:#fff;z-index:-1;opacity:0.01;visibility:visible;pointer-events:none;';
   const styleEl = document.createElement('style');
   styleEl.textContent = cssText;
   wrapper.appendChild(styleEl);
@@ -3699,7 +3699,7 @@ async function _generatePDFBlob(orc, withPhotos) {
   await Promise.all(imgPromises);
 
   // Delay adicional para garantir renderização completa (especialmente em mobile)
-  await new Promise(r => setTimeout(r, 450));
+  wrapper.offsetHeight; await new Promise(r => setTimeout(r, 1500));
 
   try {
     const blob = await html2pdf().set({
@@ -3724,7 +3724,7 @@ function _downloadBlob(blob, fileName) {
 
 async function shareOrc() {
   const orc = collectOrc();
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(orc, false);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -3773,7 +3773,7 @@ function sendWA(){ const orc=collectOrc(); const msg=buildWAMsg(orc); const tel=
 // MOTOR DE IMPRESSÃO NATIVA / PDF
 async function generateAndProcessPDF(withPhotos) {
   try {
-    toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...');
+    toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
     const orc = collectOrc();
     const { blob, fileName } = await _generatePDFBlob(orc, withPhotos);
     const file = new File([blob], fileName, { type: 'application/pdf' });
@@ -6300,7 +6300,7 @@ function _canPDF(o) {
 async function genPDFFromIdx(i) {
   const o = S.orcs[i];
   if (!o) return;
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, false);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -6359,7 +6359,7 @@ async function _doSendWA() {
   }
   const prev = o.fmt; o.fmt = _sendFmt;
   const withPhotos = document.getElementById('send-with-photos')?.checked || false;
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, withPhotos);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
@@ -6413,7 +6413,7 @@ async function _doSendPDF() {
 
   const withPhotos = document.getElementById('send-with-photos')?.checked || false;
   const prev = o.fmt; o.fmt = _sendFmt;
-  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
+  toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...', 5000);
   try {
     const { blob, fileName } = await _generatePDFBlob(o, withPhotos);
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
