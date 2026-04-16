@@ -1,34 +1,25 @@
+
 const fs = require('fs');
 const content = fs.readFileSync('/home/engine/project/app.html', 'utf8');
-let balance = 0;
-let inString = false;
-let stringChar = '';
-let inTemplateLiteral = false;
-let escaped = false;
-const lines = content.split('\n');
-const openBracesAtLine = [];
-
-for (let i = 0; i < content.length; i++) {
-    const char = content[i];
-    if (escaped) {
-        escaped = false;
-        continue;
-    }
-    if (char === '\\') {
-        escaped = true;
-        continue;
-    }
-    if (inTemplateLiteral) {
-        if (char === '`') inTemplateLiteral = false;
-        if (char === '$' && content[i+1] === '{') {
-            balance++;
-            openBracesAtLine.push(content.substring(0, i).split('\n').length);
-            i++; // skip {
-        } else if (char === '}') {
-            // This is tricky. A } in a template literal could end an interpolation or be a literal }.
-            // But my script doesn't handle interpolation correctly yet.
+const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/g;
+let match;
+let i = 0;
+while ((match = scriptRegex.exec(content)) !== null) {
+    if (i === 5) {
+        const scriptContent = match[1];
+        const lines = scriptContent.split('\n');
+        let balance = 0;
+        for (let j = 0; j < lines.length; j++) {
+            const line = lines[j];
+            for (let k = 0; k < line.length; k++) {
+                if (line[k] === '{') balance++;
+                else if (line[k] === '}') balance--;
+            }
+            if (j + 2431 > 5835 && j + 2431 < 5845) {
+                console.log(`Line ${j + 2431}: balance ${balance} | ${line}`);
+            }
         }
-        continue;
+        console.log(`Final balance: ${balance}`);
     }
-    // ... this is getting complicated.
+    i++;
 }
