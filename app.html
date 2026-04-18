@@ -4925,6 +4925,7 @@ const GDrive = {
   user: null,
   accessToken: null,
   guestMode: false,
+  _sessionLoaded: false,
   _restoringSession: false, // bloqueia redirecionamento enquanto GIS ainda inicializa
   _tokenRefreshTimer: null,
   _userInitiatedAuth: false,
@@ -4933,6 +4934,9 @@ const GDrive = {
   init() {
     // ── Detecta retorno de redirect OAuth (implicit flow) ─────
     // Google redireciona de volta com access_token no hash da URL
+    // Limpa flag anti-loop de redirect OAuth (caso navegador tenha sido reiniciado
+    // durante fluxo de auth pendente — evita loop infinito)
+    sessionStorage.removeItem('pp-auth-redirect-done');
     const _hp = new URLSearchParams(window.location.hash.slice(1));
     const _redirectToken = _hp.get('access_token');
     if (_redirectToken) {
@@ -4985,6 +4989,8 @@ const GDrive = {
       this._sessionLoaded = true;
       // Bloqueia qualquer redirect para login enquanto GIS ainda não confirmou o token.
       // Auto-libera em 15s como safety-net caso GIS não responda.
+sessionStorage.removeItem("pp-auth-redirect-done");
+      this._userInitiatedAuth = false; // impede que erro de GIS cause redirect automático
       this._restoringSession = true;
       setTimeout(() => { this._restoringSession = false; }, 15000);
       this._showLoggedIn();
@@ -5060,6 +5066,8 @@ const GDrive = {
     if (!this._gapiReady || !this._gisReady) return;
     if (this.accessToken) return; // Já temos token (ex: retorno de redirect OAuth)
     if (this._sessionLoaded) {
+      // Bloqueia redirect automático enquanto sessão está sendo restaurada pelo GIS
+      if (this._restoringSession) { this._setStatus('off', 'Reconectando ao Drive...'); return; }
       // Sessão local existe: tenta reconectar Drive em background
       const savedEmail = localStorage.getItem('pp-gdrive-email');
       if (savedEmail) {
@@ -5100,6 +5108,7 @@ const GDrive = {
       return;
     }
     this.accessToken = resp.access_token;
+    sessionStorage.removeItem("pp-auth-redirect-done");
     this._restoringSession = false;
     this._userInitiatedAuth = false;
 
@@ -5634,7 +5643,15 @@ const GDrive = {
   },
 
   // Redirect OAuth (implicit flow) — nunca bloqueado pelo navegador
+  // Protegido contra loops: flag pp-auth-redirect-done é limpa em init()
   _authViaRedirect() {
+    // Dupla-verificação: se flag já estava set, limpa e aborta para evitar loop
+    if (sessionStorage.getItem("pp-auth-redirect-done")) {
+      sessionStorage.removeItem("pp-auth-redirect-done");
+      this._setStatus("err", "Loop de autenticação evitado");
+      return;
+    }
+    sessionStorage.setItem("pp-auth-redirect-done", "1");
     const savedEmail = localStorage.getItem('pp-gdrive-email');
     // redirect_uri deve apontar para app.html (onde o token é lido no hash da URL)
     const redirectUri = window.location.origin + '/app.html';
