@@ -2601,6 +2601,8 @@ const GDrive = {
     if (_redirectToken) {
       this._fetchUserInfo();
     }
+    // Limpa flag de redirect em qualquer caso (sucesso ou não) para não bloquear reconexões futuras
+    sessionStorage.removeItem('pp-auth-redirect-done');
     window.addEventListener("focus", () => { if (this.accessToken && !this.isSyncing) this._findFile(); });
     this.periodicCheck();
   },
@@ -2702,17 +2704,16 @@ const GDrive = {
     console.log('[PP-AUTH] _tryStart | gapiReady=', this._gapiReady, '| gisReady=', this._gisReady, '| sessionLoaded=', this._sessionLoaded, '| restoringSession=', this._restoringSession, '| accessToken=', !!this.accessToken);
     if (!this._gapiReady || !this._gisReady) return;
     if (this.accessToken) return; // Já temos token (ex: retorno de redirect OAuth)
+    // Limpa flag de redirect pendente no início de cada tentativa de reconexão
+    sessionStorage.removeItem('pp-auth-redirect-done');
     if (this._sessionLoaded) {
       // Sessão local existe: tenta reconectar Drive em background
+      // _restoringSession bloqueia _showLoginBtn até o callback do token chegar
+      this._restoringSession = true;
       const savedEmail = localStorage.getItem('pp-gdrive-email');
-      if (savedEmail) {
-        this.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
-      } else {
-        // Sem email salvo — status silencioso, usuário reconecta pelo backup
-        this._setStatus('off', 'Drive desconectado');
-      }
+      this.tokenClient.requestAccessToken({ prompt: '', login_hint: savedEmail });
     } else if (!this.guestMode) {
-      // Primeira vez: mostra botão de login
+      // Primeira vez: mostra botão de login (sem auto-redirect)
       this._showLoginBtn();
     }
   },
@@ -2745,6 +2746,8 @@ const GDrive = {
     this.accessToken = resp.access_token;
     this._restoringSession = false;
     this._userInitiatedAuth = false;
+    // Limpa flag de redirect pendente para evitar loops na próxima reconexão
+    sessionStorage.removeItem('pp-auth-redirect-done');
 
     // ── Agenda renovação silenciosa antes do token expirar ────
     clearTimeout(this._tokenRefreshTimer);
@@ -2767,7 +2770,9 @@ const GDrive = {
   // ── LOGIN / LOGOUT ────────────────────────────────────────
   signIn() {
     if (!this._gisReady) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Aguarde o carregamento...'); return; }
-    // prompt:'' = usa sessão salva sem forçar consent; login_hint acelera seleção de conta
+    // Limpa flag de redirect anterior para garantir comportamento limpo no login manual
+    sessionStorage.removeItem('pp-auth-redirect-done');
+    // prompt:'select_account' = força seletor de conta (comportamento explícito, não silencioso)
     const savedEmail = localStorage.getItem('pp-gdrive-email');
     const opts = { prompt: 'select_account' };
     if (savedEmail) opts.login_hint = savedEmail;
@@ -2782,6 +2787,8 @@ const GDrive = {
     this.fileId = null;
     this.guestMode = false;
     this._restoringSession = false;
+    // Limpa flag de redirect para novo ciclo de login limpo
+    sessionStorage.removeItem('pp-auth-redirect-done');
     localStorage.removeItem('pp-gdrive-email');
     localStorage.removeItem('pp-gdrive-lastSync');
     localStorage.removeItem('pp-session');
