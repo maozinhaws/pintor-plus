@@ -58,6 +58,10 @@ function _saveOrcs() {
   const json = JSON.stringify(S.orcs);
   try {
     _Vault.save('pp-orcs', json);
+    // Also save to Dexie (IndexedDB) for reliable storage
+    if (typeof dbSaveOrcs === 'function') {
+      dbSaveOrcs();
+    }
   } catch(e) {
     console.error('_saveOrcs: localStorage cheio', e);
     // Fallback 1: sessionStorage como cópia de emergência
@@ -208,6 +212,7 @@ function checkAlarms() {
   });
   if(modified) {
     _Vault.save('pp-eventos', JSON.stringify(S.eventos));
+    if (typeof dbSaveEventos === 'function') dbSaveEventos();
     if(document.getElementById('pg-agenda').classList.contains('active')) renderAgenda();
   }
 }
@@ -734,6 +739,7 @@ function extractClient(orc) {
   if(idx >= 0) { S.clientes[idx].nome = orc.nome; S.clientes[idx].apelido = orc.apelido||''; S.clientes[idx].email = orc.email; S.clientes[idx].end = orc.end; S.clientes[idx].cpf = orc.cpf; S.clientes[idx].tsEdit = Date.now(); if(orc.apelido) S.clientes[idx].notas = '[ref: '+orc.apelido+']'; }
   else { S.clientes.push({nome: orc.nome, apelido: orc.apelido||'', tel: orc.tel, email: orc.email, end: orc.end, cpf: orc.cpf, tsEdit: Date.now(), notas: orc.apelido ? '[ref: '+orc.apelido+']' : ''}); }
   _Vault.save('pp-clientes', JSON.stringify(S.clientes));
+  if (typeof dbSaveClientes === 'function') dbSaveClientes();
 }
 
 function saveOrc(silent = false){
@@ -890,6 +896,7 @@ function saveEditClient() {
   else S.clientes[i] = data;
   
   _Vault.save('pp-clientes', JSON.stringify(S.clientes));
+  if (typeof dbSaveClientes === 'function') dbSaveClientes();
   document.getElementById('modal-edit-client').style.display = 'none';
   renderClientes();
   toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Contato salvo!');
@@ -999,7 +1006,16 @@ async function _doQuoteForn(orcIdx) {
   // Tenta enviar PDF com fotos via native share
   toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF…');
   try {
-    const { blob, fileName } = await _generatePDFBlob(o, true);
+    let blob, fileName;
+    if (typeof generatePdfMakeBlob === 'function' && window.pdfMake) {
+      const result = await generatePdfMakeBlob(o, true);
+      blob = result.blob;
+      fileName = result.fileName;
+    } else {
+      const result = await _generatePDFBlob(o, true);
+      blob = result.html ? new Blob([result.html], { type: 'text/html' }) : result.blob;
+      fileName = result.fileName;
+    }
     const pdfFile = new File([blob], fileName, { type: 'application/pdf' });
     const msgBase = `Olá, ${_esc(f.nome)}! Segue o orçamento de referência para cotação de materiais:\n\n${buildWAMsg(o)}\n\nPor favor, me envie o valor dos materiais necessários. Obrigado!`;
     if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
@@ -1133,6 +1149,7 @@ async function salvarEvento() {
   S.eventos.push(newEv);
   S.eventos.sort((a,b)=>new Date(a.dat+'T'+a.hora) - new Date(b.dat+'T'+b.hora));
   _Vault.save('pp-eventos', JSON.stringify(S.eventos));
+  if (typeof dbSaveEventos === 'function') dbSaveEventos();
   document.getElementById('modal-evento').style.display='none';
   calSelDate = dat; [calYear, calMonth] = dat.split('-').map(Number); calMonth--;
   renderAgenda();
@@ -1235,28 +1252,29 @@ function delay(ms) {
 }
 
 function _generatePDFBlob(orc, withPhotos) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
+      // Try to use pdfmake if available
+      if (typeof generatePdfMakeBlob === 'function' && window.pdfMake) {
+        const result = await generatePdfMakeBlob(orc, withPhotos);
+        resolve(result);
+        return;
+      }
+      
+      // Fallback to HTML print approach
       const fullHtml = genPDFHtml(orc, withPhotos);
-
-      // Abre uma nova janela com o conteúdo do PDF
       const printWindow = window.open('', '_blank');
       printWindow.document.write(fullHtml);
       printWindow.document.close();
 
-      // Quando a janela terminar de carregar, resolve a promessa
       printWindow.onload = function() {
-        // Aguarda um pequeno tempo para garantir que todo o conteúdo foi renderizado
         setTimeout(() => {
-          // Fecha a janela de impressão e resolve a promessa com informações necessárias
           printWindow.close();
-
-          // Retorna um objeto com o conteúdo HTML para possível uso futuro
           resolve({
             html: fullHtml,
             fileName: `OC_${(orc.nome||'Orcamento').replace(/[^a-zA-ZÀ-ÿ0-9]/g,'_')}_${String(orc.id || Date.now()).slice(-6)}.pdf`
           });
-        }, 1000); // Aguarda 1 segundo para renderização completa
+        }, 1000);
       };
 
       printWindow.onerror = function(error) {
@@ -1376,6 +1394,14 @@ async function generateAndProcessPDF(withPhotos) {
   try {
     toast('<svg class="ico" aria-hidden="true"><use href="#ico-loader"/></svg> Gerando PDF...');
     const orc = collectOrc();
+    
+    // Try to use pdfmake directly for better mobile support
+    if (typeof sharePdfMake === 'function' && window.pdfMake) {
+      await sharePdfMake(orc, withPhotos);
+      homeTab('orcamentos');
+      return;
+    }
+    
     const { blob, fileName } = await _generatePDFBlob(orc, withPhotos);
     const file = new File([blob], fileName, { type: 'application/pdf' });
     
@@ -1707,6 +1733,7 @@ function saveConfig() {
   S.statusArr = (S.config.statusList || defCfg.statusList).split(',').map(s=>s.trim()).filter(Boolean); 
   try {
     _Vault.save('pp-config', JSON.stringify(S.config));
+    if (typeof dbSaveConfig === 'function') dbSaveConfig();
     _cfgDirty = false;
     toast('<svg class="ico" aria-hidden="true"><use href="#ico-settings"/></svg> Configurações salvas!');
     populateStatusSelect(); loadGoogleMaps(); homeTab('home');
@@ -1722,7 +1749,7 @@ function exportBackup() { const data = { versao: 1, dataGeracao: new Date().toIS
 function handleBackupFile(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = e => { try { const data = JSON.parse(e.target.result); if(!data.orcs || !data.config) throw new Error("Formato inválido"); pendingBackupData = data; openBackupModal(); } catch(err) { toast('<svg class="ico" aria-hidden="true"><use href="#ico-x-circle"/></svg> Erro no backup'); } }; reader.readAsText(file); input.value = ''; }
 function openBackupModal() { document.getElementById('backup-confirm-modal').style.display = 'flex'; const btn = document.getElementById('btn-force-replace'); btn.classList.add('btn-disabled'); let secs = 3; btn.textContent = `Substituir Tudo (${secs}s)`; clearInterval(backupTimerHandle); backupTimerHandle = setInterval(() => { secs--; if(secs <= 0) { clearInterval(backupTimerHandle); btn.classList.remove('btn-disabled'); btn.textContent = 'Substituir Tudo'; } else { btn.textContent = `Substituir Tudo (${secs}s)`; } }, 1000); }
 function closeBackupModal(proceed) { clearInterval(backupTimerHandle); document.getElementById('backup-confirm-modal').style.display = 'none'; if(!proceed) pendingBackupData = null; }
-function executeBackupImport(mode) { if(!pendingBackupData) return; if(mode === 'replace') { S.config = pendingBackupData.config; S.orcs = pendingBackupData.orcs; S.clientes = pendingBackupData.clientes || []; S.fornecedores = pendingBackupData.fornecedores || []; S.eventos = pendingBackupData.eventos || []; _Vault.save('pp-config', JSON.stringify(S.config)); _saveOrcs(); _Vault.save('pp-clientes', JSON.stringify(S.clientes)); _Vault.save('pp-fornecedores', JSON.stringify(S.fornecedores)); _Vault.save('pp-eventos', JSON.stringify(S.eventos)); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Backup Restaurado!'); } else if(mode === 'merge') { const importedOrcs = pendingBackupData.orcs || []; let updatedCount = 0; let addedCount = 0; importedOrcs.forEach(impOrc => { const idx = S.orcs.findIndex(o => o.id === impOrc.id); if(idx >= 0) { if((impOrc.tsEdit || 0) > (S.orcs[idx].tsEdit || 0)) { S.orcs[idx] = impOrc; updatedCount++; } } else { S.orcs.push(impOrc); addedCount++; } }); S.orcs.sort((a,b) => (b.ts || 0) - (a.ts || 0)); _saveOrcs(); toast(`<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Mesclado: ${addedCount} novos, ${updatedCount} atu.`); } closeBackupModal(true); S.DEFAULT_SERVICES = (S.config.servicos || defCfg.servicos).split(',').map(s=>s.trim()).filter(Boolean); S.statusArr = (S.config.statusList || defCfg.statusList).split(',').map(s=>s.trim()).filter(Boolean); populateStatusSelect(); loadGoogleMaps(); homeTab('home'); }
+function executeBackupImport(mode) { if(!pendingBackupData) return; if(mode === 'replace') { S.config = pendingBackupData.config; S.orcs = pendingBackupData.orcs; S.clientes = pendingBackupData.clientes || []; S.fornecedores = pendingBackupData.fornecedores || []; S.eventos = pendingBackupData.eventos || []; _Vault.save('pp-config', JSON.stringify(S.config)); _saveOrcs(); _Vault.save('pp-clientes', JSON.stringify(S.clientes)); _Vault.save('pp-fornecedores', JSON.stringify(S.fornecedores)); _Vault.save('pp-eventos', JSON.stringify(S.eventos)); if (typeof dbImportBackup === 'function') dbImportBackup(pendingBackupData, 'replace'); toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Backup Restaurado!'); } else if(mode === 'merge') { const importedOrcs = pendingBackupData.orcs || []; let updatedCount = 0; let addedCount = 0; importedOrcs.forEach(impOrc => { const idx = S.orcs.findIndex(o => o.id === impOrc.id); if(idx >= 0) { if((impOrc.tsEdit || 0) > (S.orcs[idx].tsEdit || 0)) { S.orcs[idx] = impOrc; updatedCount++; } } else { S.orcs.push(impOrc); addedCount++; } }); S.orcs.sort((a,b) => (b.ts || 0) - (a.ts || 0)); _saveOrcs(); toast(`<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Mesclado: ${addedCount} novos, ${updatedCount} atu.`); } closeBackupModal(true); S.DEFAULT_SERVICES = (S.config.servicos || defCfg.servicos).split(',').map(s=>s.trim()).filter(Boolean); S.statusArr = (S.config.statusList || defCfg.statusList).split(',').map(s=>s.trim()).filter(Boolean); populateStatusSelect(); loadGoogleMaps(); homeTab('home'); }
 function homeTab(tab){
   // Se estiver em config com alterações não salvas, pede confirmação antes de sair
   if (tab !== 'config' && typeof _cfgDirty !== 'undefined' && _cfgDirty && document.getElementById('pg-config')?.classList.contains('active')) {
@@ -2035,6 +2062,23 @@ function gerarReciboPDF() {
   };
 
   fecharModalRecibo();
+
+  // Try to use pdfmake for better PDF generation
+  if (typeof generateAndDownloadReceipt === 'function' && window.pdfMake) {
+    generateAndDownloadReceipt(data)
+      .then(() => toast('<svg class="ico" aria-hidden="true"><use href="#ico-check-circle"/></svg> Recibo gerado!'))
+      .catch(err => {
+        console.error('Erro ao gerar recibo com pdfmake:', err);
+        // Fallback to HTML
+        const html = gerarReciboHTML(data);
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url  = URL.createObjectURL(blob);
+        const w    = window.open(url, '_blank');
+        if (!w) toast('<svg class="ico" aria-hidden="true"><use href="#ico-alert"/></svg> Pop-up bloqueado.');
+        else setTimeout(() => URL.revokeObjectURL(url), 30000);
+      });
+    return;
+  }
 
   const html = gerarReciboHTML(data);
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });

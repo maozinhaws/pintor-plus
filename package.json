@@ -1,5 +1,10 @@
 {
+  "name": "pintor-plus",
+  "version": "1.0.0",
+  "description": "App PWA para pintores gerenciarem orçamentos, clientes e agenda",
   "dependencies": {
-    "lucide-react": "^0.577.0"
+    "dexie": "^4.0.4",
+    "lucide-react": "^0.577.0",
+    "pdfmake": "^0.2.10"
   }
 }
