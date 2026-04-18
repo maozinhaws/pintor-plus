@@ -2204,7 +2204,7 @@ function sendWAIdx(i){ const o=S.orcs[i];if(!o)return; const msg=buildWAMsg(o); 
 function editOrc(i){
   canNavigateAsync(() => {
     const o=S.orcs[i];if(!o)return; toast('<svg class="ico" aria-hidden="true"><use href="#ico-edit"/></svg> Carregando orçamento…');
-    S.isDirty=true; S.editId=o.id; S.rooms=JSON.parse(JSON.stringify(o.rooms||[])); S.pgto=new Set(Array.isArray(o.pgto) ? o.pgto : (typeof o.pgto === 'string' ? [o.pgto] : [])); S.fmt=o.fmt||'completo'; S.pagador=o.pagador||false;
+    S.isDirty=true; S.editId=o.id; S.rooms=JSON.parse(JSON.stringify(o.rooms||[])); S.pgto=new Set(Array.isArray(o.pgto) ? o.pgto : (typeof o.pgto === 'string' ? o.pgto.split(',').map(s => s.trim()) : [])); S.fmt=o.fmt||'completo'; S.pagador=o.pagador||false;
     renderPgtoList(); go(1);
     setTimeout(()=>{
       const v=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
@@ -2294,7 +2294,7 @@ function viewOrc(i) {
     ${sec('Cliente', row('Telefone', o.tel) + row('Email', o.email) + row('CPF', o.cpf) + row('Endereço', addr))}
     ${o.pagador ? sec('Pagador', row('Nome', o.pagNome) + row('Telefone', o.pagTel) + row('Endereço', o.pagEnd)) : ''}
     ${roomsHtml ? sec('Ambientes e Serviços', roomsHtml) : ''}
-    ${sec('Detalhes', row('Tipo de Serviço', o.tipoServico) + row('Validade', o.valid ? o.valid + ' dias' : '') + row('Início', o.inicio) + row('Pagamento', [...(o.pgto||[])].join(', ')))}
+    ${sec('Detalhes', row('Tipo de Serviço', o.tipoServico) + row('Validade', o.valid ? o.valid + ' dias' : '') + row('Início', o.inicio) + row('Pagamento', (Array.isArray(o.pgto) ? o.pgto : (typeof o.pgto === 'string' ? o.pgto.split(',').map(s => s.trim()) : [])).join(', ')))}
     ${o.obs ? sec('Observações', `<div style="font-size:13px;color:var(--ink2);line-height:1.6;background:var(--bg2);border-radius:8px;padding:10px;white-space:pre-wrap;">${o.obs.replace(/</g,'&lt;')}</div>`) : ''}
   `;
   const tel = (o.tel || '').replace(/\D/g, '');
