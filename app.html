@@ -33,7 +33,9 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
 <link rel="apple-touch-startup-image" media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dexie@4.0.4/dist/dexie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.10/build/pdfmake.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.10/build/vfs_fonts.min.js"></script>
 <script>
 (function() {
   const THRESHOLD = 0.75; 
@@ -5840,10 +5842,16 @@ const _Vault = {
   }
 };
 
-// Inicializa quando DOM pronto — Vault primeiro, depois GDrive
+// Inicializa quando DOM pronto — Dexie DB primeiro, depois Vault e GDrive
 async function _startApp() {
   try {
+    // Initialize Dexie.js database and migrate data if needed
+    if (typeof PP_DB !== 'undefined') {
+      await dbInit();
+    }
+    // Also initialize Vault for encrypted storage fallback
     await _Vault.init();
+    // Initialize Google Drive
     GDrive.init();
   } catch (e) {
     console.error("[PP] Erro crítica na inicialização:", e);
@@ -6758,3 +6766,13 @@ document.querySelectorAll('.glass-overlay').forEach((el) => {
 </footer>
 </body>
 </html>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DEXIE.JS DATABASE MODULE                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script src="/db.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PDFMAKE PDF GENERATION MODULE                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script src="/pdfgen.js"></script>
